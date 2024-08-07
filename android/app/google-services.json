@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "501778526252",
+    "project_id": "jambo-mama-nigeria",
+    "storage_bucket": "jambo-mama-nigeria.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501778526252:android:cb90b2ebb5d9756f4ea189",
+        "android_client_info": {
+          "package_name": "com.sahfa.jambomama_nigeria"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2WJFkv33A7eWnZYb_1_lxKKYCIXpmULE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
