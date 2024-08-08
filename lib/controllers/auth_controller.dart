@@ -3,7 +3,10 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
+import 'package:jambomama_nigeria/views/mothers/home.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -67,27 +70,76 @@ class AuthController {
     return res;
   }
 
-  loginUser(String email, String password) async {
+  Future<String> loginUser(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     String res = 'Some error occured';
 
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
-        await _auth.signInWithEmailAndPassword(
-            email: email, password: password);
-        res = 'success';
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        User? user = userCredential.user;
+        if (user != null) {
+          // Check user type and approval status
+          await _checkUserTypeAndNavigate(user, context);
+          res = 'success';
+        } else {
+          res = 'User not found';
+        }
       } else {
-        res = 'Please, field must not be empty';
+        res = 'Please, fields must not be empty';
       }
-      ;
     } catch (e) {
       res = e.toString();
     }
+
     return res;
+  }
+
+  Future<void> _checkUserTypeAndNavigate(
+      User user, BuildContext context) async {
+    try {
+      DocumentSnapshot newMotherDoc =
+          await _firestore.collection('New Mothers').doc(user.uid).get();
+      DocumentSnapshot healthProfessionalDoc = await _firestore
+          .collection('Health Professionals')
+          .doc(user.uid)
+          .get();
+
+      if (newMotherDoc.exists) {
+        Navigator.pushReplacementNamed(context, '/HomePage');
+      } else if (healthProfessionalDoc.exists) {
+        bool isApproved = healthProfessionalDoc.get('approved') ?? false;
+        if (isApproved) {
+          Navigator.pushReplacementNamed(context, '/MidWifeHomePage');
+        } else {
+          print("Health Professional not approved");
+          // Show message or handle unapproved professionals
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Health Professional not approved yet")),
+          );
+        }
+      } else {
+        print("User not found in either collection");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User not found")),
+        );
+      }
+    } catch (e) {
+      print("Error checking user type: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error checking user type: $e")),
+      );
+    }
   }
 
   Future<void> signOutUser() async {
     await _auth.signOut();
   }
-
-  
 }

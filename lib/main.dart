@@ -1,11 +1,14 @@
 import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:flutter/material.dart';
-import 'package:jambomama_nigeria/providers/connection_provider.dart';
+import 'package:jambomama_nigeria/midwives/views/auth/auth_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 
+import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
+import 'package:jambomama_nigeria/views/mothers/home.dart';
+import 'package:jambomama_nigeria/views/mothers/warning.dart';
+
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -36,7 +39,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      routes: {
+        '/': (context) => LoginOrRegister(),
+        '/MidWifeHomePage': (context) => MidWifeHomePage(),
+        '/HomePage': (context) => HomePage(),
+      },
       theme: ThemeData(
         textTheme: TextTheme(
           bodyLarge: TextStyle(fontFamily: 'Poppins', fontSize: 14.0),
@@ -47,7 +54,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginOrRegister(),
     );
   }
 }

@@ -21,22 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   late String password;
   bool isLoading = false;
 
-  Future login() async {
+  login() async {
     setState(() {
       isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
-      String res = await _auth.loginUser(email, password);
+      String res = await _auth.loginUser(email, password, context);
 
-      if (res == 'success') {
-        return Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (BuildContext context) {
-            return HomePage();
-          }),
+      if (res != 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(res)),
         );
-      } else {
-        return showSnackMessage(context, res);
       }
     } else {
       setState(() {

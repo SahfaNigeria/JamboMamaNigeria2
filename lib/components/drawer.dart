@@ -69,7 +69,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
 
           DrawerTiles(
-            icon: Icons.chat_sharp,
+            icon: Icons.search,
             onTap: () {
               Navigator.push(
                 context,
@@ -79,7 +79,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         )),
               );
             },
-            text: "Chats",
+            text: "Search Health Providers",
+          ),
+          DrawerTiles(
+            icon: Icons.chat,
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => ProfessionalsList(
+              //             location: 'Onitcha Uku',
+              //           )),
+              // );
+            },
+            text: "Chart",
           ),
 
           DrawerTiles(

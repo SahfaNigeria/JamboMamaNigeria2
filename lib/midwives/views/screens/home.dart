@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
-import 'package:jambomama_nigeria/components/drawers.dart';
+import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 
 class MidWifeHomePage extends StatelessWidget {
