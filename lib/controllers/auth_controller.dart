@@ -139,6 +139,38 @@ class AuthController {
     }
   }
 
+  Future<Map<String, dynamic>> fetchUserData() async {
+    User? user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('No user is currently logged in');
+    }
+
+    // Check if the user is a Health Professional
+    DocumentSnapshot healthDoc =
+        await _firestore.collection('Health Professionals').doc(user.uid).get();
+
+    if (healthDoc.exists) {
+      return {
+        'isHealthProvider': true,
+        'userData': healthDoc.data(),
+      };
+    }
+
+    // Check if the user is a Pregnant Woman
+    DocumentSnapshot motherDoc =
+        await _firestore.collection('New Mothers').doc(user.uid).get();
+
+    if (motherDoc.exists) {
+      return {
+        'isHealthProvider': false,
+        'userData': motherDoc.data(),
+      };
+    }
+
+    // If no matching document is found
+    throw Exception('User data not found');
+  }
+
   Future<void> signOutUser() async {
     await _auth.signOut();
   }

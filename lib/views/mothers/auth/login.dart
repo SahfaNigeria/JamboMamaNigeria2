@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
 import 'package:jambomama_nigeria/views/mothers/learn.dart';
@@ -21,14 +22,99 @@ class _LoginPageState extends State<LoginPage> {
   late String password;
   bool isLoading = false;
 
+  // login() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   if (_formKey.currentState!.validate()) {
+  //     String res = await _auth.loginUser(email, password, context);
+
+  //     if (res != 'success') {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text(res)),
+  //       );
+  //     }
+  //   } else {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     showSnackMessage(context, 'Field(s) must not be empty');
+  //   }
+  // }
+
+  // login() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+
+  //   if (_formKey.currentState!.validate()) {
+  //     String res = await _auth.loginUser(email, password, context);
+
+  //     if (res == 'success') {
+  //       try {
+  //         // Fetch user data after successful login
+  //         AuthController authController = AuthController();
+  //         Map<String, dynamic> userData = await authController.fetchUserData();
+
+  //         bool isHealthProvider = userData['isHealthProvider'];
+
+  //         // Navigate to the appropriate main screen based on the user type
+  //         Navigator.of(context).pushAndRemoveUntil(
+  //           MaterialPageRoute(
+  //             builder: (context) =>
+  //                 HomePage(isHealthProvider: isHealthProvider),
+  //           ),
+  //           (Route<dynamic> route) => false,
+  //         );
+  //       } catch (e) {
+  //         // Handle errors (e.g., show a message to the user)
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Error: $e')),
+  //         );
+  //       }
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text(res)),
+  //       );
+  //     }
+  //   } else {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     showSnackMessage(context, 'Field(s) must not be empty');
+  //   }
+  // }
+
   login() async {
     setState(() {
       isLoading = true;
     });
+
     if (_formKey.currentState!.validate()) {
       String res = await _auth.loginUser(email, password, context);
 
-      if (res != 'success') {
+      if (res == 'success') {
+        try {
+          // Fetch user data after successful login
+          AuthController authController = AuthController();
+          Map<String, dynamic> userData = await authController.fetchUserData();
+
+          bool isHealthProvider = userData['isHealthProvider'];
+
+          // Navigate based on the user type
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) =>
+                  HomePage(isHealthProvider: isHealthProvider),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(res)),
         );

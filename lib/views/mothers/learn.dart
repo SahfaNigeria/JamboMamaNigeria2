@@ -18,10 +18,10 @@ class _LearnPageState extends State<LearnPage> {
 
     */
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => HomePage()),
+    // );
   }
 
   @override

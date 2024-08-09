@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
+import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
 import 'package:jambomama_nigeria/views/mothers/warning.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  final bool isHealthProvider;
+  HomePage({super.key, required this.isHealthProvider});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -41,7 +43,8 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home'),
         centerTitle: true,
       ),
-      drawer: const HomeDrawer(),
+      drawer:
+          widget.isHealthProvider ? HealthProviderHomeDrawer() : HomeDrawer(),
       body: ListView(
         children: [
           FrontBanner(),

@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jambomama_nigeria/midwives/views/auth/auth_screen.dart';
+
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
-import 'package:jambomama_nigeria/views/mothers/warning.dart';
 
 import 'package:provider/provider.dart';
 
@@ -42,7 +41,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginOrRegister(),
         '/MidWifeHomePage': (context) => MidWifeHomePage(),
-        '/HomePage': (context) => HomePage(),
+        '/HomePage': (context) => HomePage(
+              isHealthProvider: false,
+            ),
       },
       theme: ThemeData(
         textTheme: TextTheme(

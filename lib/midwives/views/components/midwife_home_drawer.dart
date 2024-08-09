@@ -2,14 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 
-class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({super.key});
+class HealthProviderHomeDrawer extends StatelessWidget {
+  HealthProviderHomeDrawer({super.key});
 
-  @override
-  State<HomeDrawer> createState() => _HomeDrawerState();
-}
-
-class _HomeDrawerState extends State<HomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future logout() async {

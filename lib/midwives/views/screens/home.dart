@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
-import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
+import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
 
 class MidWifeHomePage extends StatelessWidget {
   const MidWifeHomePage({super.key});
@@ -13,7 +13,7 @@ class MidWifeHomePage extends StatelessWidget {
         title: const Text('Home'),
         centerTitle: true,
       ),
-      drawer: HomeDrawer(),
+      drawer: HealthProviderHomeDrawer(),
       body: ListView(
         children: [
           FrontBanner(),
