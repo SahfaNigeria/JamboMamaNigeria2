@@ -5,8 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
-import 'package:jambomama_nigeria/views/mothers/home.dart';
+
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;

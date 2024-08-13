@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/landing_screen.dart';
-import 'package:jambomama_nigeria/views/mothers/home.dart';
 
 // Add the import for New Mothers' home screen
 

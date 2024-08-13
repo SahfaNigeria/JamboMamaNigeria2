@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
 
 class HealthProviderHomeDrawer extends StatelessWidget {
   HealthProviderHomeDrawer({super.key});
@@ -50,21 +51,19 @@ class HealthProviderHomeDrawer extends StatelessWidget {
           ),
 
           DrawerTiles(
-            icon: Icons.local_hospital,
-            onTap: () {},
-            text: "Hospitals",
-          ),
-
-          DrawerTiles(
             icon: Icons.pregnant_woman,
+            onTap: () {},
+            text: "Patients",
+          ),
+          DrawerTiles(
+            icon: Icons.connect_without_contact,
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => const ExpectedDeliveryScreen()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ConnectionScreen()),
+              );
             },
-            text: "Your Patients",
+            text: "Connection",
           ),
 
           DrawerTiles(
@@ -79,17 +78,17 @@ class HealthProviderHomeDrawer extends StatelessWidget {
             text: "Chat",
           ),
 
-          DrawerTiles(
-            icon: Icons.car_rental,
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => const MedicalBackgroundForm()),
-              // );
-            },
-            text: "Transport",
-          ),
+          // DrawerTiles(
+          //   icon: Icons.car_rental,
+          //   onTap: () {
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(
+          //     //       builder: (context) => const MedicalBackgroundForm()),
+          //     // );
+          //   },
+          //   text: "Transport",
+          // ),
 
           DrawerTiles(
             icon: Icons.settings,
@@ -100,7 +99,7 @@ class HealthProviderHomeDrawer extends StatelessWidget {
           DrawerTiles(
             icon: Icons.logout,
             onTap: () {
-              logout();
+              logout;
             },
             text: "Logout",
           ),

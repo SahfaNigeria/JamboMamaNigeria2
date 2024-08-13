@@ -12,6 +12,12 @@ class MidWifeHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.notifications_active_outlined),
+          )
+        ],
       ),
       drawer: HealthProviderHomeDrawer(),
       body: ListView(

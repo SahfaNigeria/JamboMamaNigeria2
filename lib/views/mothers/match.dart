@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfessionalsList extends StatelessWidget {
   final String location;
+  final requesterId =
+      'your_requester_id'; // Replace with the actual requester ID
 
   ProfessionalsList({required this.location});
 
