@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
+import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
+
 import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
@@ -43,7 +45,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             height: 100,
             width: 100,
             child: Image.asset(
-              'assets/images/logo-jambo mama.jpg',
+              'assets/images/logo.png',
             ),
           ),
 
@@ -82,21 +84,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
             text: "Search Health Providers",
           ),
           DrawerTiles(
-            icon: Icons.chat,
+            icon: Icons.medical_services_outlined,
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => ProfessionalsList(
-              //             location: 'Onitcha Uku',
-              //           )),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllowedToChatScreen(),
+                ),
+              );
             },
-            text: "Chart",
+            text: "Your Health Provider(s)",
           ),
 
           DrawerTiles(
-            icon: Icons.car_rental,
+            icon: Icons.calendar_today,
             onTap: () {
               Navigator.push(
                 context,

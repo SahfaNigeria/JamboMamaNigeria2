@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/allowed_to_chat.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 
 class HealthProviderHomeDrawer extends StatelessWidget {
   HealthProviderHomeDrawer({super.key});
@@ -52,7 +55,14 @@ class HealthProviderHomeDrawer extends StatelessWidget {
 
           DrawerTiles(
             icon: Icons.pregnant_woman,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllowedToChatScreen(),
+                ),
+              );
+            },
             text: "Patients",
           ),
           DrawerTiles(
@@ -65,30 +75,6 @@ class HealthProviderHomeDrawer extends StatelessWidget {
             },
             text: "Connection",
           ),
-
-          DrawerTiles(
-            icon: Icons.chat,
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => const MedicalBackgroundForm()),
-              // );
-            },
-            text: "Chat",
-          ),
-
-          // DrawerTiles(
-          //   icon: Icons.car_rental,
-          //   onTap: () {
-          //     // Navigator.push(
-          //     //   context,
-          //     //   MaterialPageRoute(
-          //     //       builder: (context) => const MedicalBackgroundForm()),
-          //     // );
-          //   },
-          //   text: "Transport",
-          // ),
 
           DrawerTiles(
             icon: Icons.settings,
