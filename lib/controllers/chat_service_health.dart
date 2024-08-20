@@ -12,7 +12,13 @@ Future<void> startChat(BuildContext context, String recipientId) async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChatScreen(chatId: chatId),
+        builder: (context) => ChatScreen(
+          chatId: 'chatId',
+          senderCollection: 'Health Professionals',
+          senderNameField: 'fullName',
+          receiverCollection: 'New Mothers',
+          receiverNameField: 'full name',
+        ),
       ),
     );
   } catch (e) {

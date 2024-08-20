@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jambomama_nigeria/controllers/chat_service.dart';
+import 'package:jambomama_nigeria/controllers/chat_service_mothers.dart';
 
 class AllowedToChatScreen extends StatelessWidget {
   @override

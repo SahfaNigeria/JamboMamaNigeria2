@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-
-// Add the import for New Mothers' home screen
+import 'package:jambomama_nigeria/midwives/views/screens/landing_screen.dart';
 
 class MidwiveAuthScreen extends StatefulWidget {
   const MidwiveAuthScreen({super.key});
@@ -34,6 +33,12 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
       }
     } else {
       print("User not found in either collection");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LandingScreen(),
+        ),
+      );
     }
   }
 

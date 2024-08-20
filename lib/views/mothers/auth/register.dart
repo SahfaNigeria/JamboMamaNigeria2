@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/registration_button.dart';
+import 'package:jambomama_nigeria/midwives/views/auth/auth_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/mother_registration_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 100,
               width: 70,
               child: Image.asset(
-                'assets/images/logo-jambo mama.jpg',
+                'assets/images/logo.png',
               ),
             ),
 
@@ -62,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: RegistrationButton(
-                    text: "Register as a Mother",
+                    text: "Mother",
                     icon: Icons.woman,
                     onTap: () {
                       Navigator.push(
@@ -77,17 +78,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: RegistrationButton(
-                    text: "Register as a Nurse",
+                    text: "Health Professional",
                     icon: Icons.medical_services,
-                    onTap: () {},
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: RegistrationButton(
-                    text: "Register as a C H W",
-                    icon: Icons.medication,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MidwiveAuthScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],

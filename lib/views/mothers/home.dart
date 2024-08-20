@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/drawer.dart';
@@ -19,24 +20,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   String img = '';
+  String userName = '';
 
-  getProfilePicture() async {
-    QuerySnapshot profilePicture =
-        await _firestore.collection("New Mothers").get();
-
-    setState(() {
-      img = profilePicture.docs[0]["profileImage"];
-    });
-
-    return profilePicture.docs;
-  }
-
+  @override
   void initState() {
-    getProfilePicture();
     super.initState();
+    getProfileData();
   }
 
+  Future<void> getProfileData() async {
+    final User? user = _auth.currentUser;
+    if (user != null) {
+      final DocumentSnapshot userDoc =
+          await _firestore.collection("New Mothers").doc(user.uid).get();
+
+      if (userDoc.exists) {
+        setState(() {
+          img = userDoc["profileImage"];
+          userName = userDoc["full name"];
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -65,19 +75,21 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.red.shade100,
                     borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
-                        image: NetworkImage(img), fit: BoxFit.cover),
+                      image: NetworkImage(img),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 Text(
                   'Hello! ',
                   style: TextStyle(
-                      color: Colors.grey, fontWeight: FontWeight.w400),
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 Text(
-                  'Martha👋',
+                  '$userName👋',
                   style: TextStyle(
                     color: Colors.black,
                   ),

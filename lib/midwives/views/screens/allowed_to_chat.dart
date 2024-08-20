@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jambomama_nigeria/controllers/chat_service.dart';
+import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
 
 class AllowedToChatScreen extends StatelessWidget {
   @override
@@ -39,7 +39,7 @@ class AllowedToChatScreen extends StatelessWidget {
 
               return FutureBuilder<DocumentSnapshot>(
                 future: FirebaseFirestore.instance
-                    .collection('New Mothers') // Query patients collection
+                    .collection('New Mothers') // Query mothers' collection
                     .doc(requesterId)
                     .get(),
                 builder: (context, userSnapshot) {

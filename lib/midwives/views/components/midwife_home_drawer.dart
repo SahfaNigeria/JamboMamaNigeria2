@@ -1,18 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/allowed_to_chat.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
+import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
 
-class HealthProviderHomeDrawer extends StatelessWidget {
+class HealthProviderHomeDrawer extends StatefulWidget {
   HealthProviderHomeDrawer({super.key});
 
+  @override
+  State<HealthProviderHomeDrawer> createState() =>
+      _HealthProviderHomeDrawerState();
+}
+
+class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future logout() async {
-    await _auth.signOut();
+    await _auth
+        .signOut()
+        .then((value) => Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) => LoginPage(
+                      onTap: () {},
+                    )),
+            (route) => false));
   }
 
   Widget build(BuildContext context) {
@@ -85,7 +97,7 @@ class HealthProviderHomeDrawer extends StatelessWidget {
           DrawerTiles(
             icon: Icons.logout,
             onTap: () {
-              logout;
+              logout();
             },
             text: "Logout",
           ),

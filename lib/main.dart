@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 
@@ -34,7 +35,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // This widget is the root of this application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,6 +45,17 @@ class MyApp extends StatelessWidget {
         '/HomePage': (context) => HomePage(
               isHealthProvider: false,
             ),
+        '/ChatScreen': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          return ChatScreen(
+            chatId: args['chatId'],
+            senderCollection: args['senderCollection'],
+            senderNameField: args['senderNameField'],
+            receiverCollection: args['receiverCollection'],
+            receiverNameField: args['receiverNameField'],
+          );
+        },
       },
       theme: ThemeData(
         textTheme: TextTheme(
