@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/allowed_to_chat.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
-import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
+import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 
 class HealthProviderHomeDrawer extends StatefulWidget {
   HealthProviderHomeDrawer({super.key});
@@ -17,13 +18,9 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future logout() async {
-    await _auth
-        .signOut()
-        .then((value) => Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (context) => LoginPage(
-                      onTap: () {},
-                    )),
+    await _auth.signOut().then((value) => Navigator.of(context)
+        .pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginOrRegister()),
             (route) => false));
   }
 
@@ -61,7 +58,14 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
 
           DrawerTiles(
             icon: Icons.home,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MidWifeHomePage(),
+                ),
+              );
+            },
             text: "Home",
           ),
 
@@ -71,7 +75,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AllowedToChatScreen(),
+                  builder: (context) => Patients(),
                 ),
               );
             },

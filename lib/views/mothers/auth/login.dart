@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
-import 'package:jambomama_nigeria/views/mothers/home.dart';
 import 'package:jambomama_nigeria/views/mothers/learn.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,12 +20,18 @@ class _LoginPageState extends State<LoginPage> {
   late String password;
   bool isLoading = false;
 
+  void setLoading(bool value) {
+    setState(() {
+      isLoading = value;
+    });
+  }
+
   login() async {
     setState(() {
       isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
-      String res = await _auth.loginUser(email, password, context);
+      String res = await _auth.loginUser(email, password, context, setLoading);
 
       if (res != 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -158,14 +163,31 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       width: 10,
                     ),
+                    // GestureDetector(
+                    //   onTap: widget.onTap,
+                    //   child: const Text(
+                    //     "Register now",
+                    //     style: TextStyle(
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 14,
+                    //         color: Colors.grey),
+                    //   ),
+                    // ),
                     GestureDetector(
-                      onTap: widget.onTap,
+                      onTap: () {
+                        if (widget.onTap != null) {
+                          widget.onTap!();
+                        } else {
+                          print('onTap is null!');
+                        }
+                      },
                       child: const Text(
                         "Register now",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.grey),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ],

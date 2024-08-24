@@ -54,10 +54,14 @@ class MidwifeController {
       String cityValue,
       String villageTown,
       Uint8List? image) async {
-    String res = 'some error occured';
+    String res = 'An error occured';
     try {
       // This function Saves Registering Health Provider To FireStore
-      String midWifeImage = await saveMidwifeImageToStorage(image!);
+      String? midWifeImage;
+      if (image != null) {
+        midWifeImage = await saveMidwifeImageToStorage(image);
+      }
+      // String midWifeImage = await saveMidwifeImageToStorage(image!);
       await _firestore
           .collection('Health Professionals')
           .doc(_auth.currentUser!.uid)
@@ -72,12 +76,14 @@ class MidwifeController {
         'stateValue': stateValue,
         'cityValue': cityValue,
         'villageTown': villageTown,
-        'midWifeImage': midWifeImage,
+        'midWifeImage': midWifeImage ?? '',
         'approved': false,
-        'midWifeId': _auth.currentUser!.uid
+        'midWifeId': _auth.currentUser!.uid,
+        'professional': 'professional',
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
-      ;
+      res = 'Your data is saved successfully';
     } catch (e) {
       res = e.toString();
     }

@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -36,29 +35,48 @@ class AuthController {
     }
   }
 
-  Future<String> signUpUser(String email, String phoneNumber, String fullName,
-      String password, Uint8List? image) async {
+  Future<String> signUpUser(
+      String email,
+      String phoneNumber,
+      String fullName,
+      String password,
+      Uint8List? image,
+      String dob,
+      String villageTown,
+      String countryValue,
+      String cityValue,
+      String stateValue,
+      String address,
+      String hospital) async {
     String res = 'Something went wrong';
 
     try {
       if (email.isNotEmpty &&
           phoneNumber.isNotEmpty &&
           fullName.isNotEmpty &&
-          password.isNotEmpty &&
-          image != null) {
+          password.isNotEmpty) {
         //Create User
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
 
-        String profileImageURL = await uploadProfileImageToStorage(image);
+        // String profileImageURL = await uploadProfileImageToStorage(image);
+        String profileImageURL = image != null
+            ? await uploadProfileImageToStorage(image)
+            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKoG2KJEveyKK8EKskB-dCbipr_Qs3xGLhx90LQgs9sg&s';
 
         await _firestore.collection('New Mothers').doc(cred.user!.uid).set({
           'email': email,
           'phone number': phoneNumber,
+          'address': address,
+          'hospital': hospital,
           'full name': fullName,
           'motherId': cred.user!.uid,
-          'address': '',
           'profileImage': profileImageURL,
+          'dateOfBirth': dob,
+          'villageTown': villageTown,
+          'countryValue': countryValue,
+          'stateValue': stateValue,
+          'cityValue': cityValue,
         });
         res = ' success';
       } else {
@@ -73,6 +91,7 @@ class AuthController {
     String email,
     String password,
     BuildContext context,
+    Function setLoading,
   ) async {
     String res = 'Some error occured';
 
@@ -86,7 +105,7 @@ class AuthController {
         User? user = userCredential.user;
         if (user != null) {
           // Check user type and approval status
-          await _checkUserTypeAndNavigate(user, context);
+          await _checkUserTypeAndNavigate(user, context, setLoading);
           res = 'success';
         } else {
           res = 'User not found';
@@ -102,7 +121,7 @@ class AuthController {
   }
 
   Future<void> _checkUserTypeAndNavigate(
-      User user, BuildContext context) async {
+      User user, BuildContext context, Function setLoading) async {
     try {
       DocumentSnapshot newMotherDoc =
           await _firestore.collection('New Mothers').doc(user.uid).get();
@@ -123,18 +142,22 @@ class AuthController {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Health Professional not approved yet")),
           );
+          // After showing the snackbar, set isLoading to false
+          setLoading(false);
         }
       } else {
         print("User not found in either collection");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("User not found")),
         );
+        setLoading(false);
       }
     } catch (e) {
       print("Error checking user type: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error checking user type: $e")),
       );
+      setLoading(false);
     }
   }
 

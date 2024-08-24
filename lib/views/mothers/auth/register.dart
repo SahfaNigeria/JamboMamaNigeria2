@@ -12,8 +12,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  void signUpMothers() {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

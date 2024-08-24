@@ -6,8 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfessionalsList extends StatelessWidget {
   final String location;
-  final requesterId =
-      'your_requester_id'; // Replace with the actual requester ID
 
   ProfessionalsList({required this.location});
 
@@ -16,7 +14,7 @@ class ProfessionalsList extends StatelessWidget {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('Health Professionals')
         .where('professional', isEqualTo: 'professional')
-        .where('villageTown', isEqualTo: 'Lugbe')
+        .where('cityValue', isEqualTo: location)
         .get();
 
     return querySnapshot.docs;
@@ -55,11 +53,19 @@ class ProfessionalsList extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: Image.network(
-                              professional['midWifeImage'],
-                              height: 50.0,
-                              width: 50.0,
-                            ),
+                            child: professional['midWifeImage'] != null &&
+                                    professional['midWifeImage'].isNotEmpty
+                                ? Image.network(
+                                    professional['midWifeImage'],
+                                    height: 50.0,
+                                    width: 50.0,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: Colors.grey.shade400,
+                                  ),
                           ),
                           SizedBox(
                             width: 20,

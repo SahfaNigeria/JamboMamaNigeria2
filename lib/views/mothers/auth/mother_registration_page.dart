@@ -1,12 +1,12 @@
 import 'dart:typed_data';
-
+import 'package:intl/intl.dart'; // For formatting the date
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
-// import 'package:jambomama_nigeria/views/mothers/home.dart';
+import 'package:country_state_city_picker/country_state_city_picker.dart';
 
 class MotherRegisterPage extends StatefulWidget {
   @override
@@ -26,15 +26,46 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
 
   bool isLoading = false;
 
+  late String villageTown;
+
+  late String countryValue;
+
+  late String cityValue;
+
+  late String stateValue;
+
+  late String address;
+
+  late String hospital;
+
   Uint8List? image;
+
+  DateTime? _selectedDate;
+  final TextEditingController _dobController = TextEditingController();
 
   _signUpUser() async {
     setState(() {
       isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
+      // Format the date as needed (e.g., "yyyy-MM-dd")
+      String dob = _selectedDate != null
+          ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+          : '';
       await _authController
-          .signUpUser(email, phoneNumber, fullName, password, image)
+          .signUpUser(
+              email,
+              phoneNumber,
+              fullName,
+              password,
+              image,
+              dob,
+              villageTown,
+              countryValue,
+              cityValue,
+              stateValue,
+              address,
+              hospital)
           .whenComplete(() {
         setState(() {
           _formKey.currentState!.reset();
@@ -44,7 +75,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
       showSnackMessage(context, 'Your account has been created');
       // Navigator.push(
       //   context,
-      //   MaterialPageRoute(builder: (context) => const HomePage()),
+      //   MaterialPageRoute(builder: (context) => const ()),
       // );
     } else {
       setState(() {
@@ -59,6 +90,21 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
     setState(() {
       image = im;
     });
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
   }
 
   @override
@@ -120,7 +166,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Text(
-                        'Profile pictures are required to successfully register',
+                        'You can optionally add a profile picture',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
@@ -168,6 +214,47 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
+                  child: GestureDetector(
+                    onTap: () => _selectDate(context),
+                    child: AbsorbPointer(
+                      child: TextFormField(
+                        controller: _dobController,
+                        decoration: InputDecoration(
+                          labelText: 'Date of Birth',
+                          hintText: _selectedDate != null
+                              ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
+                              : 'Select Date',
+                        ),
+                        validator: (value) {
+                          if (_selectedDate == null) {
+                            return 'Please select your Date of Birth';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please Hospital field is empty';
+                      } else {
+                        return null;
+                      }
+                    },
+                    onChanged: (value) {
+                      hospital = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Hosptal',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -201,6 +288,73 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Password',
                     ),
+                  ),
+                ),
+                Text(
+                  'Location',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SelectState(
+                        onCountryChanged: (value) {
+                          setState(() {
+                            countryValue = value;
+                          });
+                        },
+                        onStateChanged: (value) {
+                          setState(() {
+                            stateValue = value;
+                          });
+                        },
+                        onCityChanged: (value) {
+                          setState(() {
+                            cityValue = value;
+                          });
+                        },
+                      ),
+                      TextFormField(
+                        onChanged: (value) {
+                          villageTown = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please, Fill the Town & Village field';
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          label: Text(
+                            'Town or Village',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onChanged: (value) {
+                          address = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please, Fill the Address field';
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          label: Text(
+                            'Address',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 GestureDetector(

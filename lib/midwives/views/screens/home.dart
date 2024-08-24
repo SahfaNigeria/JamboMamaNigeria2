@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
+
+import 'learn_screen.dart';
 
 class MidWifeHomePage extends StatelessWidget {
   const MidWifeHomePage({super.key});
@@ -114,10 +119,12 @@ class MidWifeHomePage extends StatelessWidget {
                         text: 'Patients',
                         icon: 'assets/svgs/logo_Jambomama.svg',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => const You()),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Patients(),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -134,7 +141,14 @@ class MidWifeHomePage extends StatelessWidget {
                       child: HomeComponents(
                         text: 'Directory',
                         icon: 'assets/svgs/file_directory.svg',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DirectoryScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -156,7 +170,14 @@ class MidWifeHomePage extends StatelessWidget {
                     child: HomeComponents(
                       text: 'Learn',
                       icon: 'assets/svgs/learn_medicine.svg',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LearnScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(
@@ -172,7 +193,14 @@ class MidWifeHomePage extends StatelessWidget {
                     child: HomeComponents(
                       text: 'My Account',
                       icon: 'assets/svgs/person_account.svg',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AccountScreen(),
+                          ),
+                        );
+                      },
                     ),
                   )
                 ],

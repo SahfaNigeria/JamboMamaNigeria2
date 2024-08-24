@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
 
-import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
+import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
 
@@ -18,15 +19,38 @@ class HomeDrawer extends StatefulWidget {
 
 class _HomeDrawerState extends State<HomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? userLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserLocation();
+  }
+
+  Future<void> _fetchUserLocation() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot doc = await FirebaseFirestore.instance
+            .collection('New Mothers')
+            .doc(user.uid)
+            .get();
+
+        if (doc.exists) {
+          setState(() {
+            userLocation = doc['cityValue'] ?? 'Unknown Location';
+          });
+        }
+      }
+    } catch (e) {
+      print("Error fetching user location: $e");
+    }
+  }
 
   Future logout() async {
-    await _auth
-        .signOut()
-        .then((value) => Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (context) => LoginPage(
-                      onTap: () {},
-                    )),
+    await _auth.signOut().then((value) => Navigator.of(context)
+        .pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginOrRegister()),
             (route) => false));
   }
 
@@ -76,9 +100,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ProfessionalsList(
-                          location: 'Onitcha Uku',
-                        )),
+                    builder: (context) =>
+                        ProfessionalsList(location: userLocation ?? '')),
               );
             },
             text: "Search Health Providers",
