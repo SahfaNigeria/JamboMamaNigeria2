@@ -104,7 +104,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         ProfessionalsList(location: userLocation ?? '')),
               );
             },
-            text: "Search Health Providers",
+            text: "Health Providers",
           ),
           DrawerTiles(
             icon: Icons.medical_services_outlined,
@@ -116,7 +116,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Your Health Provider(s)",
+            text: " Connections",
           ),
 
           DrawerTiles(

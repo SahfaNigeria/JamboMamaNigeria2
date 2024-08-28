@@ -187,13 +187,13 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: HomeComponents(
-                  text: 'Vital Infon Update',
+                  text: 'Vital Info. Update',
                   icon: 'assets/svgs/doctor-svgrepo-com.svg',
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const You()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => const You()),
+                    // );
                   },
                 ),
               ),

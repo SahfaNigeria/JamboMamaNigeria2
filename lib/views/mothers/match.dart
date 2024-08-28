@@ -46,94 +46,99 @@ class ProfessionalsList extends StatelessWidget {
                     bool requestSent =
                         connectionStateModel.hasRequestedConnection;
 
-                    return Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: professional['midWifeImage'] != null &&
-                                    professional['midWifeImage'].isNotEmpty
-                                ? Image.network(
-                                    professional['midWifeImage'],
-                                    height: 50.0,
-                                    width: 50.0,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.grey.shade400,
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: professional['midWifeImage'] != null &&
+                                      professional['midWifeImage'].isNotEmpty
+                                  ? Image.network(
+                                      professional['midWifeImage'],
+                                      height: 50.0,
+                                      width: 50.0,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(
+                                      Icons.person,
+                                      size: 40,
+                                      color: Colors.grey.shade400,
+                                    ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Text(
+                                          professional['fullName'],
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(1.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(),
-                                      child: Text(
-                                        professional['fullName'],
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        professional['position'],
                                         style: TextStyle(color: Colors.grey),
                                       ),
-                                    ),
-                                  ],
+                                      Text(
+                                        ',',
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        professional['healthFacility'],
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      professional['position'],
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    Text(
-                                      ',',
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      professional['healthFacility'],
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ],
+                              ],
+                            ),
+                            SizedBox(
+                              height: 40,
+                              width: 100,
+                              child: TextButton(
+                                onPressed: requestSent
+                                    ? null
+                                    : () async {
+                                        // Use the model to send the connection request
+                                        await connectionStateModel
+                                            .sendConnectionRequest(
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          professional['midWifeId'],
+                                        );
+                                      },
+                                child: Text(
+                                  requestSent ? 'Sent' : 'Connect',
+                                  style: TextStyle(
+                                      color: requestSent
+                                          ? Colors.grey
+                                          : Colors.red),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 40,
-                            width: 100,
-                            child: TextButton(
-                              onPressed: requestSent
-                                  ? null
-                                  : () async {
-                                      // Use the model to send the connection request
-                                      await connectionStateModel
-                                          .sendConnectionRequest(
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                        professional['midWifeId'],
-                                      );
-                                    },
-                              child: Text(
-                                requestSent ? 'Sent' : 'Connect',
-                                style: TextStyle(
-                                    color:
-                                        requestSent ? Colors.grey : Colors.red),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
