@@ -4,15 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/providers/notification_model.dart';
 
 class ConnectionStateModel with ChangeNotifier {
-  // bool _hasRequestedConnection = false;
-
   Set<String> _requestedProfessionalIds = {};
+  Set<String> _connectedProfessionalIds = {};
 
   bool hasRequestedConnectionFor(String professionalId) {
     return _requestedProfessionalIds.contains(professionalId);
   }
 
-  // bool get hasRequestedConnection => _hasRequestedConnection;
+  bool isConnectedTo(String professionalId) {
+    return _connectedProfessionalIds.contains(professionalId);
+  }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -110,6 +111,8 @@ class ConnectionStateModel with ChangeNotifier {
           'requesterId': requesterId,
           'recipientId': recipientId,
         });
+
+        _connectedProfessionalIds.add(recipientId);
 
         // Optionally, you might want to notify both users of the successful connection
         // You can add notification creation code here if needed

@@ -15,7 +15,7 @@ class ProfessionalsList extends StatelessWidget {
         .collection('Health Professionals')
         .where('professional', isEqualTo: 'professional')
         .where('cityValue', isEqualTo: location)
-        // .where('approved', isEqualTo: true)
+        .where('approved', isEqualTo: true)
         .get();
 
     return querySnapshot.docs;
@@ -47,6 +47,8 @@ class ProfessionalsList extends StatelessWidget {
                   builder: (context, connectionStateModel, child) {
                     bool requestSent = connectionStateModel
                         .hasRequestedConnectionFor(professionalId);
+                    bool isConnected =
+                        connectionStateModel.isConnectedTo(professionalId);
 
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -115,21 +117,24 @@ class ProfessionalsList extends StatelessWidget {
                               height: 40,
                               width: 100,
                               child: TextButton(
-                                onPressed: requestSent
+                                onPressed: requestSent || isConnected
                                     ? null
                                     : () async {
-                                        // Use the model to send the connection request
                                         await connectionStateModel
                                             .sendConnectionRequest(
                                           FirebaseAuth
                                               .instance.currentUser!.uid,
-                                          professional['midWifeId'],
+                                          professionalId,
                                         );
                                       },
                                 child: Text(
-                                  requestSent ? 'Sent' : 'Connect',
+                                  isConnected
+                                      ? 'Connected'
+                                      : requestSent
+                                          ? 'Sent'
+                                          : 'Connect',
                                   style: TextStyle(
-                                      color: requestSent
+                                      color: isConnected || requestSent
                                           ? Colors.grey
                                           : Colors.red),
                                 ),
