@@ -4,9 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/providers/notification_model.dart';
 
 class ConnectionStateModel with ChangeNotifier {
-  bool _hasRequestedConnection = false;
+  // bool _hasRequestedConnection = false;
 
-  bool get hasRequestedConnection => _hasRequestedConnection;
+  Set<String> _requestedProfessionalIds = {};
+
+  bool hasRequestedConnectionFor(String professionalId) {
+    return _requestedProfessionalIds.contains(professionalId);
+  }
+
+  // bool get hasRequestedConnection => _hasRequestedConnection;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -33,7 +39,9 @@ class ConnectionStateModel with ChangeNotifier {
       'action': 'pending',
       'timestamp': FieldValue.serverTimestamp(),
     });
-    _hasRequestedConnection = true;
+    // _hasRequestedConnection = true;
+    // Mark the professional as having received a request
+    _requestedProfessionalIds.add(professionalId);
     notifyListeners();
   }
 

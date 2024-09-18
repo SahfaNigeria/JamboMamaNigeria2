@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart'; // Firebase UI Auth for prebuilt screens
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/landing_screen.dart';
 
@@ -23,8 +23,7 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
     if (newMotherDoc.exists) {
       Navigator.pushReplacementNamed(context, '/HomePage');
     } else if (healthProfessionalDoc.exists) {
-      bool isApproved = healthProfessionalDoc.get('approved') ??
-          false; // Default to false if field is missing
+      bool isApproved = healthProfessionalDoc.get('approved') ?? false;
       if (isApproved) {
         Navigator.pushReplacementNamed(context, '/MidWifeHomePage');
       } else {
@@ -49,8 +48,9 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
       initialData: FirebaseAuth.instance.currentUser,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return SignInScreen(
-            providers: [EmailAuthProvider()],
+          // Display the built-in Firebase registration screen
+          return RegisterScreen(
+            providers: [EmailAuthProvider()], // Ensure providers are set
           );
         }
 
@@ -64,7 +64,7 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
         }
 
         // Fallback in case user data is null
-        return SignInScreen(providers: [EmailAuthProvider()]);
+        return RegisterScreen(providers: [EmailAuthProvider()]);
       },
     );
   }

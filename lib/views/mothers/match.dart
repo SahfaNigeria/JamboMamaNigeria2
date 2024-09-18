@@ -15,6 +15,7 @@ class ProfessionalsList extends StatelessWidget {
         .collection('Health Professionals')
         .where('professional', isEqualTo: 'professional')
         .where('cityValue', isEqualTo: location)
+        // .where('approved', isEqualTo: true)
         .get();
 
     return querySnapshot.docs;
@@ -41,17 +42,18 @@ class ProfessionalsList extends StatelessWidget {
               itemCount: professionals.length,
               itemBuilder: (context, index) {
                 var professional = professionals[index];
+                String professionalId = professional['midWifeId'];
                 return Consumer<ConnectionStateModel>(
                   builder: (context, connectionStateModel, child) {
-                    bool requestSent =
-                        connectionStateModel.hasRequestedConnection;
+                    bool requestSent = connectionStateModel
+                        .hasRequestedConnectionFor(professionalId);
 
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Container(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(50),
@@ -69,49 +71,45 @@ class ProfessionalsList extends StatelessWidget {
                                       color: Colors.grey.shade400,
                                     ),
                             ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(1.0),
-                                  child: Row(
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Text(
+                                      professional['fullName'],
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                  Row(
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(),
+                                      Flexible(
                                         child: Text(
-                                          professional['fullName'],
+                                          professional['position'],
                                           style: TextStyle(color: Colors.grey),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        professional['position'],
-                                        style: TextStyle(color: Colors.grey),
                                       ),
                                       Text(
                                         ',',
                                       ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        professional['healthFacility'],
-                                        style: TextStyle(color: Colors.grey),
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        child: Text(
+                                          professional['healthFacility'],
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 183, 164, 164)),
+                                          overflow: TextOverflow
+                                              .ellipsis, // Add ellipsis to long text
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             SizedBox(
                               height: 40,

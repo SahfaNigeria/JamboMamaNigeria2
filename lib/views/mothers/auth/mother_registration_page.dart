@@ -7,6 +7,7 @@ import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
+import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
 
 class MotherRegisterPage extends StatefulWidget {
   @override
@@ -73,10 +74,15 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
         });
       });
       showSnackMessage(context, 'Your account has been created');
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const ()),
-      // );
+
+      // Navigate to the sign-in screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginPage(
+                  onTap: () {},
+                )),
+      );
     } else {
       setState(() {
         isLoading = false;
