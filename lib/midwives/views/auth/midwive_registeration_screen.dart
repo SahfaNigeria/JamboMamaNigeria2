@@ -29,17 +29,26 @@ class _MidwiveResgisteratioScreenState
   late String cityValue;
   late String stateValue;
   Uint8List? image;
+  bool _isImageSelected = false;
 
   selectImageFromGallery() async {
     Uint8List im = await _controller.pickMidwifeImage(ImageSource.gallery);
     setState(() {
       image = im;
+      _isImageSelected = true; // Set to true when image is selected
     });
   }
 
   _saveMidwifeData() async {
     EasyLoading.show(status: 'loading...');
     if (_formKey.currentState!.validate()) {
+      if (!_isImageSelected) {
+        EasyLoading.dismiss();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a profile picture.')),
+        );
+        return;
+      }
       await _controller
           .saveMidWife(
               fullName,
@@ -60,6 +69,7 @@ class _MidwiveResgisteratioScreenState
       setState(() {
         _formKey.currentState!.reset();
         image = null;
+        _isImageSelected = false;
       });
       print('Clicked');
     } else {
@@ -108,6 +118,15 @@ class _MidwiveResgisteratioScreenState
                                     icon: Icon(Icons.photo),
                                   ),
                           ),
+                          if (!_isImageSelected)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'Profile picture is required',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 14),
+                              ),
+                            ),
                         ],
                       ),
                     ),
