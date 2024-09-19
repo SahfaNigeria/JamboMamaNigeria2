@@ -7,6 +7,7 @@ import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
+import 'package:jambomama_nigeria/views/mothers/vital_info.dart';
 import 'package:jambomama_nigeria/views/mothers/warning.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
@@ -190,10 +191,11 @@ class _HomePageState extends State<HomePage> {
                   text: 'Vital Info. Update',
                   icon: 'assets/svgs/doctor-svgrepo-com.svg',
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const You()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const VitalInfoDisplayScreen()),
+                    );
                   },
                 ),
               ),

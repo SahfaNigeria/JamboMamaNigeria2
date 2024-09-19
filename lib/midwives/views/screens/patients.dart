@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/vital_info.dart';
 
 class Patients extends StatelessWidget {
   const Patients({super.key});
@@ -97,13 +98,13 @@ class Patients extends StatelessWidget {
                           ),
                           onPressed: () {
                             // Navigate to the account page
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>
-                            //         AccountPage(), // Replace with actual account page
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PregnantWomanForm(requesterId: requesterId),
+                              ),
+                            );
                           },
                         ),
                         IconButton(
