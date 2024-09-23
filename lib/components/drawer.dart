@@ -134,10 +134,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
           DrawerTiles(
             icon: Icons.app_registration,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PregnantWomanForm()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => PregnantWomanForm()),
+              // );
             },
             text: "Medical Background ",
           ),

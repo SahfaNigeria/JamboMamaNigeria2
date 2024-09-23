@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/vital_info.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/patient_form.dart';
 
 class Patients extends StatelessWidget {
   const Patients({super.key});
@@ -97,7 +97,7 @@ class Patients extends StatelessWidget {
                             color: Colors.black,
                           ),
                           onPressed: () {
-                            // Navigate to the account page
+                            // // Navigate to the account page
                             Navigator.push(
                               context,
                               MaterialPageRoute(

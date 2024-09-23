@@ -5,8 +5,10 @@ import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
+import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
+
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
-import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
+
 import 'package:jambomama_nigeria/views/mothers/vital_info.dart';
 import 'package:jambomama_nigeria/views/mothers/warning.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
@@ -160,13 +162,14 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: HomeComponents(
-                    text: 'Periodic Questionnaire',
-                    icon: 'assets/svgs/perfusion-svgrepo-com.svg',
+                    text: 'Health Providers',
+                    icon: 'assets/svgs/doctornurse-svgrepo-com.svg',
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PregnantFeelingsForm()),
+                          builder: (context) => AllowedToChatScreen(),
+                        ),
                       );
                     },
                   ),
