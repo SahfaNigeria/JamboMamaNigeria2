@@ -17,7 +17,6 @@ class _LandingScreenState extends State<LandingScreen> {
   final CollectionReference _midWifeStream =
       FirebaseFirestore.instance.collection('Health Professionals');
 
-  @override
   Future logout() async {
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(

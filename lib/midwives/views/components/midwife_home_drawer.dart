@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/health_facilites.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
@@ -67,6 +68,18 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
               );
             },
             text: "Home",
+          ),
+          DrawerTiles(
+            icon: Icons.local_hospital,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HospitalsScreen(),
+                ),
+              );
+            },
+            text: "Hospitals",
           ),
 
           DrawerTiles(

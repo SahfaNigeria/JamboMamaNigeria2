@@ -14,7 +14,7 @@ Future<void> startChat(BuildContext context, String recipientId) async {
       context,
       MaterialPageRoute(
         builder: (context) => ChatScreen(
-          chatId: 'chatId',
+          chatId: chatId,
           senderCollection: 'New Mothers',
           senderNameField: 'full name',
           receiverCollection: 'Health Professionals',
@@ -22,18 +22,6 @@ Future<void> startChat(BuildContext context, String recipientId) async {
         ),
       ),
     );
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ChatScreen(
-    //       chatId: chatId,
-    //       collection: 'New Mothers', // or 'Health Professionals'
-    //       nameField:
-    //           'full name', // or the specific field name for each collection
-    //     ),
-    //   ),
-    // );
   } catch (e) {
     print('Error starting chat: $e');
     // Handle error appropriately

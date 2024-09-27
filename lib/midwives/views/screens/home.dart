@@ -8,7 +8,7 @@ import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 
-import 'learn_screen.dart';
+import '../../../views/mothers/learn_question_screen.dart';
 
 class MidWifeHomePage extends StatelessWidget {
   const MidWifeHomePage({super.key});
@@ -174,7 +174,8 @@ class MidWifeHomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LearnScreen(),
+                            builder: (context) =>
+                                QuestionairePregnantFeelingsForm(),
                           ),
                         );
                       },

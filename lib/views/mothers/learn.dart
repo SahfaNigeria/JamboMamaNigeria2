@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
-import 'package:jambomama_nigeria/views/mothers/home.dart';
+import 'package:jambomama_nigeria/views/mothers/learn_question_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
 class LearnPage extends StatefulWidget {
@@ -11,18 +11,7 @@ class LearnPage extends StatefulWidget {
 }
 
 class _LearnPageState extends State<LearnPage> {
-  void login() {
-    /*
-
-    authentication
-
-    */
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => HomePage()),
-    // );
-  }
+  void login() {}
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +54,14 @@ class _LearnPageState extends State<LearnPage> {
                 child: HomeComponents(
                   text: 'Periodic Questionnaire',
                   icon: 'assets/svgs/perfusion-svgrepo-com.svg',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              QuestionairePregnantFeelingsForm()),
+                    );
+                  },
                 ),
               )
             ],

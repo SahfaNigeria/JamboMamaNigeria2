@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patient_form.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/questionaire_screen.dart';
 
 class Patients extends StatelessWidget {
   const Patients({super.key});
@@ -122,14 +123,15 @@ class Patients extends StatelessWidget {
                             color: Colors.red,
                           ),
                           onPressed: () {
-                            // Navigate to the medical background page
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>
-                            //         MedicalBackgroundPage(), // Replace with actual medical background page
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PatientResponsesScreen(
+                                  providerId: userId,
+                                  patientId: requesterId,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ],

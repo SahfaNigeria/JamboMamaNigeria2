@@ -6,9 +6,8 @@ import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
 
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
+import 'package:jambomama_nigeria/views/mothers/health_facilities_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
-
-import 'package:jambomama_nigeria/views/mothers/medical_background.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -90,7 +89,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
           DrawerTiles(
             icon: Icons.local_hospital,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HospitalsScreen(),
+                ),
+              );
+            },
             text: "Hospitals",
           ),
 
