@@ -236,7 +236,15 @@ class _FeelingsFormState extends State<FeelingsForm> {
     }
   }
 
-  void _submitForm() async {}
+  void _submitForm() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+            'You need to register for a health practitioner to read your responses'),
+        duration: Duration(seconds: 5),
+      ),
+    );
+  }
 
   String _formatTwoDigits(int value) {
     return value.toString().padLeft(2, '0');

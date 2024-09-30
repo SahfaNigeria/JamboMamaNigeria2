@@ -5,7 +5,7 @@ import 'package:jambomama_nigeria/views/mothers/auth/mother_registration_page.da
 
 class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  RegisterPage({super.key, required this.onTap});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();

@@ -55,13 +55,13 @@ class You extends StatelessWidget {
           ),
           Fypcomponent(
             timetext: 'WEEK 8-11',
-            imagePath: 'assets/images/tired and nauseous.png',
+            imagePath: 'assets/images/tired.jpeg',
             firstparagraph:
                 'At 8-11 weeks, theres nothing to see yet but you may feel tired and often nauseous especially in the morning. It will pass in a few weeks',
             secparagraph:
                 'Drinking light tea and eating only small portions with no fat and too salty helps',
             thirdparagraph:
-                'If you are still feeling nauseous often after 12 weeks, tell your referent health provider ',
+                'If you are still feeling nauseous often after 12 weeks, tell your referent health provider. Ask your partner to come. He should be tested for infections, too ',
             baby: 'Baby',
             you: 'You',
             onTap: navToBabyPage,

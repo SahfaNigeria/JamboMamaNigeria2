@@ -6,7 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
-import 'package:country_state_city_picker/country_state_city_picker.dart';
+import 'package:csc_picker/csc_picker.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
 
 class MotherRegisterPage extends StatefulWidget {
@@ -15,25 +16,30 @@ class MotherRegisterPage extends StatefulWidget {
 }
 
 class _MotherRegisterPageState extends State<MotherRegisterPage> {
+  String initialCountry = 'NG';
+  PhoneNumber number = PhoneNumber(isoCode: 'NG');
+  bool _obscureText = true;
+
   final AuthController _authController = AuthController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String email;
 
   late String fullName;
-
-  late String phoneNumber;
+  final TextEditingController phoneNumber = TextEditingController();
 
   late String password;
+
+  late String confirmPassword;
 
   bool isLoading = false;
 
   late String villageTown;
 
-  late String countryValue;
+  String? countryValue;
 
-  late String cityValue;
+  String? cityValue;
 
-  late String stateValue;
+  String? stateValue;
 
   late String address;
 
@@ -56,15 +62,15 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
       await _authController
           .signUpUser(
               email,
-              phoneNumber,
+              phoneNumber.text,
               fullName,
               password,
               image,
               dob,
               villageTown,
-              countryValue,
-              cityValue,
-              stateValue,
+              countryValue!,
+              cityValue!,
+              stateValue!,
               address,
               hospital)
           .whenComplete(() {
@@ -261,39 +267,28 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please Phone number field is empty';
-                      } else {
-                        return null;
-                      }
+                  child: InternationalPhoneNumberInput(
+                    onInputChanged: (PhoneNumber number) {
+                      print(number.phoneNumber);
                     },
-                    onChanged: (value) {
-                      phoneNumber = value;
+                    onInputValidated: (bool value) {
+                      print(value);
                     },
-                    decoration: InputDecoration(
-                      labelText: 'Enter Phone Number',
+                    selectorConfig: SelectorConfig(
+                      selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    obscureText: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please Password field is empty';
-                      } else {
-                        return null;
-                      }
+                    ignoreBlank: false,
+                    autoValidateMode: AutovalidateMode.disabled,
+                    selectorTextStyle: TextStyle(color: Colors.black),
+                    initialValue: number,
+                    textFieldController: phoneNumber,
+                    formatInput: true,
+                    keyboardType: TextInputType.numberWithOptions(
+                        signed: true, decimal: true),
+                    inputBorder: OutlineInputBorder(),
+                    onSaved: (PhoneNumber number) {
+                      print('On Saved: $number');
                     },
-                    onChanged: (value) {
-                      password = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                    ),
                   ),
                 ),
                 Text(
@@ -307,7 +302,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       SizedBox(
                         height: 10,
                       ),
-                      SelectState(
+                      CSCPicker(
                         onCountryChanged: (value) {
                           setState(() {
                             countryValue = value;
@@ -355,8 +350,61 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         },
                         decoration: InputDecoration(
                           label: Text(
-                            'Address',
+                            'Street',
                             style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(10.0),
+                      //   child: TextFormField(
+                      //     obscureText: true,
+                      //     validator: (value) {
+                      //       if (value!.isEmpty) {
+                      //         return 'Please Password field is empty';
+                      //       } else {
+                      //         return null;
+                      //       }
+                      //     },
+                      //     onChanged: (value) {
+                      //       password = value;
+                      //     },
+                      //     decoration: InputDecoration(
+                      //       labelText: 'Password',
+                      //     ),
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextFormField(
+                          obscureText: _obscureText, // Use the state variable
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please Password field is empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onChanged: (value) {
+                            password = value;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureText
+                                    ? Icons
+                                        .visibility // Show eye icon when text is obscured
+                                    : Icons
+                                        .visibility_off, // Show crossed eye icon when text is visible
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText =
+                                      !_obscureText; // Toggle the obscure text state
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),

@@ -40,8 +40,10 @@ dependencies:
   cached_network_image: ^3.3.1
   firebase_ui_auth: ^1.5.0
   country_state_city_picker: ^1.2.8
+  csc_picker: ^0.2.7
   flutter_easyloading: ^3.0.5
   provider: ^6.1.2
+  intl_phone_number_input: 0.7.3+1
   intl: ^0.18.1
 
   # The following adds the Cupertino Icons font to your application.
