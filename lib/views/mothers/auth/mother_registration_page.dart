@@ -29,8 +29,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
 
   late String password;
 
-  late String confirmPassword;
-
   bool isLoading = false;
 
   late String villageTown;
@@ -355,25 +353,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                           ),
                         ),
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(10.0),
-                      //   child: TextFormField(
-                      //     obscureText: true,
-                      //     validator: (value) {
-                      //       if (value!.isEmpty) {
-                      //         return 'Please Password field is empty';
-                      //       } else {
-                      //         return null;
-                      //       }
-                      //     },
-                      //     onChanged: (value) {
-                      //       password = value;
-                      //     },
-                      //     decoration: InputDecoration(
-                      //       labelText: 'Password',
-                      //     ),
-                      //   ),
-                      // ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: TextFormField(

@@ -1,10 +1,10 @@
-import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
+import 'package:csc_picker/csc_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jambomama_nigeria/midwives/contollers/controllers.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class MidwiveResgisteratioScreen extends StatefulWidget {
   const MidwiveResgisteratioScreen({super.key});
@@ -16,18 +16,24 @@ class MidwiveResgisteratioScreen extends StatefulWidget {
 
 class _MidwiveResgisteratioScreenState
     extends State<MidwiveResgisteratioScreen> {
+  String initialCountry = 'NG';
+  PhoneNumber number = PhoneNumber(isoCode: 'NG');
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final MidwifeController _controller = MidwifeController();
   late String fullName;
   late String email;
-  late String phoneNumber;
+  final TextEditingController phoneNumber = TextEditingController();
   late String healthFacility;
   late String position;
   late String qualificationNumber;
+  String? countryValue;
+
+  String? cityValue;
+
+  String? stateValue;
   late String villageTown;
-  late String countryValue;
-  late String cityValue;
-  late String stateValue;
+
   Uint8List? image;
   bool _isImageSelected = false;
 
@@ -53,13 +59,13 @@ class _MidwiveResgisteratioScreenState
           .saveMidWife(
               fullName,
               email,
-              phoneNumber,
+              phoneNumber.text,
               healthFacility,
               position,
               qualificationNumber,
-              countryValue,
-              stateValue,
-              cityValue,
+              countryValue!,
+              stateValue!,
+              cityValue!,
               villageTown,
               image)
           .whenComplete(() {
@@ -123,8 +129,8 @@ class _MidwiveResgisteratioScreenState
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
                                 'Profile picture is required',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 14),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
                               ),
                             ),
                         ],
@@ -187,22 +193,6 @@ class _MidwiveResgisteratioScreenState
                     SizedBox(
                       height: 8,
                     ),
-                    TextFormField(
-                      onChanged: (value) {
-                        phoneNumber = value;
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please, Fill the Phone Number field';
-                        } else {
-                          return null;
-                        }
-                      },
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        label: Text('Phone Number'),
-                      ),
-                    ),
                     SizedBox(
                       height: 8,
                     ),
@@ -257,6 +247,32 @@ class _MidwiveResgisteratioScreenState
                         label: Text('Qualification Number'),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: InternationalPhoneNumberInput(
+                        onInputChanged: (PhoneNumber number) {
+                          print(number.phoneNumber);
+                        },
+                        onInputValidated: (bool value) {
+                          print(value);
+                        },
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                        ),
+                        ignoreBlank: false,
+                        autoValidateMode: AutovalidateMode.disabled,
+                        selectorTextStyle: TextStyle(color: Colors.black),
+                        initialValue: number,
+                        textFieldController: phoneNumber,
+                        formatInput: true,
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        inputBorder: OutlineInputBorder(),
+                        onSaved: (PhoneNumber number) {
+                          print('On Saved: $number');
+                        },
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -267,7 +283,7 @@ class _MidwiveResgisteratioScreenState
                     SizedBox(
                       height: 10,
                     ),
-                    SelectState(
+                    CSCPicker(
                       onCountryChanged: (value) {
                         setState(() {
                           countryValue = value;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
+import 'package:jambomama_nigeria/controllers/forgot_password.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
 import 'package:jambomama_nigeria/views/mothers/learn.dart';
 
@@ -19,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   late String email;
   late String password;
   bool isLoading = false;
+  bool _isObscure = true;
+  String seePassword = '';
 
   void setLoading(bool value) {
     setState(() {
@@ -53,6 +56,24 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void showInfo() {
+    const String message = 'Please enter a valid email address.';
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,53 +99,94 @@ class _LoginPageState extends State<LoginPage> {
 
                 // email text field
 
-                // password textfield
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Email Field must not be empty';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      email = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Enter Email',
-                    ),
+                  child: Row(
+                    children: [
+                      // Email field with IconButton
+                      Expanded(
+                        flex: 85, // 85% width for the email field
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Email Field must not be empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onChanged: (value) {
+                            email = value;
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Enter Email',
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.help_outline),
+                        iconSize: 20,
+                        onPressed: showInfo,
+                      ),
+                    ],
                   ),
                 ),
 
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Password Field must not be empty';
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      password = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Enter Password',
-                    ),
-                    obscureText: true,
+                  child: Row(
+                    children: [
+                      // Password field, reduced by 15%
+                      Expanded(
+                        flex: 85, // 85% width for the password field
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Password Field must not be empty';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onChanged: (value) {
+                            password = value;
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Enter Password',
+                          ),
+                          obscureText: _isObscure,
+                        ),
+                      ),
+
+                      IconButton(
+                        icon: Icon(
+                          _isObscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        iconSize: 20,
+                        onPressed: () {
+                          setState(() {
+                            _isObscure = !_isObscure; // Toggle the state
+                          });
+                          // Add toggle logic if needed
+                        },
+                      ),
+                    ],
                   ),
                 ),
 
                 //forgot password
 
+                // Inside your login screen
                 Container(
                   alignment: Alignment.bottomRight,
                   margin: EdgeInsets.all(10),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Forgot password?',
                       style: TextStyle(
@@ -163,16 +225,6 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    // GestureDetector(
-                    //   onTap: widget.onTap,
-                    //   child: const Text(
-                    //     "Register now",
-                    //     style: TextStyle(
-                    //         fontWeight: FontWeight.bold,
-                    //         fontSize: 14,
-                    //         color: Colors.grey),
-                    //   ),
-                    // ),
                     GestureDetector(
                       onTap: () {
                         if (widget.onTap != null) {
