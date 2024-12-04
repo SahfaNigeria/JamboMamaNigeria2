@@ -6,6 +6,7 @@ import 'package:jambomama_nigeria/midwives/views/screens/health_facilites.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
+import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
 
 class HealthProviderHomeDrawer extends StatefulWidget {
   HealthProviderHomeDrawer({super.key});
@@ -107,7 +108,14 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
 
           DrawerTiles(
             icon: Icons.settings,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
+            },
             text: "Settings",
           ),
 

@@ -109,12 +109,15 @@ class AuthController {
           res = 'success';
         } else {
           res = 'User not found';
+          setLoading(false);
         }
       } else {
         res = 'Please, fields must not be empty';
+        setLoading(false);
       }
     } catch (e) {
       res = e.toString();
+      setLoading(false);
     }
 
     return res;

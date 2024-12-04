@@ -5,10 +5,10 @@ import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/colleague_screen.dart';
+// import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
-
-import '../../../views/mothers/learn_question_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/task_screen.dart';
 
 class MidWifeHomePage extends StatelessWidget {
   const MidWifeHomePage({super.key});
@@ -139,13 +139,15 @@ class MidWifeHomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: HomeComponents(
-                        text: 'Directory',
+                        text: 'Colleagues',
                         icon: 'assets/svgs/file_directory.svg',
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const DirectoryScreen(),
+                              builder: (context) => ColleagueList(
+                                location: 'Abuja',
+                              ),
                             ),
                           );
                         },
@@ -168,14 +170,13 @@ class MidWifeHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: HomeComponents(
-                      text: 'Learn',
+                      text: 'Manage Tasks',
                       icon: 'assets/svgs/learn_medicine.svg',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                QuestionairePregnantFeelingsForm(),
+                            builder: (context) => TaskListScreen(),
                           ),
                         );
                       },

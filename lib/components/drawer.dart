@@ -9,6 +9,9 @@ import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/health_facilities_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
+import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
+
+import '../views/mothers/home.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -84,7 +87,16 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
           DrawerTiles(
             icon: Icons.home,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(
+                    isHealthProvider: false,
+                  ),
+                ),
+              );
+            },
             text: "Home",
           ),
 
@@ -153,7 +165,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
           DrawerTiles(
             icon: Icons.settings,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
+            },
             text: "Settings",
           ),
 

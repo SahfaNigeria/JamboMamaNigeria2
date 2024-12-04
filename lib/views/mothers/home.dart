@@ -215,11 +215,28 @@ class _HomePageState extends State<HomePage> {
                 child: HomeComponents(
                   text: 'Something happened',
                   icon: 'assets/svgs/warning-sign-svgrepo-com.svg',
+                  // onTap: () {
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => Warning(userName: userName)),
+                  //   );
+                  // },
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Warning()),
-                    );
+                    if (userName.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Warning(userName: userName),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please wait, loading user data..."),
+                        ),
+                      );
+                    }
                   },
                 ),
               )
