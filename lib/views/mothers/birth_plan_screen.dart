@@ -440,12 +440,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  'This week',
-                  'This month',
-                  'Next month',
-                  'Don’t know'
-                ].map((visitOption) {
+                children: ['This week', 'This month', 'Next month', 'Dont know']
+                    .map((visitOption) {
                   return ChoiceChip(
                     label: Text(visitOption, style: TextStyle(fontSize: 14)),
                     selected: visitPlan == visitOption,
@@ -594,14 +590,25 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
 
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveForm,
-              child: Text('Save'),
-            ),
+            // Add space at the bottom for the floating action button
+            SizedBox(height: 80),
           ],
         ),
       ),
+      // Add the floating action button here
+      floatingActionButton: SizedBox(
+        width: 200, // Make it wider
+        height: 56, // Make it taller
+        child: FloatingActionButton(
+          onPressed: _saveForm,
+          child: Text(
+            'Save',
+            style: TextStyle(fontSize: 16), // Larger text
+          ),
+        ),
+      ),
+      // Center the floating action button
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

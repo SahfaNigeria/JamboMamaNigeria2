@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:jambomama_nigeria/controllers/notifications.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
@@ -23,6 +24,7 @@ void main() async {
               storageBucket: "gs://jambo-mama-nigeria.appspot.com"),
         )
       : await Firebase.initializeApp();
+  await NotificationService.instance.init();
 
   runApp(
     ChangeNotifierProvider(

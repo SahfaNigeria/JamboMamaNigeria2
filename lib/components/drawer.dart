@@ -14,7 +14,23 @@ import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
 import '../views/mothers/home.dart';
 
 class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({super.key});
+  final String userName;
+  final String email;
+  final String address;
+  final String cityValue;
+  final String stateValue;
+  final String villageTown;
+  final String hospital;
+  HomeDrawer({
+    Key? key,
+    required this.userName,
+    required this.email,
+    required this.address,
+    required this.cityValue,
+    required this.stateValue,
+    required this.villageTown,
+    required this.hospital,
+  }) : super(key: key);
 
   @override
   State<HomeDrawer> createState() => _HomeDrawerState();
@@ -57,7 +73,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
             (route) => false));
   }
 
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Drawer(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       child: Column(
@@ -169,7 +187,15 @@ class _HomeDrawerState extends State<HomeDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
+                  builder: (context) => SettingsScreen(
+                    email: widget.email,
+                    address: widget.address,
+                    userName: widget.userName,
+                    cityValue: widget.cityValue,
+                    stateValue: widget.stateValue,
+                    villageTown: widget.villageTown,
+                    hospital: widget.hospital,
+                  ),
                 ),
               );
             },

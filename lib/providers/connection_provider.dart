@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jambomama_nigeria/controllers/notifications.dart';
 import 'package:jambomama_nigeria/providers/notification_model.dart';
 
 class ConnectionStateModel with ChangeNotifier {
@@ -22,15 +23,25 @@ class ConnectionStateModel with ChangeNotifier {
 
   List<NotificationModel> get notifications => _notifications;
 
-  Future<void> sendConnectionRequest(
-      String requesterId, String professionalId) async {
-    final requesterDoc = await FirebaseFirestore.instance
-        .collection('New Mothers')
-        .doc(requesterId)
-        .get();
-    final requesterName = requesterDoc.data()?['full name'] ?? 'Unknown';
+Future<void> sendConnectionRequest(String requesterId, String professionalId) async {
+  try {
+          print('🔍 Fetching requester details for ID: $requesterId');
 
-    await FirebaseFirestore.instance.collection('notifications').add({
+    // Fetch requester details
+    final requesterDoc = await _firestore.collection('New Mothers').doc(requesterId).get();
+    final requesterName = requesterDoc.data()?['full name'] ?? 'Unknown';
+    
+    // Fetch professional's FCM token
+    final professionalUserDoc = await _firestore.collection('users').doc(professionalId).get();
+    final professionalToken = professionalUserDoc.data()?['fcmToken'];
+    
+    if (professionalToken == null) {
+      print('❌ Professional does not have an FCM token');
+      return;
+    }
+
+    // Create notification document
+    await _firestore.collection('notifications').add({
       'recipientId': professionalId,
       'requesterName': requesterName,
       'senderId': requesterId,
@@ -40,132 +51,132 @@ class ConnectionStateModel with ChangeNotifier {
       'action': 'pending',
       'timestamp': FieldValue.serverTimestamp(),
     });
-    // _hasRequestedConnection = true;
-    // Mark the professional as having received a request
+
+     print('📩 Connection request sent from $requesterId to $professionalId');
+
+    // Send push notification with the correct token
+    await NotificationService.instance.sendNotification(
+      title: 'New Connection Request',
+      body: '$requesterName sent you a connection request',
+      data: {'requesterId': requesterId},
+      token: professionalToken,  // Use the fetched token
+    );
+
     _requestedProfessionalIds.add(professionalId);
+
+    print('🔔 Notification sent to professionalId: $professionalId');
     notifyListeners();
+  } catch (e) {
+    print('❌ Error sending connection request: $e');
   }
+}
+
+ 
 
   Future<void> createConnectionRequest(
       String requesterId, String recipientId) async {
-    // Fetch the requester's name from Firestore or other source
-    final requesterDoc = await FirebaseFirestore.instance
-        .collection('New Mothers')
-        .doc(requesterId)
-        .get();
-    final requesterName = requesterDoc.data()?['full name'] ?? 'Unknown';
+    try {
+      print('🔍 Fetching requester details for ID: $requesterId');
 
-    await FirebaseFirestore.instance.collection('notifications').add({
-      'requesterId': requesterId,
-      'recipientId': recipientId,
-      'requesterName': requesterName,
-      'timestamp': FieldValue.serverTimestamp(),
-      'status': 'pending',
-    });
+      final requesterDoc =
+          await _firestore.collection('New Mothers').doc(requesterId).get();
+      final requesterName = requesterDoc.data()?['full name'] ?? 'Unknown';
+
+      print('✅ Creating connection request for: $requesterName');
+
+      await _firestore.collection('notifications').add({
+        'requesterId': requesterId,
+        'recipientId': recipientId,
+        'requesterName': requesterName,
+        'timestamp': FieldValue.serverTimestamp(),
+        'status': 'pending',
+      });
+
+      print('📩 Connection request created from $requesterId to $recipientId');
+    } catch (e) {
+      print('❌ Error creating connection request: $e');
+    }
   }
 
   Future<List<NotificationModel>> fetchNotifications() async {
-    // Get the current user ID from Firebase Authentication
-    final userId = FirebaseAuth.instance.currentUser?.uid;
+    try {
+      print('🔍 Fetching notifications...');
 
-    if (userId == null) {
-      throw Exception('User not logged in');
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+
+      print('📡 Fetching notifications for user: $userId');
+
+      var snapshot = await _firestore
+          .collection('notifications')
+          .where('recipientId', isEqualTo: userId)
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      print('✅ Notifications fetched: ${snapshot.docs.length}');
+
+      return snapshot.docs
+          .map((doc) => NotificationModel.fromDocument(doc))
+          .toList();
+    } catch (e) {
+      print('❌ Error fetching notifications: $e');
+      return [];
     }
-
-    var snapshot = await _firestore
-        .collection('notifications')
-        .where('recipientId', isEqualTo: userId)
-        .orderBy('timestamp', descending: true)
-        .get();
-
-    return snapshot.docs
-        .map((doc) => NotificationModel.fromDocument(doc))
-        .toList();
   }
-
-  //handle connection action
 
   Future<void> handleConnectionAction(
       String notificationId, String action) async {
     try {
-      // Update the action in the notification document
+      print('🔍 Handling connection action for notification: $notificationId');
+      print('📢 Action: $action');
+
       await _firestore.collection('notifications').doc(notificationId).update({
         'action': action,
       });
 
       if (action == 'accepted') {
-        // Fetch the notification details to get the sender and recipient IDs
+        print('✅ Connection accepted. Fetching notification details...');
+
         DocumentSnapshot notificationDoc = await _firestore
             .collection('notifications')
             .doc(notificationId)
             .get();
+
         Map<String, dynamic> notificationData =
             notificationDoc.data() as Map<String, dynamic>;
 
         String requesterId = notificationData['senderId'];
-
         String recipientId = notificationData['recipientId'];
 
-        // Create a document in the 'allowed_to_chat' collection
+        print('👥 Creating chat access between $requesterId and $recipientId');
+
         await _firestore.collection('allowed_to_chat').add({
           'requesterId': requesterId,
           'recipientId': recipientId,
         });
 
         _connectedProfessionalIds.add(recipientId);
+        print('✅ Connection established and chat allowed');
 
-        // Optionally, you might want to notify both users of the successful connection
-        // You can add notification creation code here if needed
-        // Delete the connection request from the 'notifications' collection
         await _firestore
             .collection('notifications')
             .doc(notificationId)
             .delete();
+        print('🗑️ Notification deleted after acceptance');
       } else if (action == 'declined') {
-        // Delete the connection request from the 'notifications' collection
+        print('❌ Connection declined, deleting notification...');
         await _firestore
             .collection('notifications')
             .doc(notificationId)
             .delete();
+        print('🗑️ Notification deleted after decline');
       }
 
-      // Notify listeners if necessary
       notifyListeners();
     } catch (e) {
-      // Handle errors, e.g., show a message to the user
-      print('Error handling connection action: $e');
+      print('❌ Error handling connection action: $e');
     }
   }
-
-  // Future<void> handleConnectionAction(
-  //     String notificationId, String action) async {
-  //   await _firestore.collection('notifications').doc(notificationId).update({
-  //     'action': action,
-  //   });
-
-  //   // Optionally, you might want to refresh the notifications list
-  //   // await fetchNotifications(); // Update with actual provider ID
-  // }
-
-  // void resetConnectionRequest() {
-  //   _hasRequestedConnection = false;
-  //   notifyListeners();
-  // }
-
-  // Future<void> handleConnectionAction(
-  //     String notificationId, String action) async {
-  //   // Update the action in the notification document
-  //   await _firestore.collection('notifications').doc(notificationId).update({
-  //     'action': action,
-  //   });
-
-  //   if (action == 'accepted') {
-  //     // Code to establish the connection in your database
-  //   } else if (action == 'declined') {
-  //     // Code to handle a declined connection request
-  //     //   }
-
-  //     notifyListeners();
-  //   }
-  // }
 }

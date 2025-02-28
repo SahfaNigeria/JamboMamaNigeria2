@@ -5,8 +5,8 @@ import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart'
 import 'package:jambomama_nigeria/midwives/views/screens/health_facilites.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/settings_screens.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
-import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
 
 class HealthProviderHomeDrawer extends StatefulWidget {
   HealthProviderHomeDrawer({super.key});

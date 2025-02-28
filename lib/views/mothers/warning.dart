@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/something.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/health_facilites.dart';
 import 'package:jambomama_nigeria/views/mothers/report_an_event.dart';
@@ -15,7 +14,6 @@ class Warning extends StatelessWidget {
         title: Text('Something Happened'),
         centerTitle: true,
       ),
-      drawer: const HomeDrawer(),
       body: ListView(
         children: [
           const SizedBox(height: 5),

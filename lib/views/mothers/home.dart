@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
-import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
+import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
+import 'package:jambomama_nigeria/views/mothers/patient_form.dart';
 import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
 
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
-
-import 'package:jambomama_nigeria/views/mothers/vital_info.dart';
 import 'package:jambomama_nigeria/views/mothers/warning.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
@@ -27,6 +26,12 @@ class _HomePageState extends State<HomePage> {
 
   String img = '';
   String userName = '';
+  String address = '';
+  String cityValue = '';
+  String hospital = '';
+  String stateValue = '';
+  String villageTown = '';
+  String email = '';
 
   @override
   void initState() {
@@ -44,6 +49,12 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           img = userDoc["profileImage"];
           userName = userDoc["full name"];
+          email = userDoc["email"];
+          address = userDoc["address"];
+          cityValue = userDoc["cityValue"];
+          stateValue = userDoc["stateValue"];
+          villageTown = userDoc["villageTown"];
+          hospital = userDoc["hospital"];
         });
       }
     }
@@ -62,8 +73,17 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      drawer:
-          widget.isHealthProvider ? HealthProviderHomeDrawer() : HomeDrawer(),
+      drawer: widget.isHealthProvider
+          ? HealthProviderHomeDrawer()
+          : HomeDrawer(
+              userName: userName,
+              email: email,
+              address: address,
+              cityValue: cityValue,
+              stateValue: stateValue,
+              villageTown: villageTown,
+              hospital: hospital,
+            ),
       body: ListView(
         children: [
           FrontBanner(),
@@ -197,7 +217,9 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const VitalInfoDisplayScreen()),
+                          builder: (context) => PregnantWomanForm(
+                                requesterId: '',
+                              )),
                     );
                   },
                 ),
@@ -215,13 +237,6 @@ class _HomePageState extends State<HomePage> {
                 child: HomeComponents(
                   text: 'Something happened',
                   icon: 'assets/svgs/warning-sign-svgrepo-com.svg',
-                  // onTap: () {
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => Warning(userName: userName)),
-                  //   );
-                  // },
                   onTap: () {
                     if (userName.isNotEmpty) {
                       Navigator.push(

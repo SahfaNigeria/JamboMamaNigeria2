@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
-import 'package:jambomama_nigeria/midwives/views/components/midwife_home_drawer.dart';
+import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/colleague_screen.dart';
 // import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';

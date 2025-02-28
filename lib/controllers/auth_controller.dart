@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,6 +33,14 @@ class AuthController {
       return await _file.readAsBytes();
     } else {
       print('No Image Selected');
+    }
+  }
+
+  Future<void> subscribeToRoleTopic(String role) async {
+    if (role == 'health_provider') {
+      await FirebaseMessaging.instance.subscribeToTopic('health_provider');
+    } else if (role == 'mother') {
+      await FirebaseMessaging.instance.subscribeToTopic('mother');
     }
   }
 
@@ -78,11 +87,16 @@ class AuthController {
           'stateValue': stateValue,
           'cityValue': cityValue,
         });
+
+        // Subscribe the user to the 'mother' topic
+        await subscribeToRoleTopic('mother');
         res = ' success';
       } else {
         res = ' Field(s) Must not be empty ';
       }
-    } catch (e) {}
+    } catch (e) {
+      print('Error in signUpUser: $e');
+    }
 
     return res;
   }
@@ -93,10 +107,14 @@ class AuthController {
     BuildContext context,
     Function setLoading,
   ) async {
-    String res = 'Some error occured';
+    String res = 'Some error occurred';
+
+    print("Login Attempt: Email -> $email, Password -> (hidden)");
 
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
+        print("Fields are not empty, proceeding with login...");
+
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
@@ -104,24 +122,76 @@ class AuthController {
 
         User? user = userCredential.user;
         if (user != null) {
-          // Check user type and approval status
+          print("Login successful for user: ${user.uid}");
+
+          // Check user type and navigate
           await _checkUserTypeAndNavigate(user, context, setLoading);
+
+          // Fetch user role from Firestore
+          DocumentSnapshot newMotherDoc =
+              await _firestore.collection('New Mothers').doc(user.uid).get();
+          DocumentSnapshot healthProfessionalDoc = await _firestore
+              .collection('Health Professionals')
+              .doc(user.uid)
+              .get();
+
+          if (newMotherDoc.exists) {
+            print("User is a Mother, subscribing to 'mother' topic.");
+            await subscribeToRoleTopic('mother');
+          } else if (healthProfessionalDoc.exists) {
+            print(
+                "User is a Health Provider, subscribing to 'health_provider' topic.");
+            await subscribeToRoleTopic('health_provider');
+          } else {
+            print(
+                "User not found in 'New Mothers' or 'Health Professionals' collections.");
+          }
+
+          // Save FCM token
+          print("Saving FCM token...");
+          await saveFcmToken();
+          print("FCM token saved successfully.");
+
           res = 'success';
         } else {
+          print("Login failed: User not found.");
           res = 'User not found';
           setLoading(false);
         }
       } else {
+        print("Login failed: One or more fields are empty.");
         res = 'Please, fields must not be empty';
         setLoading(false);
       }
     } catch (e) {
+      print("Error during login: $e");
       res = e.toString();
       setLoading(false);
     }
 
     return res;
   }
+
+// Save FCM token function
+Future<void> saveFcmToken() async {
+  try {
+    final token = await FirebaseMessaging.instance.getToken();
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    
+    if (token != null && userId != null) {
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'fcmToken': token,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      print('✅ FCM token saved successfully: $token');
+    } else {
+      print('❌ Failed to save FCM token: token or userId is null');
+    }
+  } catch (e) {
+    print('❌ Error saving FCM token: $e');
+  }
+}
+
 
   Future<void> _checkUserTypeAndNavigate(
       User user, BuildContext context, Function setLoading) async {

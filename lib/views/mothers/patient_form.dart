@@ -14,6 +14,7 @@ class PregnantWomanForm extends StatefulWidget {
 class _PregnantWomanFormState extends State<PregnantWomanForm> {
   final _formKey = GlobalKey<FormState>();
   bool _isSubmitted = false;
+  bool _isHealthProvider = false;
   Map<String, dynamic>? _vitalInfoData;
 
   final doctorId = FirebaseAuth.instance.currentUser!.uid;
@@ -38,6 +39,79 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
   void initState() {
     super.initState();
     _checkIfFormSubmitted();
+    _checkIfHealthProvider();
+  }
+
+  Future<void> _checkIfHealthProvider() async {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection("Health Providers")
+          .doc(currentUser.uid)
+          .get();
+
+      setState(() {
+        _isHealthProvider = userDoc.exists;
+      });
+
+      if (!_isHealthProvider) {
+        _showWarningDialog();
+      }
+    }
+  }
+
+  void _showWarningDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Medical Assistance Required',
+            style: TextStyle(color: Colors.red),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.medical_services,
+                color: Colors.red,
+                size: 40,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'This form contains important medical information that should only be filled out with the assistance of a qualified medical practitioner.',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Please visit your healthcare provider to complete this information accurately.',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: Text('Go Back'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: Text('I am with a Medical Practitioner'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _checkIfFormSubmitted() async {
@@ -60,7 +134,22 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
 
   Future<void> _saveVitalInfo() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String patientId = FirebaseAuth.instance.currentUser!.uid;
 
+    // Step 1: Get the connected health provider's ID
+    QuerySnapshot querySnapshot = await firestore
+        .collection('allowed_to_chat')
+        .where('requesterId', isEqualTo: patientId)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      print("No connected health provider found.");
+      return;
+    }
+
+    String healthProviderId = querySnapshot.docs.first['recipientId'];
+
+    // Step 2: Prepare the vital info data
     Map<String, dynamic> vitalInfoData = {
       'fullName': _fullNameController.text,
       'dateOfBirth': _dateOfBirthController.text,
@@ -77,22 +166,26 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
       'timestamp': FieldValue.serverTimestamp(),
     };
 
+    // Step 3: Save to the patient's vital info collection
     await firestore
         .collection('patient_vital_info')
-        .doc(widget.requesterId)
+        .doc(patientId)
         .set(vitalInfoData);
 
+    // Step 4: Save the data under the health provider's patient records
     await firestore
         .collection('doctor_patient_vitals')
-        .doc(doctorId)
+        .doc(healthProviderId)
         .collection('patients')
-        .doc(widget.requesterId)
+        .doc(patientId)
         .set(vitalInfoData);
 
     setState(() {
       _isSubmitted = true;
       _vitalInfoData = vitalInfoData;
     });
+
+    print("Vital info saved successfully!");
   }
 
   Widget _buildInfoTile(String title, String value, IconData icon) {

@@ -68,26 +68,3 @@ Future<String> _getOrCreateChatId(String recipientId) async {
 }
 
 
-// Future<String> _getOrCreateChatId(String recipientId) async {
-//   String chatId = '';
-//   QuerySnapshot chatDocs = await FirebaseFirestore.instance
-//       .collection('chats')
-//       .where('participants',
-//           arrayContains: FirebaseAuth.instance.currentUser!.uid)
-//       .where('participants', arrayContains: recipientId)
-//       .get();
-
-//   if (chatDocs.docs.isEmpty) {
-//     // Create a new chat document
-//     DocumentReference chatRef =
-//         await FirebaseFirestore.instance.collection('chats').add({
-//       'participants': [FirebaseAuth.instance.currentUser!.uid, recipientId],
-//       'createdAt': Timestamp.now(),
-//     });
-//     chatId = chatRef.id;
-//   } else {
-//     chatId = chatDocs.docs.first.id;
-//   }
-
-//   return chatId;
-// }
