@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
+import 'package:jambomama_nigeria/controllers/notifications.dart';
 
 class SettingsScreen extends StatefulWidget {
   String email;

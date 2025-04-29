@@ -102,7 +102,8 @@ class Patients extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => VitalInfoScreen(),
+                                builder: (context) =>
+                                    VitalInfoScreen(patientId: requesterId),
                               ),
                             );
                           },

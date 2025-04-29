@@ -49,7 +49,9 @@ class AuthController {
       String phoneNumber,
       String fullName,
       String password,
-      Uint8List? image,
+      Uint8List? imageData,
+      String? imageUrl,
+      String imageType,
       String dob,
       String villageTown,
       String countryValue,
@@ -68,10 +70,19 @@ class AuthController {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
 
-        // String profileImageURL = await uploadProfileImageToStorage(image);
-        String profileImageURL = image != null
-            ? await uploadProfileImageToStorage(image)
-            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKoG2KJEveyKK8EKskB-dCbipr_Qs3xGLhx90LQgs9sg&s';
+        // Handle profile image based on type
+        String profileImageURL;
+        
+        if (imageType == 'custom' && imageData != null) {
+          // Upload custom image
+          profileImageURL = await uploadProfileImageToStorage(imageData);
+        } else if (imageUrl != null && imageType != 'custom') {
+          // Use provided URL for predefined image types
+          profileImageURL = imageUrl;
+        } else {
+          // Fallback to default image
+          profileImageURL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKoG2KJEveyKK8EKskB-dCbipr_Qs3xGLhx90LQgs9sg&s';
+        }
 
         await _firestore.collection('New Mothers').doc(cred.user!.uid).set({
           'email': email,
@@ -81,6 +92,7 @@ class AuthController {
           'full name': fullName,
           'motherId': cred.user!.uid,
           'profileImage': profileImageURL,
+          'profileImageType': imageType, // Save the image type selection
           'dateOfBirth': dob,
           'villageTown': villageTown,
           'countryValue': countryValue,
@@ -96,6 +108,7 @@ class AuthController {
       }
     } catch (e) {
       print('Error in signUpUser: $e');
+      res = e.toString();
     }
 
     return res;
@@ -172,25 +185,25 @@ class AuthController {
     return res;
   }
 
-// Save FCM token function
-Future<void> saveFcmToken() async {
-  try {
-    final token = await FirebaseMessaging.instance.getToken();
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    
-    if (token != null && userId != null) {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'fcmToken': token,
-        'lastUpdated': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-      print('✅ FCM token saved successfully: $token');
-    } else {
-      print('❌ Failed to save FCM token: token or userId is null');
+  // Save FCM token function
+  Future<void> saveFcmToken() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      
+      if (token != null && userId != null) {
+        await FirebaseFirestore.instance.collection('users').doc(userId).set({
+          'fcmToken': token,
+          'lastUpdated': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+        print('✅ FCM token saved successfully: $token');
+      } else {
+        print('❌ Failed to save FCM token: token or userId is null');
+      }
+    } catch (e) {
+      print('❌ Error saving FCM token: $e');
     }
-  } catch (e) {
-    print('❌ Error saving FCM token: $e');
   }
-}
 
 
   Future<void> _checkUserTypeAndNavigate(

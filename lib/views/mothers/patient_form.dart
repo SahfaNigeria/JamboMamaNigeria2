@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PregnantWomanForm extends StatefulWidget {
-  final String requesterId;
-  const PregnantWomanForm({Key? key, required this.requesterId})
-      : super(key: key);
+  const PregnantWomanForm({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _PregnantWomanFormState createState() => _PregnantWomanFormState();
@@ -115,41 +115,60 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
   }
 
   Future<void> _checkIfFormSubmitted() async {
-    // Fetch data from Firestore to see if it's already submitted
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    DocumentSnapshot vitalInfoSnapshot = await firestore
-        .collection('doctor_patient_vitals')
-        .doc(doctorId)
-        .collection('patients')
-        .doc(widget.requesterId)
-        .get();
+    // Get the current user (patient) ID
+    final String patientId = FirebaseAuth.instance.currentUser!.uid;
 
-    if (vitalInfoSnapshot.exists) {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // First check if the patient has already submitted their vital info
+    DocumentSnapshot patientVitalInfoSnapshot =
+        await firestore.collection('patient_vital_info').doc(patientId).get();
+
+    if (patientVitalInfoSnapshot.exists) {
       setState(() {
         _isSubmitted = true;
-        _vitalInfoData = vitalInfoSnapshot.data() as Map<String, dynamic>;
+        _vitalInfoData =
+            patientVitalInfoSnapshot.data() as Map<String, dynamic>;
       });
+      return;
     }
-  }
 
-  Future<void> _saveVitalInfo() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    String patientId = FirebaseAuth.instance.currentUser!.uid;
-
-    // Step 1: Get the connected health provider's ID
+    // If not found in patient's collection, try to find in any connected doctor's records
     QuerySnapshot querySnapshot = await firestore
         .collection('allowed_to_chat')
         .where('requesterId', isEqualTo: patientId)
         .get();
 
-    if (querySnapshot.docs.isEmpty) {
-      print("No connected health provider found.");
+    if (querySnapshot.docs.isNotEmpty) {
+      // Get the health provider that the patient is connected with
+      String healthProviderId = querySnapshot.docs.first['recipientId'];
+
+      // Check if the data exists in the doctor's collection
+      DocumentSnapshot doctorPatientSnapshot = await firestore
+          .collection('doctor_patient_vitals')
+          .doc(healthProviderId)
+          .collection('patients')
+          .doc(patientId)
+          .get();
+
+      if (doctorPatientSnapshot.exists) {
+        setState(() {
+          _isSubmitted = true;
+          _vitalInfoData = doctorPatientSnapshot.data() as Map<String, dynamic>;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveVitalInfo() async {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    String healthProviderId = querySnapshot.docs.first['recipientId'];
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String patientId = FirebaseAuth.instance.currentUser!.uid;
 
-    // Step 2: Prepare the vital info data
+    // Prepare the vital info data
     Map<String, dynamic> vitalInfoData = {
       'fullName': _fullNameController.text,
       'dateOfBirth': _dateOfBirthController.text,
@@ -166,26 +185,37 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
       'timestamp': FieldValue.serverTimestamp(),
     };
 
-    // Step 3: Save to the patient's vital info collection
+    // Save to the patient's vital info collection
     await firestore
         .collection('patient_vital_info')
         .doc(patientId)
         .set(vitalInfoData);
 
-    // Step 4: Save the data under the health provider's patient records
-    await firestore
-        .collection('doctor_patient_vitals')
-        .doc(healthProviderId)
-        .collection('patients')
-        .doc(patientId)
-        .set(vitalInfoData);
+    // Check if the patient is connected with any health provider
+    QuerySnapshot querySnapshot = await firestore
+        .collection('allowed_to_chat')
+        .where('requesterId', isEqualTo: patientId)
+        .get();
+
+    // If connected with a health provider, also save to their collection
+    if (querySnapshot.docs.isNotEmpty) {
+      String healthProviderId = querySnapshot.docs.first['recipientId'];
+      await firestore
+          .collection('doctor_patient_vitals')
+          .doc(healthProviderId)
+          .collection('patients')
+          .doc(patientId)
+          .set(vitalInfoData);
+    }
 
     setState(() {
       _isSubmitted = true;
       _vitalInfoData = vitalInfoData;
     });
 
-    print("Vital info saved successfully!");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Vital info saved successfully!')),
+    );
   }
 
   Widget _buildInfoTile(String title, String value, IconData icon) {

@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:jambomama_nigeria/main.dart';
 import 'dart:math';
 import 'auth_controller.dart';
+import 'package:http/http.dart' as http;
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -18,13 +20,16 @@ class NotificationService {
   final _localNotifications = FlutterLocalNotificationsPlugin();
   bool _isFlutterLocalNotificationsInitialized = false;
 
+  // API endpoint constants
+  static const String baseUrl = "https://jumbo-mama-notify.onrender.com";
+  static const String notificationEndpoint = "/api/notifications/push";
+
   Future<void> init() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await requestPermisson();
     await setupMessageHandlers();
 
     //get the token
-
     final token = await _messaging.getToken();
     print('fcm token: $token');
 
@@ -34,48 +39,47 @@ class NotificationService {
     });
   }
 
-  // Future<void> sendNotification({
-  //   required String title,
-  //   required String body,
-  //   required Map<String, dynamic> data,
-  //   required String token,
-  // }) async {
-  //   final int notificationId = Random().nextInt(2147483647);
+  // Method to trigger notification via API endpoint
+  Future<Map<String, dynamic>> triggerNotificationViaApi({
+    required String userId,
+    required String title,
+    required String message,
+  }) async {
+    final url = Uri.parse('$baseUrl$notificationEndpoint');
 
-  //   try {
-  //     await _localNotifications.show(
-  //       notificationId,
-  //       title,
-  //       body,
-  //       NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //           'high_importance_channel',
-  //           'High Importance Notifications',
-  //           channelDescription:
-  //               'This channel is used for important notifications.',
-  //           importance: Importance.high,
-  //           priority: Priority.high,
-  //           ticker: 'ticker',
-  //           icon: '@mipmap/uc_launcher',
-  //           enableLights: true,
-  //           enableVibration: true,
-  //           playSound: true,
-  //         ),
-  //         iOS: const DarwinNotificationDetails(
-  //           presentAlert: true,
-  //           presentBadge: true,
-  //           presentSound: true,
-  //         ),
-  //       ),
-  //       payload: jsonEncode(data), // Properly encode the data
-  //     );
-  //   } catch (e) {
-  //     print('Error showing notification: $e');
-  //     // Handle or rethrow based on your error handling strategy
-  //   }
-  // }
+    try {
+      print('🔔 Triggering notification via API');
+      print('👤 User ID: $userId');
+      print('📝 Title: $title');
+      print('📝 Message: $message');
 
-  // In NotificationService class, modify the sendNotification method
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'userId': userId,
+          'title': title,
+          'message': message,
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        print('✅ API notification triggered successfully: $responseData');
+        return responseData;
+      } else {
+        print(
+            '❌ Failed to trigger API notification: ${response.statusCode}, ${response.body}');
+        throw Exception(
+            'Failed to trigger notification: ${response.statusCode}, ${response.body}');
+      }
+    } catch (e) {
+      print('❌ Error triggering API notification: $e');
+      throw Exception('Error triggering notification: $e');
+    }
+  }
 
   Future<void> sendNotification({
     required String title,
@@ -149,8 +153,7 @@ class NotificationService {
       return;
     }
 
-//android setup
-
+    //android setup
     const channel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
@@ -163,10 +166,10 @@ class NotificationService {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-//android
+    //android
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/uc_launcher');
-//ios
+    //ios
     final initializationSettingsDarwin = DarwinInitializationSettings(
       onDidReceiveLocalNotification: (id, title, body, payload) async {
         print("Notification received on iOS: $title");
@@ -177,10 +180,27 @@ class NotificationService {
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
     );
+
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveBackgroundNotificationResponse: (details) {},
+      onDidReceiveBackgroundNotificationResponse: (details) {
+        final payload = details.payload;
+        if (payload != null) {
+          final data = jsonDecode(payload);
+          final targetScreen = data['screen'];
+          final senderId = data['senderId'];
+
+          if (targetScreen == 'ChatScreen' && senderId != null) {
+            navigatorKey.currentState?.pushNamed('/chat', arguments: senderId);
+          }
+        }
+      },
     );
+
+    // await _localNotifications.initialize(
+    //   initializationSettings,
+    //   onDidReceiveBackgroundNotificationResponse: (details) {},
+    // );
     _isFlutterLocalNotificationsInitialized = true;
   }
 
@@ -223,7 +243,6 @@ class NotificationService {
 
   Future<void> setupMessageHandlers() async {
     //foreground
-
     FirebaseMessaging.onMessage.listen((message) async {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');

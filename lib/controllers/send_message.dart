@@ -70,15 +70,30 @@ Future<void> sendMessage(String chatId, String text) async {
     print('📲 Sending push notification to: $recipientToken');
 
     // Send push notification
-    await NotificationService.instance.sendNotification(
+    // await NotificationService.instance.sendNotification(
+    //   title: 'New Message',
+    //   body: text.length > 30 ? '${text.substring(0, 30)}...' : text,
+    //   data: {
+    //     'chatId': chatId,
+    //     'senderId': FirebaseAuth.instance.currentUser!.uid,
+    //     'messageId': messageRef.id,
+    //   },
+    //   token: recipientToken,
+    // );
+
+    await NotificationService.instance.triggerNotificationViaApi(
+      userId: recipientId,
       title: 'New Message',
-      body: text.length > 30 ? '${text.substring(0, 30)}...' : text,
-      data: {
-        'chatId': chatId,
-        'senderId': FirebaseAuth.instance.currentUser!.uid,
-        'messageId': messageRef.id,
-      },
-      token: recipientToken,
+      message: text.length > 30 ? '${text.substring(0, 30)}...' : text,
+      //deeplink navigation
+      //       data: {
+      //   'screen': 'ChatScreen',
+      //   'chatId': chatId,
+      //   'senderCollection': 'users',
+      //   'senderNameField': 'name',
+      //   'receiverCollection': 'health_providers',
+      //   'receiverNameField': 'full_name',
+      // },
     );
 
     print('✅ Notification sent successfully');

@@ -45,6 +45,17 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
 
   Uint8List? image;
 
+  Uint8List? imageData;
+
+  // New fields for profile picture selection
+  String selectedImageType =
+      'default'; // 'default', 'headscarf', 'hijab', 'custom'
+  final Map<String, String> profileImageOptions = {
+    'default': 'assets/images/default.jpg',
+    'headscarf': 'assets/images/headscarf.jpg',
+    'hijab': 'assets/images/hijab.jpg',
+  };
+
   DateTime? _selectedDate;
   final TextEditingController _dobController = TextEditingController();
 
@@ -57,13 +68,24 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
       String dob = _selectedDate != null
           ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
           : '';
+
+      // For predefined images, we'll need to pass the URL instead of the Uint8List
+      // Your AuthController would need to be modified to handle this case
+
+      image = selectedImageType == 'custom' ? image : null;
+      var imageUrl = selectedImageType != 'custom'
+          ? profileImageOptions[selectedImageType]
+          : null;
+
       await _authController
           .signUpUser(
               email,
               phoneNumber.text,
               fullName,
               password,
-              image,
+              imageData,
+              imageUrl,
+              selectedImageType,
               dob,
               villageTown,
               countryValue!,
@@ -99,6 +121,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
     Uint8List im = await _authController.pickProfileImage(ImageSource.gallery);
     setState(() {
       image = im;
+      selectedImageType = 'custom';
     });
   }
 
@@ -115,6 +138,85 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
         _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
+  }
+
+  // Widget _buildImageOption(String label, String type) {
+  //   bool isSelected = selectedImageType == type;
+  //   return Column(
+  //     children: [
+  //       GestureDetector(
+  //         onTap: () {
+  //           setState(() {
+  //             selectedImageType = type;
+  //             // Clear the custom image if they select a predefined option
+  //             if (type != 'custom') {
+  //               image = null;
+  //             }
+  //           });
+  //         },
+  //         child: Container(
+  //           padding: EdgeInsets.all(2),
+  //           decoration: BoxDecoration(
+  //             border: Border.all(
+  //               color: isSelected ? Colors.blue : Colors.transparent,
+  //               width: 2,
+  //             ),
+  //             shape: BoxShape.circle,
+  //           ),
+  //           child: CircleAvatar(
+  //             radius: 30,
+  //             backgroundImage: AssetImage(profileImageOptions[type]!),
+  //           ),
+  //         ),
+  //       ),
+  //       SizedBox(height: 5),
+  //       Text(
+  //         label,
+  //         style: TextStyle(
+  //           fontSize: 12,
+  //           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget _buildImageOption(String label, String type) {
+    bool isSelected = selectedImageType == type;
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedImageType = type;
+              if (type != 'custom') image = null;
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: isSelected ? Colors.blue : Colors.transparent,
+                width: 2,
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage(profileImageOptions[type]!),
+            ),
+          ),
+        ),
+        SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -141,33 +243,85 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         letterSpacing: 1),
                   ),
                 ),
-                Stack(
+                // Modified profile picture section
+                Column(
                   children: [
-                    image != null
-                        ? CircleAvatar(
-                            radius: 64,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            backgroundImage: MemoryImage(image!),
-                          )
-                        : CircleAvatar(
-                            radius: 64,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            backgroundImage: NetworkImage(
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKoG2KJEveyKK8EKskB-dCbipr_Qs3xGLhx90LQgs9sg&s'),
+                    Stack(
+                      children: [
+                        selectedImageType == 'custom' && image != null
+                            ? CircleAvatar(
+                                radius: 64,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                backgroundImage: MemoryImage(image!),
+                              )
+                            : CircleAvatar(
+                                radius: 64,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                backgroundImage: AssetImage(
+                                    profileImageOptions[selectedImageType]!),
+                              ),
+
+                        // selectedImageType == 'custom' && image != null
+                        //     ? CircleAvatar(
+                        //         radius: 64,
+                        //         backgroundColor:
+                        //             Theme.of(context).colorScheme.primary,
+                        //         backgroundImage: MemoryImage(image!),
+                        //       )
+                        //     : CircleAvatar(
+                        //         radius: 64,
+                        //         backgroundColor:
+                        //             Theme.of(context).colorScheme.primary,
+                        //         backgroundImage:
+                        //             NetworkImage(selectedImageType == 'default'
+                        //                 ? profileImageOptions['default']!
+                        //                 : selectedImageType == 'headscarf'
+                        //                     ? profileImageOptions['headscarf']!
+                        //                     : profileImageOptions['hijab']!),
+                        //       ),
+
+                        Positioned(
+                          right: 0,
+                          top: 5,
+                          child: IconButton(
+                            onPressed: () {
+                              selectingImage();
+                            },
+                            icon: Icon(CupertinoIcons.photo),
+                            color: Colors.red,
                           ),
-                    Positioned(
-                      right: 0,
-                      top: 5,
-                      child: IconButton(
-                        onPressed: () {
-                          selectingImage();
-                        },
-                        icon: Icon(CupertinoIcons.photo),
-                        color: Colors.red,
-                      ),
-                    )
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Choose your profile picture style:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildImageOption('Standard', 'default'),
+                        _buildImageOption('Headscarf', 'headscarf'),
+                        _buildImageOption('Hijab', 'hijab'),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'OR',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        selectingImage();
+                      },
+                      icon: Icon(Icons.add_a_photo),
+                      label: Text('Upload your own photo'),
+                    ),
                   ],
                 ),
                 Padding(
@@ -176,7 +330,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Text(
-                        'You can optionally add a profile picture',
+                        'Select one of our sample photos or add your own',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
@@ -407,3 +561,4 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
     );
   }
 }
+//
