@@ -9,7 +9,24 @@ import 'package:jambomama_nigeria/midwives/views/screens/settings_screens.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 
 class HealthProviderHomeDrawer extends StatefulWidget {
-  HealthProviderHomeDrawer({super.key});
+  final String email;
+  final String address;
+  final String userName;
+  final String cityValue;
+  final String stateValue;
+  final String villageTown;
+  final String hospital;
+
+  HealthProviderHomeDrawer({
+    super.key,
+    required this.email,
+    required this.address,
+    required this.userName,
+    required this.cityValue,
+    required this.stateValue,
+    required this.villageTown,
+    required this.hospital,
+  });
 
   @override
   State<HealthProviderHomeDrawer> createState() =>
@@ -112,7 +129,15 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
+                  builder: (context) => SettingsScreen(
+                    email: widget.email,
+                    address: widget.address,
+                    userName: widget.userName,
+                    cityValue: widget.cityValue,
+                    stateValue: widget.stateValue,
+                    villageTown: widget.villageTown,
+                    hospital: widget.hospital,
+                  ),
                 ),
               );
             },

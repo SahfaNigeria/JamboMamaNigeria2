@@ -9,9 +9,10 @@ import 'package:jambomama_nigeria/midwives/views/screens/colleague_screen.dart';
 // import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/task_screen.dart';
+import 'package:jambomama_nigeria/views/mothers/notification.dart';
 
 class MidWifeHomePage extends StatelessWidget {
-  const MidWifeHomePage({super.key});
+  MidWifeHomePage({super.key});
 
   Future<Map<String, dynamic>> getUserDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -28,37 +29,118 @@ class MidWifeHomePage extends StatelessWidget {
     }
   }
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Stream<int> getUnreadNotificationCount() {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return Stream.value(0);
+
+    return _firestore
+        .collection('notifications')
+        .where('recipientId', isEqualTo: userId)
+        .where('read', isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications_active_outlined),
-          )
-        ],
-      ),
-      drawer: HealthProviderHomeDrawer(),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: getUserDetails(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No user data found'));
-          }
+    return FutureBuilder<Map<String, dynamic>>(
+      future: getUserDetails(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Home'),
+              centerTitle: true,
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Home'),
+              centerTitle: true,
+            ),
+            body: Center(child: Text('Error: ${snapshot.error}')),
+          );
+        } else if (!snapshot.hasData || snapshot.data == null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Home'),
+              centerTitle: true,
+            ),
+            body: Center(child: Text('No user data found')),
+          );
+        }
 
-          var userData = snapshot.data!;
-          String title = userData['position'] ?? 'Health Professional';
-          String name = userData['fullName'] ?? 'User';
-          String profilePictureUrl = userData['midWifeImage'] ?? '';
+        var userData = snapshot.data!;
+        String title = userData['position'] ?? 'Health Professional';
+        String name = userData['fullName'] ?? 'User';
+        String profilePictureUrl = userData['midWifeImage'] ?? '';
 
-          return ListView(
+        // Extract user data for drawer
+        String userName = userData['fullName'] ?? '';
+        String email = userData['email'] ?? '';
+        String address = userData['address'] ?? '';
+        String cityValue = userData['city'] ?? '';
+        String stateValue = userData['state'] ?? '';
+        String villageTown = userData['villageTown'] ?? '';
+        String hospital = userData['hospital'] ?? '';
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Home'),
+            centerTitle: true,
+            actions: [
+              StreamBuilder<int>(
+                stream: getUnreadNotificationCount(),
+                builder: (context, snapshot) {
+                  int unreadCount = snapshot.data ?? 0;
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.notifications_active),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const NotificationsPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      if (unreadCount > 0)
+                        Positioned(
+                          right: 5,
+                          top: 5,
+                          child: Container(
+                            width: 13,
+                            height: 13,
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              )
+            ],
+          ),
+          drawer: HealthProviderHomeDrawer(
+            userName: userName,
+            email: email,
+            address: address,
+            cityValue: cityValue,
+            stateValue: stateValue,
+            villageTown: villageTown,
+            hospital: hospital,
+          ),
+          body: ListView(
             children: [
               FrontBanner(),
               Padding(
@@ -208,9 +290,9 @@ class MidWifeHomePage extends StatelessWidget {
                 ],
               )
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

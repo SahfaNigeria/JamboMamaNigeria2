@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/chat_service_mothers.dart';
 import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
+import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 
 class AllowedToChatScreen extends StatelessWidget {
   @override
@@ -71,22 +72,6 @@ class AllowedToChatScreen extends StatelessWidget {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.edit_document,
-                            color: Colors.green,
-                          ),
-                          onPressed: () {
-                            // Navigate to the account page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PregnantFeelingsForm(
-                                    requesterId: requesterId),
-                              ),
-                            );
-                          },
-                        ),
                         IconButton(
                           icon: Icon(
                             Icons.chat,

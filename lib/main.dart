@@ -3,13 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
 import 'package:provider/provider.dart';
 
-// Add this at the top level so it can be used globally
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
             receiverNameField: args['receiverNameField'],
           );
         },
+        '/ConnectionScreen': (context) => ConnectionScreen(),
       },
       theme: ThemeData(
         textTheme: TextTheme(

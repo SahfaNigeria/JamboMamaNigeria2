@@ -140,47 +140,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
     }
   }
 
-  // Widget _buildImageOption(String label, String type) {
-  //   bool isSelected = selectedImageType == type;
-  //   return Column(
-  //     children: [
-  //       GestureDetector(
-  //         onTap: () {
-  //           setState(() {
-  //             selectedImageType = type;
-  //             // Clear the custom image if they select a predefined option
-  //             if (type != 'custom') {
-  //               image = null;
-  //             }
-  //           });
-  //         },
-  //         child: Container(
-  //           padding: EdgeInsets.all(2),
-  //           decoration: BoxDecoration(
-  //             border: Border.all(
-  //               color: isSelected ? Colors.blue : Colors.transparent,
-  //               width: 2,
-  //             ),
-  //             shape: BoxShape.circle,
-  //           ),
-  //           child: CircleAvatar(
-  //             radius: 30,
-  //             backgroundImage: AssetImage(profileImageOptions[type]!),
-  //           ),
-  //         ),
-  //       ),
-  //       SizedBox(height: 5),
-  //       Text(
-  //         label,
-  //         style: TextStyle(
-  //           fontSize: 12,
-  //           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _buildImageOption(String label, String type) {
     bool isSelected = selectedImageType == type;
     return Column(
@@ -262,26 +221,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                                 backgroundImage: AssetImage(
                                     profileImageOptions[selectedImageType]!),
                               ),
-
-                        // selectedImageType == 'custom' && image != null
-                        //     ? CircleAvatar(
-                        //         radius: 64,
-                        //         backgroundColor:
-                        //             Theme.of(context).colorScheme.primary,
-                        //         backgroundImage: MemoryImage(image!),
-                        //       )
-                        //     : CircleAvatar(
-                        //         radius: 64,
-                        //         backgroundColor:
-                        //             Theme.of(context).colorScheme.primary,
-                        //         backgroundImage:
-                        //             NetworkImage(selectedImageType == 'default'
-                        //                 ? profileImageOptions['default']!
-                        //                 : selectedImageType == 'headscarf'
-                        //                     ? profileImageOptions['headscarf']!
-                        //                     : profileImageOptions['hijab']!),
-                        //       ),
-
                         Positioned(
                           right: 0,
                           top: 5,
@@ -507,40 +446,89 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                           ),
                         ),
                       ),
+
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: TextFormField(
-                          obscureText: _obscureText, // Use the state variable
+                          obscureText: _obscureText,
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please Password field is empty';
-                            } else {
-                              return null;
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a password';
                             }
+                            // Check password length - minimum 6 characters
+                            if (value.length < 6) {
+                              return 'Password must be at least 6 characters long';
+                            }
+                            // Check if password is only numbers
+                            if (RegExp(r'^\d+$').hasMatch(value) &&
+                                value.length < 8) {
+                              return 'Numeric passwords must be at least 8 digits long';
+                            }
+                            // Optional: Check for password strength
+                            if (!RegExp(r'[A-Z]').hasMatch(value) ||
+                                !RegExp(r'[a-z]').hasMatch(value) ||
+                                !RegExp(r'[0-9]').hasMatch(value)) {
+                              return 'Password should contain uppercase, lowercase letters and numbers';
+                            }
+                            return null;
                           },
                           onChanged: (value) {
                             password = value;
                           },
                           decoration: InputDecoration(
                             labelText: 'Password',
+                            helperText:
+                                'Password must be at least 6 characters with letters and numbers',
+                            helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureText
-                                    ? Icons
-                                        .visibility // Show eye icon when text is obscured
-                                    : Icons
-                                        .visibility_off, // Show crossed eye icon when text is visible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _obscureText =
-                                      !_obscureText; // Toggle the obscure text state
+                                  _obscureText = !_obscureText;
                                 });
                               },
                             ),
                           ),
                         ),
-                      ),
+                      )
+                      // Padding(
+                      //   padding: const EdgeInsets.all(10.0),
+                      //   child: TextFormField(
+                      //     obscureText: _obscureText, // Use the state variable
+                      //     validator: (value) {
+                      //       if (value!.isEmpty) {
+                      //         return 'Please Password field is empty';
+                      //       } else {
+                      //         return null;
+                      //       }
+                      //     },
+                      //     onChanged: (value) {
+                      //       password = value;
+                      //     },
+                      //     decoration: InputDecoration(
+                      //       labelText: 'Password',
+                      //       suffixIcon: IconButton(
+                      //         icon: Icon(
+                      //           _obscureText
+                      //               ? Icons
+                      //                   .visibility // Show eye icon when text is obscured
+                      //               : Icons
+                      //                   .visibility_off, // Show crossed eye icon when text is visible
+                      //         ),
+                      //         onPressed: () {
+                      //           setState(() {
+                      //             _obscureText =
+                      //                 !_obscureText; // Toggle the obscure text state
+                      //           });
+                      //         },
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -561,4 +549,3 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
     );
   }
 }
-//

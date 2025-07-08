@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
 import 'package:jambomama_nigeria/views/mothers/birth_plan_screen.dart';
+import 'package:jambomama_nigeria/views/mothers/patient_background.dart';
 
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
@@ -117,7 +118,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
             },
             text: "Home",
           ),
-
           DrawerTiles(
             icon: Icons.local_hospital,
             onTap: () {
@@ -128,7 +128,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Hospitals",
+            text: "Health Facilities",
+            subtitle: "Nearest dispensary, health centre or hospital.",
           ),
 
           DrawerTiles(
@@ -157,18 +158,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
 
           DrawerTiles(
-            icon: Icons.calendar_today,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ExpectedDeliveryScreen()),
-              );
-            },
-            text: "Calculate Due Date",
-          ),
-
-          DrawerTiles(
             icon: Icons.app_registration,
             onTap: () {
               Navigator.push(
@@ -179,6 +168,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
               );
             },
             text: "Birth Plan",
+          ),
+          DrawerTiles(
+            icon: Icons.assignment,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PatientBackgroundScreen(
+                    patientId: _auth.currentUser?.uid ?? '',
+                  ),
+                ),
+              );
+            },
+            text: "Patient Background",
           ),
 
           DrawerTiles(

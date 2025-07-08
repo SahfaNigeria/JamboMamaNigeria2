@@ -11,7 +11,7 @@ class ConnectionScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: Text('Requests'),
       ),
       body: FutureBuilder<List<NotificationModel>>(
         future: connectionStateModel.fetchNotifications(),

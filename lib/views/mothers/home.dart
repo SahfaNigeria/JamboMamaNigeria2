@@ -5,10 +5,10 @@ import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/drawer.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
-import 'package:jambomama_nigeria/views/mothers/patient_form.dart';
-import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
-
+import 'package:jambomama_nigeria/views/mothers/notification.dart';
 import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
+import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
+import 'package:jambomama_nigeria/views/mothers/vital_info_update_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/warning.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
@@ -37,6 +37,40 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getProfileData();
+    getProviderId();
+  }
+
+  Stream<int> getUnreadNotificationCount() {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return Stream.value(0);
+
+    return _firestore
+        .collection('notifications')
+        .where('senderId', isEqualTo: userId)
+        .where('read', isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
+  String? providerId;
+
+  Future<void> getProviderId() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    final query = await FirebaseFirestore.instance
+        .collection('allowed_to_chat')
+        .where('requesterId', isEqualTo: userId)
+        .limit(1)
+        .get();
+
+    if (query.docs.isNotEmpty) {
+      setState(() {
+        providerId = query.docs.first['recipientId'];
+      });
+    } else {
+      print('⚠️ No connection found for userId: $userId');
+    }
   }
 
   Future<void> getProfileData() async {
@@ -67,14 +101,53 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Home'),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications_active_outlined),
+          StreamBuilder<int>(
+            stream: getUnreadNotificationCount(),
+            builder: (context, snapshot) {
+              int unreadCount = snapshot.data ?? 0;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_active),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  if (unreadCount > 0)
+                    Positioned(
+                      right: 5,
+                      top: 5,
+                      child: Container(
+                        width: 13,
+                        height: 13,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           )
         ],
       ),
       drawer: widget.isHealthProvider
-          ? HealthProviderHomeDrawer()
+          ? HealthProviderHomeDrawer(
+              userName: userName,
+              email: email,
+              address: address,
+              cityValue: cityValue,
+              stateValue: stateValue,
+              villageTown: villageTown,
+              hospital: hospital,
+            )
           : HomeDrawer(
               userName: userName,
               email: email,
@@ -98,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.red.shade100,
                     borderRadius: BorderRadius.circular(30),
                     image: DecorationImage(
-                      image: NetworkImage(img),
+                      image: AssetImage(img),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -118,34 +191,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Center(
-                  child: GestureDetector(
-                    onDoubleTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ExpectedDeliveryScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Double Tap to check your pregnancy due date!',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(7),
-              ),
             ),
           ),
           Padding(
@@ -174,6 +219,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: 5,
                 ),
+
                 Container(
                   width: 170,
                   height: 220,
@@ -182,18 +228,113 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: HomeComponents(
-                    text: 'Health Providers',
-                    icon: 'assets/svgs/doctornurse-svgrepo-com.svg',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AllowedToChatScreen(),
-                        ),
-                      );
+                    text: 'Questions to Answer',
+                    icon: 'assets/svgs/perfusion-svgrepo-com.svg',
+                    onTap: () async {
+                      try {
+                        final userId = _auth.currentUser!.uid;
+
+                        // Check if user already has an EDD saved in Firebase
+                        final userDoc = await FirebaseFirestore.instance
+                            .collection('save_mother_edd')
+                            .doc(userId)
+                            .get();
+
+                        String? savedEdd;
+                        if (userDoc.exists &&
+                            userDoc
+                                .data()!
+                                .containsKey('expectedDeliveryDate')) {
+                          savedEdd = userDoc.data()!['expectedDeliveryDate']
+                              as String?;
+                        }
+
+                        if (savedEdd != null && savedEdd.isNotEmpty) {
+                          // EDD already exists, go directly to feelings form
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PregnantFeelingsForm(
+                                requesterId:
+                                    providerId ?? '', // Ensure non-null String
+                                expectedDeliveryDate: savedEdd!,
+                              ),
+                            ),
+                          );
+                        } else {
+                          // First time - show EDD calculator
+                          final edd = await Navigator.push<String>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ExpectedDeliveryScreen(),
+                            ),
+                          );
+
+                          if (edd != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PregnantFeelingsForm(
+                                  requesterId: providerId ?? '',
+                                  expectedDeliveryDate: edd,
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('EDD was not selected.')),
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: $e')),
+                        );
+                      }
                     },
                   ),
                 ),
+                // Container(
+                //   width: 170,
+                //   height: 220,
+                //   decoration: BoxDecoration(
+                //     color: Colors.purple,
+                //     borderRadius: BorderRadius.circular(10),
+                //   ),
+                //   child: HomeComponents(
+                //     text: 'Questions to Answer',
+                //     icon: 'assets/svgs/perfusion-svgrepo-com.svg',
+                //     onTap: () async {
+                //       //     Ask the user to select their last menstrual period
+                //       final edd = await Navigator.push<String>(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) =>
+                //                 const ExpectedDeliveryScreen()),
+                //       );
+
+                //       // If the user selected a date and an EDD was returned
+                //       if (edd != null) {
+                //         Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //             builder: (context) => PregnantFeelingsForm(
+                //               requesterId: providerId ?? '',
+                //               expectedDeliveryDate: edd,
+                //             ),
+                //           ),
+                //         );
+                //       } else {
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           const SnackBar(
+                //               content: Text('EDD was not selected.')),
+                //         );
+                //       }
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -217,7 +358,12 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PregnantWomanForm(),
+                        builder: (context) => VitalInfoUpdateScreen(
+                          userId: _auth.currentUser!.uid,
+                          currentWeek: 24,
+                          initialWeight: 65.0,
+                          initialBmi: 22.5,
+                        ),
                       ),
                     );
                   },
@@ -241,7 +387,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Warning(userName: userName),
+                          builder: (context) => JamboMamaEmergencyScreen(),
                         ),
                       );
                     } else {
