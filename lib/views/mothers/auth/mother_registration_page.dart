@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:intl/intl.dart'; // For formatting the date
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
-import 'package:csc_picker/csc_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
 
@@ -393,7 +393,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       SizedBox(
                         height: 10,
                       ),
-                      CSCPicker(
+                      CSCPickerPlus(
                         onCountryChanged: (value) {
                           setState(() {
                             countryValue = value;

@@ -171,9 +171,9 @@ class NotificationService {
         AndroidInitializationSettings('@mipmap/uc_launcher');
     //ios
     final initializationSettingsDarwin = DarwinInitializationSettings(
-      onDidReceiveLocalNotification: (id, title, body, payload) async {
-        print("Notification received on iOS: $title");
-      },
+      // onDidReceiveLocalNotification: (id, title, body, payload) async {
+      //   print("Notification received on iOS: $title");
+      // },
     );
 
     final initializationSettings = InitializationSettings(
