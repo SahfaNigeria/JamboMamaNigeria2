@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
@@ -10,21 +11,26 @@ import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Platform.isAndroid
-      ? await Firebase.initializeApp(
-          options: FirebaseOptions(
-            apiKey: "AIzaSyA2WJFkv33A7eWnZYb_1_lxKKYCIXpmULE",
-            appId: "1:501778526252:android:cb90b2ebb5d9756f4ea189",
-            messagingSenderId: "501778526252",
-            projectId: "jambo-mama-nigeria",
-            storageBucket: "gs://jambo-mama-nigeria.appspot.com",
-          ),
-        )
-      : await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // Platform.isAndroid
+  //     ? await Firebase.initializeApp(
+  //         options: FirebaseOptions(
+  //           apiKey: "AIzaSyA2WJFkv33A7eWnZYb_1_lxKKYCIXpmULE",
+  //           appId: "1:501778526252:android:cb90b2ebb5d9756f4ea189",
+  //           messagingSenderId: "501778526252",
+  //           projectId: "jambo-mama-nigeria",
+  //           storageBucket: "gs://jambo-mama-nigeria.appspot.com",
+  //         ),
+  //       )
+  //     : await Firebase.initializeApp();
 
   await NotificationService.instance.init();
 
@@ -43,6 +49,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey, // 👈 Added here
+      builder: EasyLoading.init(),
       routes: {
         '/': (context) => LoginOrRegister(),
         '/MidWifeHomePage': (context) => MidWifeHomePage(),

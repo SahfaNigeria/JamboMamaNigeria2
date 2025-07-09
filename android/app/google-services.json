@@ -7,6 +7,44 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:501778526252:android:2c7ca2a5d0be71a24ea189",
+        "android_client_info": {
+          "package_name": "com.cwh.community_health_workers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2WJFkv33A7eWnZYb_1_lxKKYCIXpmULE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501778526252:android:42616f1c0fe1b4484ea189",
+        "android_client_info": {
+          "package_name": "com.sahfa.jambomama_midwives"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2WJFkv33A7eWnZYb_1_lxKKYCIXpmULE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:501778526252:android:cb90b2ebb5d9756f4ea189",
         "android_client_info": {
           "package_name": "com.sahfa.jambomama_nigeria"

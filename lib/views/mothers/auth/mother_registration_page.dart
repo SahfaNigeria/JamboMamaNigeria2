@@ -118,11 +118,13 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
   }
 
   selectingImage() async {
-    Uint8List im = await _authController.pickProfileImage(ImageSource.gallery);
-    setState(() {
-      image = im;
-      selectedImageType = 'custom';
-    });
+    Uint8List? im = await _authController.pickProfileImage(ImageSource.gallery);
+    if (im !=null) {
+      setState(() {
+        image = im;
+        selectedImageType = 'custom';
+      });
+    }
   }
 
   _selectDate(BuildContext context) async {

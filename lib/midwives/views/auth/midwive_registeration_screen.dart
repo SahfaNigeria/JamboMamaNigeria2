@@ -38,11 +38,17 @@ class _MidwiveResgisteratioScreenState
   bool _isImageSelected = false;
 
   selectImageFromGallery() async {
-    Uint8List im = await _controller.pickMidwifeImage(ImageSource.gallery);
-    setState(() {
-      image = im;
-      _isImageSelected = true; // Set to true when image is selected
-    });
+    final Uint8List? im = await _controller.pickMidwifeImage(ImageSource.gallery);
+
+    if (im != null) {
+      setState(() {
+        image = im;
+        _isImageSelected = true;
+      });
+    } else {
+      // Optional: handle if user cancelled the image picker
+      print("No image selected.");
+    }
   }
 
   _saveMidwifeData() async {
@@ -72,11 +78,9 @@ class _MidwiveResgisteratioScreenState
         EasyLoading.dismiss();
       });
 
-      setState(() {
-        _formKey.currentState!.reset();
-        image = null;
-        _isImageSelected = false;
-      });
+      _formKey.currentState!.reset();
+      image = null;
+      _isImageSelected = false;
       print('Clicked');
     } else {
       print('Not so good');
