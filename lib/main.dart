@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
@@ -12,6 +13,7 @@ import 'package:jambomama_nigeria/views/mothers/home.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
+import 'locale/localization_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -42,13 +44,46 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FlutterLocalization _flutterLocalization =
+      FlutterLocalization.instance;
+  void initLocalization() {
+
+    _flutterLocalization.init(
+      mapLocales: AppLocale,
+      initLanguageCode: "en",
+    );
+    _flutterLocalization.onTranslatedLanguage = onTranslateLanguage;
+  }
+
+  void onTranslateLanguage(Locale? locale){
+    setState(() {
+
+    });
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initLocalization();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey, // 👈 Added here
+      supportedLocales: _flutterLocalization.supportedLocales,
+      localizationsDelegates: _flutterLocalization.localizationsDelegates,
+
       builder: EasyLoading.init(),
       routes: {
         '/': (context) => LoginOrRegister(),
@@ -79,11 +114,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
 // import 'dart:io';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/material.dart';
+// import 'package:firebase_core/firebase_c
 // import 'package:jambomama_nigeria/controllers/notifications.dart';
 // import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 

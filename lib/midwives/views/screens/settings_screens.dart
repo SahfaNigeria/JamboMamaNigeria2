@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   String email;
@@ -118,6 +119,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           .collection('user_notification_settings')
           .doc(userId)
           .set({'receiveNotifications': value}, SetOptions(merge: true));
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.setBool("disabled_notification_key", value,);
+      if (value == false) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .update({
+          'fcmToken': "",
+        });
+      }else{
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .update({
+          'fcmToken': NotificationService.instance.userFcmToken,
+        });
+      }
+
     } else {
       // Handle the case where the user is not signed in
       print("No user is signed in");

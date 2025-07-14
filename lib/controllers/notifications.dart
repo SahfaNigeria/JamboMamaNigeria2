@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jambomama_nigeria/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'auth_controller.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +24,9 @@ class NotificationService {
   // API endpoint constants
   static const String baseUrl = "https://jumbo-mama-notify.onrender.com";
   static const String notificationEndpoint = "/api/notifications/push";
+  static  String fcmToken = "";
+
+  String get userFcmToken => fcmToken;
 
   Future<void> init() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -31,11 +35,17 @@ class NotificationService {
 
     //get the token
     final token = await _messaging.getToken();
+    fcmToken = token??"";
     print('fcm token: $token');
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
+    FirebaseMessaging.instance.onTokenRefresh.listen((String token) async{
       print('FCM token refreshed: $token');
-      AuthController().saveFcmToken(); // Save the new token
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      bool isNotificationDisabled = sharedPreferences.getBool("disabled_notification_key")??true;
+      if (isNotificationDisabled == false) {
+        AuthController().saveFcmToken(); 
+      }
+// Save the new token
     });
   }
 
