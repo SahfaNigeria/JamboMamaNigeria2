@@ -1,5 +1,6 @@
 // Vital Info Update Screen - with JamboMama UI theme + guidance logic
 
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -36,7 +37,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
   final TextEditingController _babyHeartbeatController =
       TextEditingController();
 
-  String _urineAnalysis = 'Normal';
+  String _urineAnalysis = autoI8lnGen.translate("NORMAL");
   bool _isLoading = false;
 
   String _weightGuidance = '';
@@ -130,7 +131,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Vital information saved successfully!'),
+          content: AutoText('V_I_SAVED'),
           backgroundColor: Colors.green,
         ),
       );
@@ -139,7 +140,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error saving vital info: ${e.toString()}'),
+          content: AutoText('E_S_V_I ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -311,7 +312,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
           Icon(Icons.info_outline, color: Colors.red[800], size: 20),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
+            child: AutoText(
               message,
               style: TextStyle(color: Colors.red[800], fontSize: 13),
             ),
@@ -363,7 +364,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
+                  child: AutoText(
                     'We need updates for:',
                     style: TextStyle(
                       fontSize: 18,
@@ -414,7 +415,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                   Icon(Icons.info, color: Colors.blue[800], size: 18),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
+                    child: AutoText(
                       'Need help? Contact your referent health provider or ANC clinic',
                       style: TextStyle(
                         fontSize: 12,
@@ -440,7 +441,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.red[200]!),
       ),
-      child: Text(
+      child: AutoText(
         text,
         style: TextStyle(
           fontSize: 12,
@@ -508,7 +509,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 if (icon != null) Icon(icon, color: Colors.red[800], size: 20),
                 if (icon != null) const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
+                  child: AutoText(
                     title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -534,7 +535,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vital Info Update'),
+        title: const AutoText('VITAL_INFO_UPDATE_2'),
         backgroundColor: Colors.red[800],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -549,29 +550,29 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
               _buildHeaderSection(), // Updated header section
 
               _buildCard(
-                title: 'Weight (kg)',
+                title: 'WEIGHT_KG',
                 icon: Icons.monitor_weight,
                 child: TextFormField(
                   controller: _weightController,
                   keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(hintText: 'Enter current weight'),
+                       InputDecoration(hintText: autoI8lnGen.translate("E_C_W")),
                 ),
                 guidance: _weightGuidance,
               ),
               _buildCard(
-                title: 'Haemoglobin (g/dl)',
+                title: 'HEAMOGOBLIN_T',
                 icon: Icons.opacity,
                 child: TextFormField(
                   controller: _haemoglobinController,
                   keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(hintText: 'Enter haemoglobin'),
+                       InputDecoration(hintText:  autoI8lnGen.translate("EN_H")),
                 ),
                 guidance: _hbGuidance,
               ),
               _buildCard(
-                title: 'Blood Pressure (mmHg)',
+                title: 'B_P',
                 icon: Icons.bloodtype,
                 child: Row(
                   children: [
@@ -580,7 +581,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                         controller: _systolicController,
                         keyboardType: TextInputType.number,
                         decoration:
-                            const InputDecoration(labelText: 'Systolic'),
+                             InputDecoration(labelText: autoI8lnGen.translate("SYSTOLIC")),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -589,7 +590,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                         controller: _diastolicController,
                         keyboardType: TextInputType.number,
                         decoration:
-                            const InputDecoration(labelText: 'Diastolic'),
+                             InputDecoration(labelText: autoI8lnGen.translate("DIASTOLIC")),
                       ),
                     ),
                   ],
@@ -597,67 +598,67 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 guidance: _bpGuidance,
               ),
               _buildCard(
-                title: 'Albumin in Urine (mg/L)',
+                title: 'ALBUMIN_URINE',
                 icon: Icons.science,
                 child: TextFormField(
                   controller: _albuminController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(hintText: 'Enter albumin'),
+                  decoration:  InputDecoration(hintText: autoI8lnGen.translate("ENTER_ALBUMIN")),
                 ),
                 guidance: _albuminGuidance,
               ),
               _buildCard(
-                title: 'Glucose in Urine (mmol/L)',
+                title: 'GLUCOSE_URINE',
                 icon: Icons.bubble_chart,
                 child: TextFormField(
                   controller: _glucoseController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(hintText: 'Enter glucose'),
+                  decoration:  InputDecoration(hintText: autoI8lnGen.translate("ENTER_GLUCOSE")),
                 ),
                 guidance: _glucoseGuidance,
               ),
               _buildCard(
-                title: 'Urine Analysis',
+                title: 'URINE_ANALYSIS',
                 icon: Icons.analytics,
                 child: DropdownButtonFormField<String>(
                   value: _urineAnalysis,
-                  items: ['Normal', 'So-so', 'Danger'].map((val) {
-                    return DropdownMenuItem(value: val, child: Text(val));
+                  items: [autoI8lnGen.translate("NORMAL"), autoI8lnGen.translate("SO_SO"), autoI8lnGen.translate("DANGER")].map((val) {
+                    return DropdownMenuItem(value: val, child: AutoText(val));
                   }).toList(),
                   onChanged: (val) => setState(() => _urineAnalysis = val!),
                 ),
               ),
               _buildCard(
-                title: 'Pulse Rate (/min)',
+                title: 'PULSE_RATE_2',
                 icon: Icons.favorite,
                 child: TextFormField(
                   controller: _pulseController,
                   keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(hintText: 'Enter pulse rate'),
+                       InputDecoration(hintText: autoI8lnGen.translate("ENTER_PULSE_RATE")),
                 ),
                 guidance: _pulseGuidance,
               ),
               if (widget.currentWeek >= 20)
                 _buildCard(
-                  title: 'Fundal Height (cm)',
+                  title: 'F_HEIGHT',
                   icon: Icons.height,
                   child: TextFormField(
                     controller: _fundaHeightController,
                     keyboardType: TextInputType.number,
                     decoration:
-                        const InputDecoration(hintText: 'Enter fundal height'),
+                         InputDecoration(hintText: autoI8lnGen.translate("ENTER_F_HEIGHT")),
                   ),
                 ),
               if (widget.currentWeek >= 20)
                 _buildCard(
-                  title: 'Baby Heartbeat (/min)',
+                  title: 'B_HEARTBEAT',
                   icon: Icons.monitor_heart,
                   child: TextFormField(
                     controller: _babyHeartbeatController,
                     keyboardType: TextInputType.number,
                     decoration:
-                        const InputDecoration(hintText: 'Enter heartbeat'),
+                         InputDecoration(hintText: autoI8lnGen.translate("ENTER_B_HEARTBEAT")),
                   ),
                 ),
               const SizedBox(height: 20),
@@ -679,7 +680,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
           ),
           child: _isLoading
               ? const CircularProgressIndicator(color: Colors.white)
-              : const Text('SUBMIT VITAL INFO',
+              : const AutoText('S_V_I',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         ),
       ),

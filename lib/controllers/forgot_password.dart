@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart'; // Assuming you have a showSnackMessage function for showing snackbars
@@ -29,11 +30,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         setLoading(false);
 
         showSnackMessage(
-            context, 'Password reset email sent! Please check your inbox.');
+            context, 'RESET_SENT');
       } on FirebaseAuthException catch (e) {
         print(e);
         setLoading(false);
-        showSnackMessage(context, e.message ?? 'An error occurred');
+        showSnackMessage(context, e.message ?? 'ERROR_16');
       }
     }
   }
@@ -42,7 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title:  AutoText('FORGOT_P'),
       ),
       body: Center(
         child: Padding(
@@ -52,24 +53,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Enter your email to receive a password reset link',
+                const AutoText(
+                  'ENTER_EMAIL',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
+                  decoration:  InputDecoration(
+                    labelText: autoI8lnGen.translate("Email"),
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return autoI8lnGen.translate("ENTER_EMAIL_2");
                     }
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Please enter a valid email';
+                      return autoI8lnGen.translate("LOGIN_VALIDATION_2");
                     }
                     return null;
                   },
@@ -79,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ? const CircularProgressIndicator()
                     : ElevatedButton(
                         onPressed: sendPasswordResetEmail,
-                        child: const Text('Send Reset Link'),
+                        child: const AutoText('SEND_RESET'),
                       ),
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -36,7 +37,7 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
       Navigator.pop(context, edd); // Pass EDD back to previous screen
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid date format')),
+        const SnackBar(content: AutoText('ERROR_18')),
       );
     }
   }
@@ -45,7 +46,7 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Baby Due Date Calculator'),
+        title: const AutoText('DUE_DATE_CALC'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,8 +70,8 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
               child: AbsorbPointer(
                 child: TextField(
                   controller: _lmpController,
-                  decoration: const InputDecoration(
-                    labelText: 'Select Last Menstrual Period (DD-MM-YYYY)',
+                  decoration:  InputDecoration(
+                    labelText: autoI8lnGen.translate('SELECT_LAST_MENSTRUAL_PERIOD_FLOW'),
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.none,
@@ -80,7 +81,7 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveAndReturnEDD,
-              child: const Text('Save and Continue'),
+              child: const AutoText('SAVE_CONTINUE'),
             ),
           ],
         ),

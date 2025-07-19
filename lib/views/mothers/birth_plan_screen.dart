@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 class BirthPlanScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
         child: Column(
           children: [
             Icon(icon, color: isSelected ? Colors.white : color),
-            Text(
+            AutoText(
               label,
               style: TextStyle(
                 color: isSelected ? Colors.white : Colors.black,
@@ -79,15 +80,15 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Birth Plan')),
+      appBar: AppBar(title: AutoText('BIRTHDAY_PLAN')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 10),
-            Text(
-              'Where will you go to give birth?',
+            AutoText(
+              'WHERE_WILL_YOU_GIVE_BIRTH',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
@@ -95,23 +96,26 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildSelectableOption(
-                    'Hospital', Icons.local_hospital, Colors.green, () {
+                    'HOSPITAL', Icons.local_hospital, Colors.green, () {
                   setState(() {
-                    selectedFacilityType = 'Hospital';
+                    selectedFacilityType = autoI8lnGen.translate("HOSPITAL");
                   });
-                }, selectedFacilityType == 'Hospital'),
+                }, selectedFacilityType == autoI8lnGen.translate("HOSPITAL")),
                 buildSelectableOption(
-                    'Health Centre', Icons.health_and_safety, Colors.red, () {
+                    'HEALTH_CENTER', Icons.health_and_safety, Colors.red, () {
                   setState(() {
-                    selectedFacilityType = 'Health Centre';
+                    selectedFacilityType =
+                        autoI8lnGen.translate("HEALTH_CENTER");
                   });
-                }, selectedFacilityType == 'Health Centre'),
+                },
+                    selectedFacilityType ==
+                        autoI8lnGen.translate("HEALTH_CENTER")),
                 buildSelectableOption(
-                    'Dispensary', Icons.local_pharmacy, Colors.blue, () {
+                    'DISPENSARY', Icons.local_pharmacy, Colors.blue, () {
                   setState(() {
-                    selectedFacilityType = 'Dispensary';
+                    selectedFacilityType = autoI8lnGen.translate("DISPENSARY");
                   });
-                }, selectedFacilityType == 'Dispensary'),
+                }, selectedFacilityType == autoI8lnGen.translate("DISPENSARY")),
               ],
             ),
 
@@ -124,7 +128,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                   SizedBox(height: 10),
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Name of chosen health facility',
+                      labelText: autoI8lnGen
+                          .translate("NAME_OF_CHOSEN_HEALTH_FACILITY"),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
                     onChanged: (value) {
@@ -136,7 +141,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                   SizedBox(height: 10),
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Telephone Number',
+                      labelText: autoI8lnGen.translate("TELEPHONE_NUMBER"),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
                     keyboardType: TextInputType.phone,
@@ -152,8 +157,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
 
             SizedBox(height: 20),
             // Transport Options
-            Text(
-              'Transport Options',
+            AutoText(
+              'TRANSPORT_OPTIONS',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
@@ -161,42 +166,42 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildSelectableOption(
-                    'On foot', Icons.directions_walk, Colors.green, () {
+                    'ON_FOOT', Icons.directions_walk, Colors.green, () {
                   setState(() {
-                    selectedTransport = 'foot';
+                    selectedTransport = autoI8lnGen.translate("FOOT");
                   });
-                }, selectedTransport == 'foot'),
+                }, selectedTransport == autoI8lnGen.translate("FOOT")),
                 buildSelectableOption(
-                    'By bike', Icons.directions_bike, Colors.blue, () {
+                    'BYBIKE', Icons.directions_bike, Colors.blue, () {
                   setState(() {
-                    selectedTransport = 'bike';
+                    selectedTransport = autoI8lnGen.translate("BIKE");
                   });
-                }, selectedTransport == 'bike'),
+                }, selectedTransport == autoI8lnGen.translate("BIKE")),
                 buildSelectableOption(
-                    'Motorbike', Icons.motorcycle, Colors.orange, () {
+                    'MOTOR_BIKE', Icons.motorcycle, Colors.orange, () {
                   setState(() {
-                    selectedTransport = 'motorbike';
+                    selectedTransport = autoI8lnGen.translate("MOTOR_BIKE");
                   });
-                }, selectedTransport == 'motorbike'),
+                }, selectedTransport == autoI8lnGen.translate("MOTOR_BIKE")),
                 buildSelectableOption(
-                    'Car', Icons.directions_car, Colors.purple, () {
+                    'CAR_1', Icons.directions_car, Colors.purple, () {
                   setState(() {
-                    selectedTransport = 'car';
+                    selectedTransport = autoI8lnGen.translate("CAR_2");
                   });
-                }, selectedTransport == 'car'),
+                }, selectedTransport == autoI8lnGen.translate("CAR_2")),
                 buildSelectableOption(
-                    'Boat', Icons.directions_boat, Colors.teal, () {
+                    'BOAT_1', Icons.directions_boat, Colors.teal, () {
                   setState(() {
-                    selectedTransport = 'boat';
+                    selectedTransport = autoI8lnGen.translate("BOAT_2");
                   });
-                }, selectedTransport == 'boat'),
+                }, selectedTransport == autoI8lnGen.translate("BOAT_2")),
               ],
             ),
             SizedBox(height: 20),
 
             // Blood donation section
-            Text(
-              'Who can give blood in case you need it?',
+            AutoText(
+              'GIVE_BLOOD',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
@@ -205,7 +210,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'Name',
+                      labelText: autoI8lnGen.translate("NAME"),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
                     onChanged: (value) {
@@ -219,7 +224,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'Relationship',
+                      labelText: autoI8lnGen.translate("RELATIONSHIP"),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
                     onChanged: (value) {
@@ -234,7 +239,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Telephone Number',
+                labelText: autoI8lnGen.translate("T_N"),
                 labelStyle: TextStyle(fontSize: 14),
               ),
               keyboardType: TextInputType.phone,
@@ -249,8 +254,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  Text('What is his/her blood group? ',
-                      style: TextStyle(fontSize: 14)),
+                  AutoText('WHAT_BLOOD_GROUP', style: TextStyle(fontSize: 14)),
                   DropdownButton<String>(
                     value: bloodGroup.isEmpty ? null : bloodGroup,
                     items: <String>['O', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-']
@@ -265,8 +269,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                         bloodGroup = value ?? '';
                       });
                     },
-                    hint: Text(
-                      'Select Blood Group',
+                    hint: AutoText(
+                      'SELECT_BLOOD_GROUP',
                       style: TextStyle(fontSize: 14),
                     ),
                   ),
@@ -276,34 +280,35 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
 
             SizedBox(height: 20),
             // 3. How long does the trip take?
-            Text("How long does that trip take?",
-                style: TextStyle(fontSize: 14)),
+            AutoText("HOW_LONG_TRIP", style: TextStyle(fontSize: 14)),
             SizedBox(height: 10),
             Row(
               children: [
-                _buildTripTimeOption("< 1 hour"),
+                _buildTripTimeOption("LESS_1_H"),
                 SizedBox(width: 10),
-                _buildTripTimeOption("1-2 hours"),
+                _buildTripTimeOption("1_2_H"),
                 SizedBox(width: 10),
-                _buildTripTimeOption("Over 2 hours"),
+                _buildTripTimeOption("O_2_H"),
               ],
             ),
 
             SizedBox(height: 20),
             // 4. Who will come with you?
-            Text("Who will come with you?", style: TextStyle(fontSize: 14)),
+            AutoText("WHO_WILL_COME_W", style: TextStyle(fontSize: 14)),
             TextFormField(
-              decoration: InputDecoration(labelText: "Relationship"),
+              decoration: InputDecoration(
+                  labelText: autoI8lnGen.translate("RELATIONSHIP")),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: "Name"),
+              decoration:
+                  InputDecoration(labelText: autoI8lnGen.translate("NAME")),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: "Telephone"),
+              decoration:
+                  InputDecoration(labelText: autoI8lnGen.translate("T_N")),
             ),
             SizedBox(height: 10),
-            Text("Will they stay with you until after birth?",
-                style: TextStyle(fontSize: 14)),
+            AutoText("STAY_AFTER_BIRTH", style: TextStyle(fontSize: 14)),
             Row(
               children: [
                 Radio<bool>(
@@ -316,7 +321,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                     });
                   },
                 ),
-                Text("Yes"),
+                AutoText("YES_2"),
                 Radio<bool>(
                   value: false,
                   groupValue: willStayAfterBirth,
@@ -327,7 +332,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                     });
                   },
                 ),
-                Text("No"),
+                AutoText("NO_2"),
                 Radio<bool?>(
                   value: null,
                   groupValue: willStayAfterBirth,
@@ -338,50 +343,52 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                     });
                   },
                 ),
-                Text("Don't know"),
+                AutoText("DONT_KNOW"),
               ],
             ),
 
             SizedBox(height: 10),
             // 6. Which health provider will assist at the birth?
-            Text("Which health provider will assist at the birth?",
-                style: TextStyle(fontSize: 14)),
+            AutoText("W_H_P", style: TextStyle(fontSize: 14)),
             Row(
               children: [
-                _buildHealthProviderOption("Nurse"),
-                _buildHealthProviderOption("Midwife"),
-                _buildHealthProviderOption("Doctor"),
+                _buildHealthProviderOption("NURSE"),
+                _buildHealthProviderOption("MIDWIFE"),
+                _buildHealthProviderOption("DOCTOR"),
               ],
             ),
             if (selectedHealthProvider != null) ...[
               TextFormField(
-                decoration: InputDecoration(labelText: "Name"),
+                decoration:
+                    InputDecoration(labelText: autoI8lnGen.translate("NAME")),
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: "Telephone"),
+                decoration:
+                    InputDecoration(labelText: autoI8lnGen.translate("T_N")),
               ),
             ],
 
             SizedBox(height: 20),
             // 7. Who will take you home?
-            Text("Who will take you home?", style: TextStyle(fontSize: 14)),
+            AutoText("W_W_H", style: TextStyle(fontSize: 14)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildReturnHomeOption("Husband"),
-                _buildReturnHomeOption("Relative"),
-                _buildReturnHomeOption("Friend"),
-                _buildReturnHomeOption("Myself"),
+                _buildReturnHomeOption("HUSBAND"),
+                _buildReturnHomeOption("RELATIVE"),
+                _buildReturnHomeOption("FRIEND"),
+                _buildReturnHomeOption("MYSEF"),
               ],
             ),
-            if (chosenReturnMethod == "Myself") ...[
-              Text(
-                  "Name and contact details of taxi driver or trusted person:"),
+            if (chosenReturnMethod == autoI8lnGen.translate("MYSEF")) ...[
+              AutoText("NAME_CONTACT_TAXI"),
               TextFormField(
-                decoration: InputDecoration(labelText: "Name"),
+                decoration:
+                    InputDecoration(labelText: autoI8lnGen.translate("NAME")),
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: "Telephone"),
+                decoration:
+                    InputDecoration(labelText: autoI8lnGen.translate("T_N")),
               ),
             ],
 
@@ -394,45 +401,47 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildSelectableOption(
-                    'On foot', Icons.directions_walk, Colors.green, () {
+                    'ON_FOOT', Icons.directions_walk, Colors.green, () {
                   setState(() {
-                    selectedTransportReturn = 'foot';
+                    selectedTransportReturn = autoI8lnGen.translate("FOOT");
                   });
-                }, selectedTransportReturn == 'foot'),
+                }, selectedTransportReturn == autoI8lnGen.translate("FOOT")),
                 buildSelectableOption(
-                    'By bike', Icons.directions_bike, Colors.blue, () {
+                    'BYBIKE', Icons.directions_bike, Colors.blue, () {
                   setState(() {
-                    selectedTransportReturn = 'bike';
+                    selectedTransportReturn = autoI8lnGen.translate("BIKE");
                   });
-                }, selectedTransportReturn == 'bike'),
+                }, selectedTransportReturn == autoI8lnGen.translate("BIKE")),
                 buildSelectableOption(
-                    'Motorbike', Icons.motorcycle, Colors.orange, () {
+                    'MOTOR_BIKE', Icons.motorcycle, Colors.orange, () {
                   setState(() {
-                    selectedTransportReturn = 'motorbike';
+                    selectedTransportReturn =
+                        autoI8lnGen.translate("MOTOR_BIKE");
                   });
-                }, selectedTransportReturn == 'motorbike'),
+                },
+                    selectedTransportReturn ==
+                        autoI8lnGen.translate("MOTOR_BIKE")),
                 buildSelectableOption(
-                    'Car', Icons.directions_car, Colors.purple, () {
+                    'CAR_1', Icons.directions_car, Colors.purple, () {
                   setState(() {
-                    selectedTransportReturn = 'car';
+                    selectedTransportReturn = autoI8lnGen.translate("CAR_2");
                   });
-                }, selectedTransportReturn == 'car'),
+                }, selectedTransportReturn == autoI8lnGen.translate("CAR_2")),
                 buildSelectableOption(
-                    'Boat', Icons.directions_boat, Colors.teal, () {
+                    'BOAT_1', Icons.directions_boat, Colors.teal, () {
                   setState(() {
-                    selectedTransportReturn = 'boat';
+                    selectedTransportReturn = autoI8lnGen.translate("BOAT_2");
                   });
-                }, selectedTransportReturn == 'boat'),
+                }, selectedTransportReturn == autoI8lnGen.translate("BOAT_2")),
               ],
             ),
             SizedBox(height: 10),
-            if (chosenReturnMethod != null)
-              Text("If you have to pay for transport, start saving now!"),
+            if (chosenReturnMethod != null) AutoText("SAVE_TFARE"),
 
             SizedBox(height: 20),
             // 10. Visit the health facility beforehand
-            Text(
-              'When are you planning to visit the health facility?',
+            AutoText(
+              'PLANNING_VISIT_HEALTH_F',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
@@ -440,10 +449,14 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: ['This week', 'This month', 'Next month', 'Dont know']
-                    .map((visitOption) {
+                children: [
+                  autoI8lnGen.translate("T_WEEK"),
+                  autoI8lnGen.translate("T_MONTH"),
+                  autoI8lnGen.translate("N_MONTH"),
+                  autoI8lnGen.translate("DONT_KNOW"),
+                ].map((visitOption) {
                   return ChoiceChip(
-                    label: Text(visitOption, style: TextStyle(fontSize: 14)),
+                    label: AutoText(visitOption, style: TextStyle(fontSize: 14)),
                     selected: visitPlan == visitOption,
                     onSelected: (selected) {
                       setState(() {
@@ -457,14 +470,14 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             SizedBox(height: 20),
             // 11. Who will look after your children?
 
-            Text(
-              'Who will look after your children?',
+            AutoText(
+              'LOOK_CHILDREN',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Relationship',
+                labelText: autoI8lnGen.translate("RELATIONSHIP"),
                 labelStyle: TextStyle(fontSize: 14),
               ),
               onChanged: (value) {
@@ -476,7 +489,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Name',
+                labelText: autoI8lnGen.translate("NAME"),
                 labelStyle: TextStyle(fontSize: 14),
               ),
               onChanged: (value) {
@@ -488,7 +501,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Telephone Number',
+                labelText: autoI8lnGen.translate("T_N"),
                 labelStyle: TextStyle(fontSize: 14),
               ),
               keyboardType: TextInputType.phone,
@@ -501,13 +514,13 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             SizedBox(height: 20),
 
             // Checkbox section
-            Text(
-              'Things to bring to the health facility:',
+            AutoText(
+              'BRING_HEALTH_FACILITY',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             CheckboxListTile(
               title:
-                  Text('Money for transport', style: TextStyle(fontSize: 14)),
+                  AutoText('MONEY_TFARE', style: TextStyle(fontSize: 14)),
               value: moneyForTransport,
               onChanged: (value) {
                 setState(() {
@@ -517,7 +530,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             ),
             CheckboxListTile(
               title:
-                  Text('Prescribed medication', style: TextStyle(fontSize: 14)),
+              AutoText('P_MEDICATION', style: TextStyle(fontSize: 14)),
               value: prescribedMedication,
               onChanged: (value) {
                 setState(() {
@@ -526,7 +539,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
             CheckboxListTile(
-              title: Text('Gloves', style: TextStyle(fontSize: 14)),
+              title: AutoText('GLOVES', style: TextStyle(fontSize: 14)),
               value: gloves,
               onChanged: (value) {
                 setState(() {
@@ -535,7 +548,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
             CheckboxListTile(
-              title: Text('Eye Drops', style: TextStyle(fontSize: 14)),
+              title: AutoText('EYE_DROPS', style: TextStyle(fontSize: 14)),
               value: eyeDrops,
               onChanged: (value) {
                 setState(() {
@@ -545,7 +558,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             ),
             CheckboxListTile(
               title:
-                  Text('Clothes for yourself', style: TextStyle(fontSize: 14)),
+                  AutoText('CLOTHES_UR', style: TextStyle(fontSize: 14)),
               value: clothes,
               onChanged: (value) {
                 setState(() {
@@ -554,7 +567,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
             CheckboxListTile(
-              title: Text('Soap', style: TextStyle(fontSize: 14)),
+              title: AutoText('SOAP', style: TextStyle(fontSize: 14)),
               value: soap,
               onChanged: (value) {
                 setState(() {
@@ -563,7 +576,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
             CheckboxListTile(
-              title: Text('Drink', style: TextStyle(fontSize: 14)),
+              title: AutoText('DRINK', style: TextStyle(fontSize: 14)),
               value: drink,
               onChanged: (value) {
                 setState(() {
@@ -572,7 +585,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
             CheckboxListTile(
-              title: Text('Food', style: TextStyle(fontSize: 14)),
+              title: AutoText('FOOD', style: TextStyle(fontSize: 14)),
               value: food,
               onChanged: (value) {
                 setState(() {
@@ -581,7 +594,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               },
             ),
             CheckboxListTile(
-              title: Text('Wash Basin', style: TextStyle(fontSize: 14)),
+              title: AutoText('WASH_BASIN', style: TextStyle(fontSize: 14)),
               value: washBasin,
               onChanged: (value) {
                 setState(() {
@@ -601,8 +614,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
         height: 56, // Make it taller
         child: FloatingActionButton(
           onPressed: _saveForm,
-          child: Text(
-            'Save',
+          child: AutoText(
+            'SAVE',
             style: TextStyle(fontSize: 16), // Larger text
           ),
         ),
@@ -622,7 +635,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
       child: Column(
         children: [
           Icon(icon, color: selectedTransport == label ? color : Colors.black),
-          Text(label,
+          AutoText(label,
               style: TextStyle(
                   color: selectedTransport == label ? color : Colors.black)),
         ],
@@ -649,7 +662,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
             ),
           ),
           child: Center(
-            child: Text(
+            child: AutoText(
               label,
               style: TextStyle(
                 color: isSelected ? Colors.white : Colors.black,
@@ -680,7 +693,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               color: Colors.green,
             ),
             SizedBox(width: 5),
-            Text(label),
+            AutoText(label),
           ],
         ),
       ),
@@ -702,7 +715,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                 : Icons.check_box_outline_blank,
             color: Colors.purple,
           ),
-          Text(label),
+          AutoText(label),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class NotificationsPage extends StatelessWidget {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications')),
+      appBar: AppBar(title:  AutoText('NOTIFICATIONS')),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('notifications')
@@ -23,7 +24,7 @@ class NotificationsPage extends StatelessWidget {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No notifications yet'));
+            return const Center(child: AutoText('NO_NOTIFICATIONS'));
           }
 
           final notifications = snapshot.data!.docs;
@@ -37,18 +38,18 @@ class NotificationsPage extends StatelessWidget {
               final timestamp = (data['timestamp'] as Timestamp?)?.toDate();
               final formattedTime = timestamp != null
                   ? '${timestamp.day}-${timestamp.month}-${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}'
-                  : 'Unknown time';
+                  : autoI8lnGen.translate("UNKNOWN_TIME");
 
-              String title = 'New Notification';
-              String subtitle = 'Tap to view';
+              String title =  autoI8lnGen.translate("NEW_NOTIFICATION");
+              String subtitle =  autoI8lnGen.translate("TAP_TO_VIEW");
 
               if (type == 'message') {
-                title = 'New Message';
-                subtitle = data['message'] ?? 'You have a new message';
+                title = autoI8lnGen.translate("NEW_MESSAGE");
+                subtitle = data['message'] ?? autoI8lnGen.translate("YOU_HAVE_A_NEW_MESSAGE");
               } else if (type == 'connection_request') {
-                title = 'Connection Request';
+                title = autoI8lnGen.translate("CONNECTION_REQUEST");
                 subtitle =
-                    '${data['requesterName'] ?? 'Someone'} sent you a connection request';
+                    autoI8lnGen.translate('${data['requesterName'] ?? 'SOMEONE'} SENT_YOU_REQUEST');
               }
 
               return ListTile(

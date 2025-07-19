@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,12 +29,12 @@ class _TaskCreationScreenState extends State<TaskCreationScreen> {
         'createdAt': FieldValue.serverTimestamp(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Task created successfully')),
+        SnackBar(content: AutoText('TASK_CREATED')),
       );
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to create task: $e')),
+        SnackBar(content: AutoText('FAILED_CREATE_TASK $e')),
       );
     }
   }
@@ -43,7 +44,7 @@ class _TaskCreationScreenState extends State<TaskCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create New Task'),
+        title:  AutoText('CREATE_NEW_TASK'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -56,10 +57,10 @@ class _TaskCreationScreenState extends State<TaskCreationScreen> {
                   CrossAxisAlignment.start, // Align widgets to the start
               children: [
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Title'),
+                  decoration:  InputDecoration(labelText: autoI8lnGen.translate("TITLE_2")),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
+                      return autoI8lnGen.translate("LOGIN_VALIDATION_6");
                     }
                     return null;
                   },
@@ -67,8 +68,8 @@ class _TaskCreationScreenState extends State<TaskCreationScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
+                  decoration:  InputDecoration(
+                    labelText: autoI8lnGen.translate("Description"),
                     border: OutlineInputBorder(), // Adds a border
                   ),
                   maxLines: 5, // Allows more space for description
@@ -78,13 +79,13 @@ class _TaskCreationScreenState extends State<TaskCreationScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Due Date'),
+                  decoration:  InputDecoration(labelText: autoI8lnGen.translate("DUE_DATE")),
                   onSaved: (value) => _dueDate = value!,
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _status,
-                  items: ['Pending', 'In Progress', 'Completed']
+                  items: [autoI8lnGen.translate("Pending"), autoI8lnGen.translate("Progress"), autoI8lnGen.translate("Completed")]
                       .map((status) => DropdownMenuItem(
                             value: status,
                             child: Text(status),
@@ -100,7 +101,7 @@ class _TaskCreationScreenState extends State<TaskCreationScreen> {
                       _saveTaskToFirestore();
                     }
                   },
-                  child: const Text('Save Task'),
+                  child: const AutoText('SaveTask'),
                 ),
               ],
             ),

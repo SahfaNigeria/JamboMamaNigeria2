@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +27,7 @@ class ProfessionalChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Chat with $recipientName')),
+      appBar: AppBar(title: AutoText('CHAT_WITH $recipientName')),
       body: Column(
         children: [
           Expanded(
@@ -80,7 +81,7 @@ class ProfessionalChatScreen extends StatelessWidget {
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
-                      hintText: 'Type a message...',
+                      hintText: autoI8lnGen.translate("TYPE_A_MESSAGE"),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),

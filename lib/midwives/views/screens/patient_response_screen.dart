@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,18 +23,18 @@ class _ProviderPatientResponsesScreenState
 
   // Updated question labels to match the actual form questions
   final List<String> questionLabels = [
-    "How are you feeling today?",
-    "Are you quickly out of breath doing normal work?",
-    "Have you had headaches often since you became pregnant?",
-    "Do you have a headache today?",
-    "Have you had any fever since you became pregnant?",
-    "Do you feel nauseous?",
-    "Do you sleep well?",
-    "Can you feel the baby kick?",
-    "Have you made a birth and emergency plan yet?",
-    "Are you experiencing any swelling in your legs, hands, or face?",
-    "Do you notice any contractions or belly tightening?",
-    "Have you packed your hospital bag?",
+    autoI8lnGen.translate("HEALTH_QUESTION_7"),
+    autoI8lnGen.translate("HEALTH_QUESTION_8"),
+    autoI8lnGen.translate("HEALTH_QUESTION_9"),
+    autoI8lnGen.translate("HEALTH_QUESTION_10"),
+    autoI8lnGen.translate("HEALTH_QUESTION_11"),
+    autoI8lnGen.translate("HEALTH_QUESTION_12"),
+    autoI8lnGen.translate("HEALTH_QUESTION_13"),
+    autoI8lnGen.translate("HEALTH_QUESTION_14"),
+    autoI8lnGen.translate("HEALTH_QUESTION_15"),
+    autoI8lnGen.translate("HEALTH_QUESTION_16"),
+    autoI8lnGen.translate("HEALTH_QUESTION_17"),
+    autoI8lnGen.translate("HEALTH_QUESTION_18"),
   ];
 
   @override
@@ -57,7 +58,7 @@ class _ProviderPatientResponsesScreenState
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Patient Responses'),
+          title: AutoText('PATIENT_RESPONSES'),
           backgroundColor: Colors.teal,
           foregroundColor: Colors.white,
         ),
@@ -67,7 +68,7 @@ class _ProviderPatientResponsesScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Responses'),
+        title: AutoText('PATIENT_RESPONSES'),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -87,7 +88,7 @@ class _ProviderPatientResponsesScreenState
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(child: AutoText('ERROR: ${snapshot.error}'));
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -104,8 +105,8 @@ class _ProviderPatientResponsesScreenState
                         Icon(Icons.assignment_outlined,
                             size: 64, color: Colors.grey),
                         SizedBox(height: 16),
-                        Text(
-                          'No responses from this patient yet',
+                        AutoText(
+                          'ERROR_12',
                           style:
                               TextStyle(fontSize: 18, color: Colors.grey[600]),
                         ),
@@ -157,8 +158,8 @@ class _ProviderPatientResponsesScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Submission Date: $date',
+                      AutoText(
+                        'SUBMISSION_DATE $date',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.teal[700],
@@ -166,9 +167,9 @@ class _ProviderPatientResponsesScreenState
                         ),
                       ),
                       SizedBox(height: 4),
-                      Text('Pregnancy Week: $pregnancyWeek'),
+                      AutoText('P_W $pregnancyWeek'),
                       if (expectedDeliveryDate.isNotEmpty)
-                        Text('Expected Delivery: $expectedDeliveryDate'),
+                        AutoText('E_D $expectedDeliveryDate'),
                     ],
                   ),
                 ),
@@ -178,8 +179,8 @@ class _ProviderPatientResponsesScreenState
                     color: Colors.teal[100],
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    'Week $pregnancyWeek',
+                  child: AutoText(
+                    'WEEK_2 $pregnancyWeek',
                     style: TextStyle(
                       color: Colors.teal[700],
                       fontWeight: FontWeight.bold,
@@ -192,8 +193,8 @@ class _ProviderPatientResponsesScreenState
             SizedBox(height: 16),
 
             // Questions and Responses
-            Text(
-              'Responses:',
+            AutoText(
+              'RESPONSES',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -270,8 +271,8 @@ class _ProviderPatientResponsesScreenState
 
             if (otherWorries.isNotEmpty) ...[
               SizedBox(height: 12),
-              Text(
-                'Additional Concerns:',
+              AutoText(
+                'ADDITIONAL_CONCERNS',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -300,7 +301,7 @@ class _ProviderPatientResponsesScreenState
                 TextButton.icon(
                   onPressed: () => _markAsReviewed(responseId),
                   icon: Icon(Icons.check, size: 16),
-                  label: Text('Mark Reviewed'),
+                  label: AutoText('MARK_REVIEWED'),
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.teal,
                   ),
@@ -309,7 +310,7 @@ class _ProviderPatientResponsesScreenState
                 ElevatedButton.icon(
                   onPressed: () => _contactPatient(data),
                   icon: Icon(Icons.message, size: 16),
-                  label: Text('Contact'),
+                  label: AutoText('CONTACT'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
                     foregroundColor: Colors.white,
@@ -368,12 +369,12 @@ class _ProviderPatientResponsesScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Contact Patient'),
-        content: Text('Contact functionality would be implemented here.'),
+        title: AutoText('CONTACT_PATIENT'),
+        content: AutoText('CONTACT_FUNC'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
+            child: AutoText('CLOSE'),
           ),
         ],
       ),

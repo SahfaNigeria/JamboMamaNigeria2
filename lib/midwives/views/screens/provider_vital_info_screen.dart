@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +46,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(patientData?['name'] ?? 'Patient Vital Information'),
+        title: Text(patientData?['name'] ?? 'PATIENT_VITAL_INFORMATION'),
         backgroundColor: Colors.blue[700],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -71,7 +72,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                 children: [
                   Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                   const SizedBox(height: 16),
-                  Text('Error loading vital information: ${snapshot.error}'),
+                  AutoText('ERROR_LOADING_VITAL_INFORMATION ${snapshot.error}'),
                 ],
               ),
             );
@@ -85,13 +86,13 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                   Icon(Icons.medical_information_outlined,
                       size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  const Text(
-                    'No vital information records found',
+                   AutoText(
+                    'NO_VITAL_INFORMATION',
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Patient has not submitted any vital information yet',
+                  AutoText(
+                    'NO_VITAL_INFORMATION_2',
                     style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                 ],
@@ -117,7 +118,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
     final timestamp = data['timestamp'] as Timestamp?;
     final dateStr = timestamp != null
         ? DateFormat('EEEE, MMMM dd, yyyy • HH:mm').format(timestamp.toDate())
-        : 'No date available';
+        : autoI8lnGen.translate("NO_DATE_AVAILABLE");
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -165,8 +166,8 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                               color: Colors.blue[100],
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text(
-                              'Latest Record',
+                            child: AutoText(
+                              'LATEST_RECORD',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.blue[800],
@@ -184,8 +185,8 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                       color: Colors.green[100],
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
-                      'Week ${data['currentWeek'] ?? 'N/A'}',
+                    child: AutoText(
+                      'WEEK_2 ${data['currentWeek'] ?? 'N/A'}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.green[800],
@@ -199,35 +200,35 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
               const SizedBox(height: 20),
 
               // Vital Signs
-              _buildVitalSection('Physical Measurements', [
+              _buildVitalSection("PHYSICAL_MEASUREMENT", [
                 if (data['weight'] != null)
-                  _buildVitalRow('Weight', '${data['weight']} kg',
+                  _buildVitalRow('WEIGHT', '${data['weight']} kg',
                       Icons.monitor_weight, Colors.blue),
                 if (data['fundalHeight'] != null)
                   _buildVitalRow('Fundal Height', '${data['fundalHeight']} cm',
                       Icons.straighten, Colors.purple),
               ]),
 
-              _buildVitalSection('Cardiovascular', [
+              _buildVitalSection('CARDIOVASCULAR', [
                 if (data['systolicPressure'] != null &&
                     data['diastolicPressure'] != null)
                   _buildVitalRow(
-                      'Blood Pressure',
+                      'BLOOD_PRESSURE',
                       '${data['systolicPressure']}/${data['diastolicPressure']} mmHg',
                       Icons.favorite,
                       Colors.red),
                 if (data['pulseRate'] != null)
-                  _buildVitalRow('Pulse Rate', '${data['pulseRate']} bpm',
+                  _buildVitalRow('PULSE_RATE', '${data['pulseRate']} bpm',
                       Icons.favorite_border, Colors.pink),
                 if (data['babyHeartbeat'] != null)
                   _buildVitalRow(
-                      'Baby Heartbeat',
+                      'BABY_HEART',
                       '${data['babyHeartbeat']} bpm',
                       Icons.child_care,
                       Colors.orange),
               ]),
 
-              _buildVitalSection('Laboratory Results', [
+              _buildVitalSection('LABORATORY_RESULTS', [
                 if (data['haemoglobin'] != null)
                   _buildVitalRow('Hemoglobin', '${data['haemoglobin']} g/dL',
                       Icons.bloodtype, Colors.red),
@@ -258,8 +259,8 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                           Icon(Icons.assignment,
                               color: Colors.amber[800], size: 20),
                           const SizedBox(width: 8),
-                          Text(
-                            'Urine Analysis',
+                          AutoText(
+                            'URINE_ANALYSIS',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Colors.amber[800],
@@ -332,7 +333,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AutoText(
                   label,
                   style: TextStyle(
                     fontSize: 14,
@@ -341,7 +342,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
+                AutoText(
                   value,
                   style: TextStyle(
                     fontSize: 18,

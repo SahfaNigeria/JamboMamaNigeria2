@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For date formatting
 
@@ -79,7 +80,7 @@ class _ReportEventFormState extends State<ReportEventForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Report an Event to Doctor'),
+        title: AutoText('R_E_D'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -87,12 +88,12 @@ class _ReportEventFormState extends State<ReportEventForm> {
           key: _formKey,
           child: ListView(
             children: [
-              Text('Patient Name: ${widget.userName}',
+              AutoText('P_NAME ${widget.userName}',
                   style: TextStyle(fontSize: 18)),
               SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedEventType,
-                hint: Text('Select Event Type'),
+                hint: AutoText('S_E_T'),
                 onChanged: (String? newValue) {
                   setState(() {
                     _selectedEventType = newValue;
@@ -102,23 +103,23 @@ class _ReportEventFormState extends State<ReportEventForm> {
                     _eventTypes.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: AutoText(value),
                   );
                 }).toList(),
                 validator: (value) =>
-                    value == null ? 'Please select an event type' : null,
+                    value == null ? autoI8lnGen.translate("P_S_E_T") : null,
               ),
               SizedBox(height: 16),
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  labelText: 'Event Description',
+                  labelText: autoI8lnGen.translate("E_V_D_E"),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please describe the event';
+                    return autoI8lnGen.translate("P_E_V_D_E");
                   }
                   return null;
                 },
@@ -127,10 +128,10 @@ class _ReportEventFormState extends State<ReportEventForm> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
+                    child: AutoText(
                       _selectedDate != null
-                          ? 'Event Date: ${DateFormat('dd-MM-yyyy').format(_selectedDate!)}'
-                          : 'No date selected',
+                          ? 'E_V_D ${DateFormat('dd-MM-yyyy').format(_selectedDate!)}'
+                          : 'N_D_S',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -145,14 +146,14 @@ class _ReportEventFormState extends State<ReportEventForm> {
                 controller: _commentsController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  labelText: 'Additional Comments (Optional)',
+                  labelText: autoI8lnGen.translate("A_C"),
                   border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text('Submit Report'),
+                child: AutoText('S_R'),
               ),
             ],
           ),

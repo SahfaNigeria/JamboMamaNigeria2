@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -75,11 +76,11 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: ListTile(
         leading: Icon(icon, color: Colors.blueAccent),
-        title: Text(
+        title: AutoText(
           title,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        subtitle: Text(
+        subtitle: AutoText(
           value,
           style: TextStyle(fontSize: 14, color: Colors.grey[700]),
         ),
@@ -91,7 +92,7 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Vital Information'),
+        title: AutoText('PATIENT_VITAL_INFORMATION'),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -109,8 +110,8 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                       Icon(Icons.warning_amber_rounded,
                           size: 64, color: Colors.amber),
                       SizedBox(height: 16),
-                      Text(
-                        'No vital information available for this patient',
+                      AutoText(
+                        'N_V_I',
                         style: TextStyle(fontSize: 18, color: Colors.grey[700]),
                         textAlign: TextAlign.center,
                       ),
@@ -120,7 +121,7 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                           // You could add navigation to request info or another action
                           Navigator.pop(context);
                         },
-                        child: Text('Go Back'),
+                        child: AutoText('GO_BACK'),
                       ),
                     ],
                   ),
@@ -152,9 +153,9 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                                 ),
                               ),
                               SizedBox(height: 16),
-                              Text(
+                              AutoText(
                                 patientVitalInfo!['fullName'] ??
-                                    'Unknown Patient',
+                                    'U_P',
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
@@ -162,13 +163,13 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(height: 8),
-                              Text(
-                                'Date of Birth: ${patientVitalInfo!['dateOfBirth'] ?? 'Unknown'}',
+                              AutoText(
+                                'DOB: ${patientVitalInfo!['dateOfBirth'] ?? 'ERROR_8'}',
                                 style: TextStyle(fontSize: 16),
                               ),
                               SizedBox(height: 4),
-                              Text(
-                                'Blood Type: ${patientVitalInfo!['bloodType'] ?? 'Unknown'}',
+                              AutoText(
+                                'B_T: ${patientVitalInfo!['bloodType'] ?? 'ERROR_8'}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -183,8 +184,8 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                       // Section title for contact info
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          'Contact Information',
+                        child: AutoText(
+                          'C_IN',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -195,26 +196,26 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
 
                       // Contact info tiles
                       _buildInfoTile(
-                        'Phone Number',
-                        patientVitalInfo!['phoneNumber'] ?? 'Not provided',
+                        'PHONE_NUMBER',
+                        patientVitalInfo!['phoneNumber'] ?? 'N_P',
                         Icons.phone,
                       ),
                       _buildInfoTile(
                         'Address',
-                        patientVitalInfo!['address'] ?? 'Not provided',
+                        patientVitalInfo!['address'] ?? 'N_P',
                         Icons.home,
                       ),
                       _buildInfoTile(
-                        'Emergency Contact',
-                        patientVitalInfo!['emergencyContact'] ?? 'Not provided',
+                        'EMERGENCY_CONTACT',
+                        patientVitalInfo!['emergencyContact'] ?? 'N_P',
                         Icons.contact_phone,
                       ),
 
                       // Section title for medical info
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          'Medical Information',
+                        child: AutoText(
+                          'MEDICAL_INFO',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -225,7 +226,7 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
 
                       // Medical info tiles
                       _buildInfoTile(
-                        'Medical Conditions',
+                        'M_C',
                         patientVitalInfo!['medicalConditions'] != null
                             ? (patientVitalInfo!['medicalConditions'] is List
                                 ? (patientVitalInfo!['medicalConditions']
@@ -233,31 +234,31 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                                     .join(', ')
                                 : patientVitalInfo!['medicalConditions']
                                     .toString())
-                            : 'None reported',
+                            : 'N_R_P',
                         Icons.medical_services,
                       ),
                       _buildInfoTile(
-                        'Allergies',
+                        'ALLERGIES',
                         patientVitalInfo!['allergies'] != null
                             ? (patientVitalInfo!['allergies'] is List
                                 ? (patientVitalInfo!['allergies'] as List)
                                     .join(', ')
                                 : patientVitalInfo!['allergies'].toString())
-                            : 'None reported',
+                            : 'N_R_P',
                         Icons.warning_amber_rounded,
                       ),
                       _buildInfoTile(
-                        'Current Medications',
+                        'C_M',
                         patientVitalInfo!['currentMedications'] ??
-                            'None reported',
+                            'N_R_P',
                         Icons.medication,
                       ),
 
                       // Section title for pregnancy info
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          'Pregnancy Information',
+                        child: AutoText(
+                          'P_I',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -268,19 +269,19 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
 
                       // Pregnancy info tiles
                       _buildInfoTile(
-                        'Previous Pregnancies',
+                        'P_P',
                         patientVitalInfo!['previousPregnancies'] ??
-                            'None reported',
+                            'N_R_P',
                         Icons.pregnant_woman,
                       ),
                       _buildInfoTile(
-                        'Family History',
-                        patientVitalInfo!['familyHistory'] ?? 'None reported',
+                        'F_H',
+                        patientVitalInfo!['familyHistory'] ?? 'N_R_P',
                         Icons.family_restroom,
                       ),
                       _buildInfoTile(
-                        'Lifestyle Habits',
-                        patientVitalInfo!['lifestyleHabits'] ?? 'None reported',
+                        'L_H',
+                        patientVitalInfo!['lifestyleHabits'] ?? 'N_R_P',
                         Icons.spa_outlined,
                       ),
                     ],

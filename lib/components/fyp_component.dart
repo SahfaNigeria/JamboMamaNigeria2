@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 class Fypcomponent extends StatelessWidget {
@@ -47,7 +48,7 @@ class Fypcomponent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         color: const Color.fromARGB(255, 241, 112, 103),
                       ),
-                      child: Center(child: Text(you)),
+                      child: Center(child: AutoText(you)),
                     )),
                 const SizedBox(
                   width: 30,
@@ -61,7 +62,7 @@ class Fypcomponent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         color: const Color.fromARGB(255, 241, 112, 103),
                       ),
-                      child: Center(child: Text(baby)),
+                      child: Center(child: AutoText(baby)),
                     )),
               ],
             ),
@@ -70,21 +71,21 @@ class Fypcomponent extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(timetext),
+                child: AutoText(timetext),
               ),
               Image.asset(imagePath),
               Padding(
                 padding: const EdgeInsets.only(
                     top: 10.0, bottom: 10, left: 10, right: 10),
-                child: Text(firstparagraph),
+                child: AutoText(firstparagraph),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
-                child: Text(secparagraph),
+                child: AutoText(secparagraph),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: Text(thirdparagraph),
+                child: AutoText(thirdparagraph),
               )
             ],
           ),

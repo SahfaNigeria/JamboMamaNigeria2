@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title:  AutoText('HOME_2'),
         centerTitle: true,
         actions: [
           StreamBuilder<int>(
@@ -177,12 +178,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  'Hello! ',
+                AutoText(
+                  'HELLO',
                   style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
-                  ),
+                      color: Colors.grey, fontWeight: FontWeight.w400),
                 ),
                 Text(
                   '$userName👋',
@@ -206,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: HomeComponents(
-                    text: 'Follow your pregnancy',
+                    text: 'FOLLOW_YOUR_PREGNANCY',
                     icon: 'assets/svgs/logo-Jambomama_svg-com.svg',
                     onTap: () {
                       Navigator.push(
@@ -228,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: HomeComponents(
-                    text: 'Questions to Answer',
+                    text: 'QUESTIONS_TO_ANWSER',
                     icon: 'assets/svgs/perfusion-svgrepo-com.svg',
                     onTap: () async {
                       try {
@@ -283,14 +282,14 @@ class _HomePageState extends State<HomePage> {
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('EDD was not selected.')),
+                               SnackBar(
+                                  content: AutoText('EDD_NOT_SELECTED')),
                             );
                           }
                         }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
+                          SnackBar(content: AutoText('ERROR: $e')),
                         );
                       }
                     },
@@ -352,7 +351,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: HomeComponents(
-                  text: 'Vital Info. Update',
+                  text: 'VITAL_INFO_UPDATE',
                   icon: 'assets/svgs/doctor-svgrepo-com.svg',
                   onTap: () {
                     Navigator.push(
@@ -380,7 +379,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: HomeComponents(
-                  text: 'Something happened',
+                  text: 'SOMETHING_HAPPENED',
                   icon: 'assets/svgs/warning-sign-svgrepo-com.svg',
                   onTap: () {
                     if (userName.isNotEmpty) {
@@ -393,7 +392,7 @@ class _HomePageState extends State<HomePage> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Please wait, loading user data..."),
+                          content: AutoText("LOADING_USER_DATA"),
                         ),
                       );
                     }

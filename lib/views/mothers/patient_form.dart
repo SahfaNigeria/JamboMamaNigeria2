@@ -1,4 +1,5 @@
 
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -137,8 +138,8 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            'Session Timeout',
+          title: AutoText(
+            'SESSION_TIMEOUT',
             style: TextStyle(color: Colors.orange),
           ),
           content: Column(
@@ -151,13 +152,13 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                 size: 40,
               ),
               SizedBox(height: 16),
-              Text(
-                'Your session with the healthcare provider has timed out for security reasons.',
+              AutoText(
+                'SESSION_HC',
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 8),
-              Text(
-                'Please verify the presence of a healthcare provider to continue.',
+              AutoText(
+                'V_HEALTH_CARE',
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -168,7 +169,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: Text('Go Back'),
+              child: AutoText('GO_BACK'),
             ),
             TextButton(
               onPressed: () {
@@ -178,7 +179,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
               style: TextButton.styleFrom(
                 foregroundColor: Colors.blue,
               ),
-              child: Text('Re-verify Provider'),
+              child: AutoText('R_VERIFY_PROVIDER'),
             ),
           ],
         );
@@ -192,8 +193,8 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            'Medical Assistance Required',
+          title: AutoText(
+            'MEDICAL_ASSITANCE_REQUIRED',
             style: TextStyle(color: Colors.red),
           ),
           content: Column(
@@ -206,13 +207,13 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                 size: 40,
               ),
               SizedBox(height: 16),
-              Text(
-                'This form contains important medical information that should only be filled out with the assistance of a qualified medical practitioner.',
+              AutoText(
+                'IMPORTANT_M_I',
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 8),
-              Text(
-                'Please have your healthcare provider present to verify and assist with this form.',
+              AutoText(
+                'HEALTHCARE_PROVIDER',
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -223,7 +224,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: Text('Go Back'),
+              child:  AutoText('GO_BACK'),
             ),
             TextButton(
               onPressed: () {
@@ -233,7 +234,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
               style: TextButton.styleFrom(
                 foregroundColor: Colors.blue,
               ),
-              child: Text('I Have a Provider Present'),
+              child: AutoText('PROVIDER_PRESENT'),
             ),
           ],
         );
@@ -249,19 +250,19 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Provider Verification'),
+          title: AutoText('P_VERIFICATION'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Please ask your healthcare provider to enter their verification code:',
+              AutoText(
+                'ASK_VERIFICATION_CODE',
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 16),
               TextField(
                 controller: _providerVerificationCodeController,
                 decoration: InputDecoration(
-                  labelText: 'Provider Verification Code',
+                  labelText: autoI8lnGen.translate("P_VERIFICATION_CODE"),
                   border: OutlineInputBorder(),
                 ),
                 obscureText: true,
@@ -274,14 +275,14 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: AutoText('CANCEL'),
             ),
             ElevatedButton(
               onPressed: () {
                 _verifyProviderCode(_providerVerificationCodeController.text);
                 Navigator.of(context).pop();
               },
-              child: Text('Verify'),
+              child: AutoText('VERIFY'),
             ),
           ],
         );
@@ -318,14 +319,14 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
         setState(() {
           _hasVerifiedProvider = true;
           _verifiedProviderId = providerDoc.id;
-          _verifiedProviderName = providerData['fullName'] ?? 'Healthcare Provider';
+          _verifiedProviderName = providerData['fullName'] ?? autoI8lnGen.translate("H_C_P");
         });
 
         // Show success message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Provider verified: $_verifiedProviderName'),
+              content: AutoText('P_V $_verifiedProviderName'),
               backgroundColor: Colors.green,
             ),
           );
@@ -347,7 +348,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Invalid verification code. Please try again.'),
+              content: AutoText('INVALID_VERIFICATION_CODE'),
               backgroundColor: Colors.red,
             ),
           );
@@ -368,7 +369,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Verification failed. Please try again.'),
+            content: AutoText('FAILED_VERIFICATION_CODE'),
             backgroundColor: Colors.red,
           ),
         );
@@ -430,7 +431,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
     if (!_hasVerifiedProvider) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('A verified healthcare provider must be present to submit this form.'),
+          content: AutoText('VERIFIED_PRESENT'),
           backgroundColor: Colors.red,
         ),
       );
@@ -511,7 +512,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Vital info saved successfully!'),
+        content: AutoText('V_SAVED_S'),
         backgroundColor: Colors.green,
       ),
     );
@@ -523,11 +524,11 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: ListTile(
         leading: Icon(icon, color: Colors.blueAccent),
-        title: Text(
+        title: AutoText(
           title,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        subtitle: Text(
+        subtitle: AutoText(
           value,
           style: TextStyle(fontSize: 14, color: Colors.grey[700]),
         ),
@@ -539,7 +540,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vital Information'),
+        title: AutoText('V_I'),
         actions: [
           if (_hasVerifiedProvider && !_isSubmitted)
             Container(
@@ -553,8 +554,8 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                 children: [
                   Icon(Icons.verified_user, color: Colors.green, size: 16),
                   SizedBox(width: 4),
-                  Text(
-                    'Verified',
+                  AutoText(
+                    'VERIFIED',
                     style: TextStyle(color: Colors.green[800], fontSize: 12),
                   ),
                 ],
@@ -581,8 +582,8 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                                 Icon(Icons.verified_user, color: Colors.blue),
                                 SizedBox(width: 8),
                                 Expanded(
-                                  child: Text(
-                                    'This information was verified by: ${_vitalInfoData!['verifiedProviderName']}',
+                                  child: AutoText(
+                                    'THIS_INFORMATION_WAS_VERIFIED_BY ${_vitalInfoData!['verifiedProviderName']}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.blue[800],
@@ -597,42 +598,42 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                       Expanded(
                         child: ListView(
                           children: [
-                            _buildInfoTile('Full Name', _vitalInfoData!['fullName'],
+                            _buildInfoTile('VALIDATION_Q_10', _vitalInfoData!['fullName'],
                                 Icons.person),
-                            _buildInfoTile('Date of Birth',
+                            _buildInfoTile('DOB',
                                 _vitalInfoData!['dateOfBirth'], Icons.cake_rounded),
-                            _buildInfoTile('Phone Number',
+                            _buildInfoTile('PHONE_NUMBER',
                                 _vitalInfoData!['phoneNumber'], Icons.phone),
                             _buildInfoTile(
                                 'Address', _vitalInfoData!['address'], Icons.home),
                             _buildInfoTile(
-                                'Emergency Contact',
+                                'EMERGENCY_CONTACT',
                                 _vitalInfoData!['emergencyContact'],
                                 Icons.contact_phone),
-                            _buildInfoTile('Blood Type', _vitalInfoData!['bloodType'],
+                            _buildInfoTile('B_T', _vitalInfoData!['bloodType'],
                                 Icons.bloodtype),
                             _buildInfoTile(
-                                'Medical Conditions',
+                                'M_C',
                                 _vitalInfoData!['medicalConditions'].join(', '),
                                 Icons.medical_services),
                             _buildInfoTile(
-                                'Allergies',
+                                'ALLERGIES',
                                 _vitalInfoData!['allergies'].join(', '),
                                 Icons.warning_amber_rounded),
                             _buildInfoTile(
-                                'Current Medications',
+                                'C_M',
                                 _vitalInfoData!['currentMedications'],
                                 Icons.medication),
                             _buildInfoTile(
-                                'Previous Pregnancies',
+                                'P_P',
                                 _vitalInfoData!['previousPregnancies'],
                                 Icons.pregnant_woman),
                             _buildInfoTile(
-                                'Family History',
+                                'F_H',
                                 _vitalInfoData!['familyHistory'],
                                 Icons.family_restroom),
                             _buildInfoTile(
-                                'Lifestyle Habits',
+                                'L_H',
                                 _vitalInfoData!['lifestyleHabits'],
                                 Icons.spa_outlined),
                           ],
@@ -641,7 +642,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                     ],
                   ),
                 )
-              : Center(child: Text('No data available'))
+              : Center(child: AutoText('ERROR_11'))
           : Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -662,15 +663,15 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Healthcare Provider Verified',
+                                  AutoText(
+                                    'H_P_V',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.green[800],
                                     ),
                                   ),
-                                  Text(
-                                    'Provider: $_verifiedProviderName',
+                                  AutoText(
+                                    'PROVIDER_2 $_verifiedProviderName',
                                     style: TextStyle(
                                       color: Colors.grey[700],
                                     ),
@@ -697,15 +698,15 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Healthcare Provider Required',
+                                  AutoText(
+                                    'H_P_R',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red[800],
                                     ),
                                   ),
-                                  Text(
-                                    'Please verify a healthcare provider to complete this form',
+                                  AutoText(
+                                    'V_PROVIDER',
                                     style: TextStyle(
                                       color: Colors.grey[700],
                                     ),
@@ -717,7 +718,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                               onPressed: () {
                                 _showProviderVerificationDialog();
                               },
-                              child: Text('Verify'),
+                              child: AutoText('VERIFY'),
                             ),
                           ],
                         ),
@@ -731,11 +732,11 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                         children: [
                           TextFormField(
                             controller: _fullNameController,
-                            decoration: InputDecoration(labelText: 'Full Name'),
+                            decoration: InputDecoration(labelText: autoI8lnGen.translate("VALIDATION_Q_10")),
                             enabled: _hasVerifiedProvider,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your full name';
+                                return autoI8lnGen.translate("P_E_FULL_NAME");
                               }
                               return null;
                             },
@@ -744,11 +745,11 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           TextFormField(
                             controller: _dateOfBirthController,
                             decoration: InputDecoration(
-                                labelText: 'Date of Birth (YYYY-MM-DD)'),
+                                labelText: 'E_DOB'),
                             enabled: _hasVerifiedProvider,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your date of birth';
+                                return autoI8lnGen.translate("P_E_DOB");
                               }
                               // You can add more validation for date format if needed
                               return null;
@@ -757,11 +758,11 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           SizedBox(height: 16),
                           TextFormField(
                             controller: _phoneNumberController,
-                            decoration: InputDecoration(labelText: 'Phone Number'),
+                            decoration: InputDecoration(labelText: autoI8lnGen.translate("PHONE_NUMBER")),
                             enabled: _hasVerifiedProvider,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter patients phone number';
+                                return autoI8lnGen.translate("P_E_PH");
                               }
                               // You can add more validation for phone number format if needed
                               return null;
@@ -770,11 +771,11 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           SizedBox(height: 16),
                           TextFormField(
                             controller: _addressController,
-                            decoration: InputDecoration(labelText: 'Address'),
+                            decoration: InputDecoration(labelText: autoI8lnGen.translate("Address")),
                             enabled: _hasVerifiedProvider,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your address';
+                                return autoI8lnGen.translate("P_E_AD");
                               }
                               return null;
                             },
@@ -783,11 +784,11 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           TextFormField(
                             controller: _emergencyContactController,
                             decoration:
-                                InputDecoration(labelText: 'Emergency Contact'),
+                                InputDecoration(labelText: autoI8lnGen.translate("EMERGENCY_CONTACT")),
                             enabled: _hasVerifiedProvider,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your emergency contact';
+                                return autoI8lnGen.translate("P_E_EC");
                               }
                               return null;
                             },
@@ -795,7 +796,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           SizedBox(height: 16),
                           DropdownButtonFormField<String>(
                             value: _bloodType.isNotEmpty ? _bloodType : null,
-                            decoration: InputDecoration(labelText: 'Blood Type'),
+                            decoration: InputDecoration(labelText: autoI8lnGen.translate("B_T")),
                             items: [
                               DropdownMenuItem(value: 'A+', child: Text('A+')),
                               DropdownMenuItem(value: 'B+', child: Text('B+')),
@@ -815,37 +816,37 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                                 : null,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please select your blood type';
+                                return autoI8lnGen.translate("P_S_BT");
                               }
                               return null;
                             },
                           ),
                           SizedBox(height: 16),
                           CheckboxListTile(
-                            title: Text('Diabetes'),
-                            value: _medicalConditions.contains('Diabetes'),
+                            title: AutoText('DIABETES'),
+                            value: _medicalConditions.contains(autoI8lnGen.translate("DIABETES")),
                             onChanged: _hasVerifiedProvider
                                 ? (bool? value) {
                                     setState(() {
                                       if (value != null && value) {
-                                        _medicalConditions.add('Diabetes');
+                                          _medicalConditions.add(autoI8lnGen.translate("DIABETES"));
                                       } else {
-                                        _medicalConditions.remove('Diabetes');
+                                        _medicalConditions.remove(autoI8lnGen.translate("DIABETES"));
                                       }
                                     });
                                   }
                                 : null,
                           ),
                           CheckboxListTile(
-                            title: Text('Medication Allergies'),
-                            value: _allergies.contains('Medications'),
+                            title: AutoText('M_A'),
+                            value: _allergies.contains(autoI8lnGen.translate("M_D")),
                             onChanged: _hasVerifiedProvider
                                 ? (bool? value) {
                                     setState(() {
                                       if (value != null && value) {
-                                        _allergies.add('Medications');
+                                        _allergies.add(autoI8lnGen.translate("M_D"));
                                       } else {
-                                        _allergies.remove('Medications');
+                                        _allergies.remove(autoI8lnGen.translate("M_D"));
                                       }
                                     });
                                   }
@@ -855,28 +856,28 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           TextFormField(
                             controller: _currentMedicationsController,
                             decoration:
-                                InputDecoration(labelText: 'Current Medications'),
+                                InputDecoration(labelText: autoI8lnGen.translate("C_M")),
                             enabled: _hasVerifiedProvider,
                           ),
                           SizedBox(height: 16),
                           TextFormField(
                             controller: _previousPregnanciesController,
                             decoration:
-                                InputDecoration(labelText: 'Previous Pregnancies'),
+                                InputDecoration(labelText: autoI8lnGen.translate("P_P")),
                             enabled: _hasVerifiedProvider,
                           ),
                           SizedBox(height: 16),
                           TextFormField(
                             controller: _familyHistoryController,
                             decoration:
-                                InputDecoration(labelText: 'Family History'),
+                                InputDecoration(labelText: autoI8lnGen.translate("F_H")),
                             enabled: _hasVerifiedProvider,
                           ),
                           SizedBox(height: 16),
                           TextFormField(
                             controller: _lifestyleHabitsController,
                             decoration:
-                                InputDecoration(labelText: 'Lifestyle Habits'),
+                                InputDecoration(labelText: autoI8lnGen.translate("L_H")),
                             enabled: _hasVerifiedProvider,
                           ),
                           SizedBox(height: 20),
@@ -889,7 +890,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                                     }
                                   }
                                 : null,
-                            child: Text('Submit'),
+                            child: AutoText('SUBMIT'),
                           ),
                         ],
                       ),

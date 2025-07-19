@@ -1,8 +1,10 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
+import 'package:jambomama_nigeria/midwives/views/components/drop_down_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -179,32 +181,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Edit Profile',
+                AutoText('EDIT_PROFILE',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 SizedBox(height: 16),
                 _buildTextField(
-                  label: 'Full Name',
+                  label: autoI8lnGen.translate("FULL_NAME"),
                   controller: fullNameController,
                 ),
                 _buildTextField(
-                  label: 'Hospital',
+                  label: autoI8lnGen.translate("HOSPITAL"),
                   controller: hospitalController,
                 ),
                 _buildTextField(
-                  label: 'State',
+                  label: autoI8lnGen.translate("STATE"),
                   controller: stateController,
                 ),
                 _buildTextField(
-                  label: 'City',
+                  label: autoI8lnGen.translate("CITY"),
                   controller: cityController,
                 ),
                 _buildTextField(
-                  label: 'Town',
+                  label: autoI8lnGen.translate("TOWN"),
                   controller: townController,
                 ),
                 _buildTextField(
-                  label: 'Address',
+                  label: autoI8lnGen.translate("Address"),
                   controller: addressController,
                 ),
                 SizedBox(height: 16),
@@ -213,7 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     await _saveProfileChanges();
                     Navigator.pop(context); // Close the modal
                   },
-                  child: Text('Save Changes'),
+                  child: AutoText('SAVE_CHANGES'),
                 ),
                 SizedBox(height: 16),
               ],
@@ -238,7 +240,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: AutoText('SETTINGS'),
         actions: [IconButton(icon: Icon(Icons.help_outline), onPressed: () {})],
       ),
       body: ListView(
@@ -257,7 +259,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(height: 20),
           Center(
               child:
-                  Text('Version 1.0.0', style: TextStyle(color: Colors.grey))),
+                  AutoText('VERSION 1.0.0', style: TextStyle(color: Colors.grey))),
         ],
       ),
     );
@@ -269,7 +271,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         subtitle: Text(widget.email),
         trailing: TextButton(
           onPressed: () => _showEditProfileModal(context),
-          child: Text('Edit Profile'),
+          child: AutoText('EDIT_PROFILE'),
         ),
       );
 
@@ -280,13 +282,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Notifications',
+              AutoText('NOTIFICATIONS',
                   style: TextStyle(fontWeight: FontWeight.bold)),
               SwitchListTile(
                 value: receiveNotifications,
                 onChanged: _toggleNotifications,
-                title: Text('Receive Notifications'),
+                title: AutoText('RECEIVE_NOTIFICATIONS'),
               ),
+              DropDownButton(),
+
+
               // SwitchListTile(
               //   value: true,
               //   onChanged: (val) {},
@@ -295,8 +300,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SwitchListTile(
                 value: false,
                 onChanged: (val) {},
-                title: Text('Appointment Reminders'),
+                title: AutoText('APPOINTMENT_REMINDERS'),
               ),
+
+
             ],
           ),
         ),
@@ -305,10 +312,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildPrivacySecuritySection() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Privacy & Security',
+          AutoText('PRIVACY&SECURITY',
               style: TextStyle(fontWeight: FontWeight.bold)),
           ListTile(
-              title: Text('Change Password'),
+              title: AutoText('CHANGE_PASSWORD'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -323,8 +330,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       );
 
   Widget _buildHealthFacilitySection() => ListTile(
-        title: Text('Health Facility Preferences'),
-        subtitle: Text('Level 2 - [Saved Facilities]'),
+        title: AutoText('HEALTH_FACILITY'),
+        subtitle: AutoText('LEVEL_2'),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () {},
       );
@@ -332,10 +339,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildSupportLegalSection() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Support & Legal',
+          AutoText('SUPPORT_LEGAL',
               style: TextStyle(fontWeight: FontWeight.bold)),
           // ListTile(title: Text('FAQs'), onTap: () {}),
-          ListTile(title: Text('Contact Support'), onTap: () {}),
+          ListTile(title: AutoText('CONTACT_SUPPORT'), onTap: () {}),
           // ListTile(title: Text('Terms & Conditions'), onTap: () {}),
           // ListTile(title: Text('Privacy Policy'), onTap: () {}),
         ],

@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
@@ -45,7 +46,10 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         isLoading = false;
       });
-      showSnackMessage(context, 'Field(s) must not be empty');
+      showSnackMessage(
+        context,
+        "LOGIN_VALIDATION_1",
+      );
     }
   }
 
@@ -57,17 +61,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void showInfo() {
-    const String message = 'Please enter a valid email address.';
+    const String message = 'LOGIN_VALIDATION_2';
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text(message),
+        content: AutoText(message),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('OK'),
+            child: const AutoText('OK'),
           ),
         ],
       ),
@@ -109,7 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Email Field must not be empty';
+                              return autoI8lnGen
+                                  .translate("LOGIN_VALIDATION_3");
                             } else {
                               return null;
                             }
@@ -117,8 +122,9 @@ class _LoginPageState extends State<LoginPage> {
                           onChanged: (value) {
                             email = value;
                           },
-                          decoration: const InputDecoration(
-                            labelText: 'Enter Email',
+                          decoration: InputDecoration(
+                            labelText:
+                                autoI8lnGen.translate("LOGIN_VALIDATION_4"),
                           ),
                         ),
                       ),
@@ -141,7 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Password Field must not be empty';
+                              return autoI8lnGen
+                                  .translate("LOGIN_VALIDATION_5");
                             } else {
                               return null;
                             }
@@ -149,8 +156,8 @@ class _LoginPageState extends State<LoginPage> {
                           onChanged: (value) {
                             password = value;
                           },
-                          decoration: const InputDecoration(
-                            labelText: 'Enter Password',
+                          decoration: InputDecoration(
+                            labelText: autoI8lnGen.translate("ENTER_PASSWORD"),
                           ),
                           obscureText: _isObscure,
                         ),
@@ -187,8 +194,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       );
                     },
-                    child: const Text(
-                      'Forgot password?',
+                    child: AutoText(
+                      'FORGOT_PASSWORD',
                       style: TextStyle(
                         color: Color.fromARGB(255, 108, 107, 107),
                         fontSize: 13,
@@ -203,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                       ? CircularProgressIndicator()
                       : Sbuttons(
                           onTap: login,
-                          text: 'Log In',
+                          text: 'LOGIN_TEXT',
                         ),
                 ),
 
@@ -215,8 +222,8 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Not a member?",
+                    AutoText(
+                      "NOT_A_MEMBER",
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -233,8 +240,8 @@ class _LoginPageState extends State<LoginPage> {
                           print('onTap is null!');
                         }
                       },
-                      child: const Text(
-                        "Register now",
+                      child: AutoText(
+                        "REGISTER_NOW",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -256,8 +263,8 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: notReadytoJoin,
                     child: Container(
                       margin: const EdgeInsets.all(10),
-                      child: const Text(
-                        'Not ready to Join?',
+                      child: AutoText(
+                        'NOT_READY_TO_JOIN',
                         style: TextStyle(
                           color: Color.fromARGB(255, 220, 9, 9),
                           fontSize: 14,

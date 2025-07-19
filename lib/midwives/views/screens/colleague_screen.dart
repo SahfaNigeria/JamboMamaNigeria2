@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/practitioners_chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,7 +66,7 @@ class _ColleagueListState extends State<ColleagueList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Colleagues'),
+        title: AutoText('COLLEAGUES'),
       ),
       body: Column(
         children: [
@@ -74,7 +75,7 @@ class _ColleagueListState extends State<ColleagueList> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Search by name or position',
+                labelText: autoI8lnGen.translate("SEARCHBYNAMEORPOSITION"),
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -84,7 +85,7 @@ class _ColleagueListState extends State<ColleagueList> {
           ),
           Expanded(
             child: _filteredProfessionals.isEmpty
-                ? Center(child: Text('No professionals found'))
+                ? Center(child: AutoText('ERROR_3'))
                 : ListView.builder(
                     itemCount: _filteredProfessionals.length,
                     itemBuilder: (context, index) {

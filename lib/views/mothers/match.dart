@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:provider/provider.dart';
@@ -37,16 +38,16 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Healthcare Professionals')),
+      appBar: AppBar(title: AutoText('HEALTH_CARE_PROF')),
       body: FutureBuilder<List<DocumentSnapshot>>(
         future: _professionalsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: AutoText('ERROR: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No professionals found'));
+            return Center(child: AutoText('ERROR_3'));
           } else {
             List<DocumentSnapshot> professionals = snapshot.data!;
             return ListView.builder(
@@ -134,12 +135,12 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
                                       width: 18,
                                       child: CircularProgressIndicator(strokeWidth: 2),
                                     )
-                                  : Text(
+                                  : AutoText(
                                       isConnected
-                                          ? 'Connected'
+                                          ? 'CONNECTED'
                                           : requestSent
-                                              ? 'Sent'
-                                              : 'Connect',
+                                              ? 'SENT'
+                                              : 'CONNECT',
                                       style: TextStyle(
                                         color: isConnected || requestSent
                                             ? Colors.grey

@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,7 +15,7 @@ class HospitalsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Health Facilities'),
+        title: AutoText('HEALTH_FACILITIES'),
       ),
       body: Column(
         children: [
@@ -29,7 +30,7 @@ class HospitalsScreen extends StatelessWidget {
 
                 // If there are no hospitals approved yet
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No health facility available.'));
+                  return Center(child: AutoText('ERROR_5'));
                 }
 
                 // Display the list of approved hospitals
@@ -41,27 +42,27 @@ class HospitalsScreen extends StatelessWidget {
 
                     return Card(
                       child: ListTile(
-                        title: Text(hospitalData['name'] ?? 'Unnamed Hospital'),
-                        subtitle: Text(hospitalData['location']['address'] ??
-                            'No Address'),
-                        trailing: Text(
-                            'Level: ${hospitalData['level'] ?? 'Unknown'}'),
+                        title: AutoText(hospitalData['name'] ?? 'ERROR_6'),
+                        subtitle: AutoText(hospitalData['location']['address'] ??
+                            'ERROR_7'),
+                        trailing: AutoText(
+                            'Level: ${hospitalData['level'] ?? 'ERROR_8'}'),
                         onTap: () {
                           // Optional: Show more hospital details
                           showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: Text(hospitalData['name']),
-                                content: Text(
-                                  "Address: ${hospitalData['location']['address']}\n"
-                                  "Services: ${hospitalData['services']}\n"
-                                  "Phone:${hospitalData['contact']['phone']} ",
+                                title: AutoText(hospitalData['name']),
+                                content: AutoText(
+                                  "ADDRESS ${hospitalData['location']['address']}\n"
+                                  "SERVICES ${hospitalData['services']}\n"
+                                  "PHONE${hospitalData['contact']['phone']} ",
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: Text('Close'),
+                                    child: AutoText('CLOSE'),
                                   ),
                                 ],
                               );
@@ -77,8 +78,8 @@ class HospitalsScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Didn't see your hospital? Add it!.",
+            child: AutoText(
+              "ADD_HOSPITAL_DIDNT_SEE",
               style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -98,7 +99,7 @@ class HospitalsScreen extends StatelessWidget {
           );
         },
         child: Icon(Icons.add),
-        tooltip: 'Add a Hospital',
+        tooltip: autoI8lnGen.translate("ADD_HOSPITAL"),
       ),
     );
   }
@@ -121,7 +122,7 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a Hospital'),
+        title: AutoText('ADD_HOSPITAL'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -130,10 +131,10 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Hospital Name'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("HOSPITAL_NAME")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter hospital name';
+                    return autoI8lnGen.translate("VALIDATION_Q_15");
                   }
                   return null;
                 },
@@ -142,10 +143,10 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Address'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("ADDRESS")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter address';
+                    return autoI8lnGen.translate("VALIDATION_Q_16");
                   }
                   return null;
                 },
@@ -154,24 +155,24 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Phone'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("PHONE")),
                 onSaved: (value) {
                   phone = value!;
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Services includes'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("SERVICES_INCLUDED")),
                 onSaved: (value) {
                   services = value!;
                 },
               ),
               DropdownButtonFormField<int>(
-                decoration: InputDecoration(labelText: 'Level'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("LEVEL")),
                 value: level,
                 items: [
-                  DropdownMenuItem(value: 1, child: Text('Level 1')),
-                  DropdownMenuItem(value: 2, child: Text('Level 2')),
-                  DropdownMenuItem(value: 3, child: Text('Level 3')),
+                  DropdownMenuItem(value: 1, child: AutoText('LEVEL 1')),
+                  DropdownMenuItem(value: 2, child: AutoText('LEVEL 2')),
+                  DropdownMenuItem(value: 3, child: AutoText('LEVEL 3')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -202,7 +203,7 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Submit'),
+                child: AutoText('SUBMIT'),
               ),
             ],
           ),

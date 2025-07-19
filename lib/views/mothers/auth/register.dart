@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/registration_button.dart';
 import 'package:jambomama_nigeria/midwives/views/auth/auth_screen.dart';
@@ -40,9 +41,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
             // Registeration text like a Notice board
 
-            const Center(
-                child: Text(
-              "Registration",
+             Center(
+                child: AutoText(
+              "REGISTRATION",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -62,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: RegistrationButton(
-                    text: "Mother",
+                    text: "MOTHERS",
                     icon: Icons.woman,
                     onTap: () {
                       Navigator.push(
@@ -77,7 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
                   child: RegistrationButton(
-                    text: "Health Professional",
+                    text: "HEALTH_PROFESSIONAL",
                     icon: Icons.medical_services,
                     onTap: () {
                       Navigator.push(
@@ -100,8 +101,8 @@ class _RegisterPageState extends State<RegisterPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Already a member?",
+                 AutoText(
+                  "ALREADY_MEMBER",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -112,8 +113,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 GestureDetector(
                   onTap: widget.onTap,
-                  child: const Text(
-                    "Sign In",
+                  child: const AutoText(
+                    "SIGN_IN",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -131,8 +132,8 @@ class _RegisterPageState extends State<RegisterPage> {
             Center(
               child: Container(
                 margin: const EdgeInsets.all(10),
-                child: const Text(
-                  'Not ready to Join?',
+                child:  AutoText(
+                  'NOR_READY_TO_JOIN',
                   style: TextStyle(
                     color: Color.fromARGB(255, 220, 9, 9),
                     fontSize: 14,

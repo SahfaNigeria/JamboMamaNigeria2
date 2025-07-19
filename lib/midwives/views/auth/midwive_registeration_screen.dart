@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -52,12 +53,12 @@ class _MidwiveResgisteratioScreenState
   }
 
   _saveMidwifeData() async {
-    EasyLoading.show(status: 'loading...');
+    EasyLoading.show(status: autoI8lnGen.translate("LOADING_TEXT"),);
     if (_formKey.currentState!.validate()) {
       if (!_isImageSelected) {
         EasyLoading.dismiss();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select a profile picture.')),
+          SnackBar(content: AutoText("SELECT_PICTURE")),
         );
         return;
       }
@@ -131,8 +132,8 @@ class _MidwiveResgisteratioScreenState
                           if (!_isImageSelected)
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                'Profile picture is required',
+                              child: AutoText(
+                                'PP_REQUIRED',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14),
                               ),
@@ -152,8 +153,8 @@ class _MidwiveResgisteratioScreenState
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text(
-                      'Personal Info',
+                    AutoText(
+                      'P_INFO',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
@@ -165,14 +166,14 @@ class _MidwiveResgisteratioScreenState
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please, Fill the name field';
+                          return autoI8lnGen.translate("VALIDATION_Q_9");
                         } else {
                           return null;
                         }
                       },
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                        label: Text('Full Name'),
+                        label: AutoText('VALIDATION_Q_10'),
                       ),
                     ),
                     SizedBox(
@@ -184,21 +185,18 @@ class _MidwiveResgisteratioScreenState
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please, Fill the email field';
+                          return autoI8lnGen.translate("VALIDATION_Q_11");
                         } else {
                           return null;
                         }
                       },
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        label: Text('Email'),
+                        label: AutoText('EMAIL'),
                       ),
                     ),
                     SizedBox(
-                      height: 8,
-                    ),
-                    SizedBox(
-                      height: 8,
+                      height: 16,
                     ),
                     TextFormField(
                       onChanged: (value) {
@@ -206,14 +204,14 @@ class _MidwiveResgisteratioScreenState
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please, Fill the Health Facility field';
+                          return autoI8lnGen.translate("VALIDATION_Q_12");
                         } else {
                           return null;
                         }
                       },
                       decoration: InputDecoration(
-                          label: Text('Health Facility'),
-                          hintText: 'Where you work'),
+                          label: AutoText("VALIDATION_Q_13"),
+                          hintText: autoI8lnGen.translate("VALIDATION_Q_14")),
                     ),
                     SizedBox(
                       height: 8,
@@ -224,14 +222,14 @@ class _MidwiveResgisteratioScreenState
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please, Fill the Position field';
+                          return autoI8lnGen.translate("VALIDATION_Q_8");
                         } else {
                           return null;
                         }
                       },
                       decoration: InputDecoration(
-                          label: Text('Position'),
-                          hintText: 'Are you a Doctor, Nurse or a Midwife'),
+                          label: AutoText('VALIDATION_Q_6'),
+                          hintText: autoI8lnGen.translate("VALIDATION_Q_7")),
                     ),
                     SizedBox(
                       height: 8,
@@ -242,20 +240,20 @@ class _MidwiveResgisteratioScreenState
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please, Fill the Qualification Number field';
+                          return autoI8lnGen.translate("VALIDATION_Q_5");
                         } else {
                           return null;
                         }
                       },
                       decoration: InputDecoration(
-                        label: Text('Qualification Number'),
+                        label: AutoText('QUALIFICATION_TXT'),
                       ),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    Text(
-                      'Location of Service',
+                    AutoText(
+                      'L_SERVICE',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
@@ -284,14 +282,14 @@ class _MidwiveResgisteratioScreenState
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please, Fill the Town & Village field';
+                          return autoI8lnGen.translate("VALIDATION_Q_4");
                         } else {
                           return null;
                         }
                       },
                       decoration: InputDecoration(
-                        label: Text(
-                          'Village and Town',
+                        label: AutoText(
+                          'VILLAGE_TOWN',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -337,8 +335,8 @@ class _MidwiveResgisteratioScreenState
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
-                          child: Text(
-                            'Save',
+                          child: AutoText(
+                            'SAVE',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

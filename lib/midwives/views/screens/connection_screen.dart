@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
@@ -11,7 +12,7 @@ class ConnectionScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Requests'),
+        title: AutoText('REQUESTS'),
       ),
       body: FutureBuilder<List<NotificationModel>>(
         future: connectionStateModel.fetchNotifications(),
@@ -21,11 +22,11 @@ class ConnectionScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: AutoText('ERROR: ${snapshot.error}'));
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No notifications'));
+            return Center(child: AutoText('ERROR_4'));
           }
 
           final notifications = snapshot.data!;
@@ -52,19 +53,19 @@ class ConnectionScreen extends StatelessWidget {
         '${notification.requesterName}',
         style: TextStyle(fontWeight: FontWeight.w600),
       ),
-      subtitle: Text('sent you a connection request'),
+      subtitle: AutoText('REQUEST_1'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextButton(
             onPressed: () => connectionStateModel.handleConnectionAction(
                 notification.id, 'accepted'),
-            child: Text('Accept'),
+            child: AutoText('ACCEPT'),
           ),
           TextButton(
             onPressed: () => connectionStateModel.handleConnectionAction(
                 notification.id, 'declined'),
-            child: Text('Decline'),
+            child: AutoText('DECLINE'),
           ),
         ],
       ),

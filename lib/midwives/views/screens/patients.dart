@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _PatientsState extends State<Patients> {
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Patients'),
+              title:  AutoText('PATIENTS'),
               centerTitle: true,
             ),
             body: Center(child: CircularProgressIndicator()),
@@ -52,10 +53,10 @@ class _PatientsState extends State<Patients> {
         if (userSnapshot.hasError) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Patients'),
+              title: const  AutoText('PATIENTS'),
               centerTitle: true,
             ),
-            body: Center(child: Text('Error loading user data')),
+            body: Center(child: AutoText('ERROR_14')),
           );
         }
 
@@ -71,7 +72,7 @@ class _PatientsState extends State<Patients> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Patients'),
+            title: const  AutoText('PATIENTS'),
             centerTitle: true,
             bottom: PreferredSize(
               preferredSize:
@@ -80,7 +81,7 @@ class _PatientsState extends State<Patients> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: '  Search Patients...',
+                    hintText: autoI8lnGen.translate("SEARCH_PATIENTS"),
                     suffixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
@@ -119,7 +120,7 @@ class _PatientsState extends State<Patients> {
               }
 
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(child: Text('You have no patients yet'));
+                return Center(child: AutoText('ERROR_15'));
               }
 
               final allowedChats = snapshot.data!.docs;
@@ -139,11 +140,11 @@ class _PatientsState extends State<Patients> {
                     builder: (context, userSnapshot) {
                       if (userSnapshot.connectionState ==
                           ConnectionState.waiting) {
-                        return ListTile(title: Text('Loading...'));
+                        return ListTile(title: AutoText('LOADING_TEXT'));
                       }
 
                       if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                        return ListTile(title: Text('User not found'));
+                        return ListTile(title: AutoText('USER_NOT_FOUND'));
                       }
 
                       final userData =

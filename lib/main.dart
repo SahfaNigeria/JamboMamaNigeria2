@@ -22,6 +22,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await LocalizationService.init();
   // Platform.isAndroid
   //     ? await Firebase.initializeApp(
   //         options: FirebaseOptions(
@@ -44,45 +45,15 @@ void main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final FlutterLocalization _flutterLocalization =
-      FlutterLocalization.instance;
-  void initLocalization() {
-
-    _flutterLocalization.init(
-      mapLocales: AppLocale,
-      initLanguageCode: "en",
-    );
-    _flutterLocalization.onTranslatedLanguage = onTranslateLanguage;
-  }
-
-  void onTranslateLanguage(Locale? locale){
-    setState(() {
-
-    });
-  }
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    initLocalization();
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey, // 👈 Added here
-      supportedLocales: _flutterLocalization.supportedLocales,
-      localizationsDelegates: _flutterLocalization.localizationsDelegates,
+      // supportedLocales: _flutterLocalization.supportedLocales,
+      // localizationsDelegates: _flutterLocalization.localizationsDelegates,
 
       builder: EasyLoading.init(),
       routes: {

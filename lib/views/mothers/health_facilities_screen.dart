@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,7 +15,7 @@ class HospitalsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Health Facilities'),
+        title: AutoText('HEALTH_FACILITIES'),
       ),
       body: Column(
         children: [
@@ -29,7 +30,7 @@ class HospitalsScreen extends StatelessWidget {
 
                 // If there are no hospitals approved yet
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No health facility available.'));
+                  return Center(child: AutoText('NO_HEALTH_FACILITIES'));
                 }
 
                 // Display the list of approved hospitals
@@ -41,11 +42,11 @@ class HospitalsScreen extends StatelessWidget {
 
                     return Card(
                       child: ListTile(
-                        title: Text(hospitalData['name'] ?? 'Unnamed Hospital'),
-                        subtitle: Text(hospitalData['location']['address'] ??
-                            'No Address'),
-                        trailing: Text(
-                            'Level: ${hospitalData['level'] ?? 'Unknown'}'),
+                        title: AutoText(hospitalData['name'] ?? 'ERROR_6'),
+                        subtitle: AutoText(hospitalData['location']['address'] ??
+                            'ERROR_7'),
+                        trailing: AutoText(
+                            'LEVEL_COLUMN ${hospitalData['level'] ?? 'Unknown'}'),
                         onTap: () {
                           // Optional: Show more hospital details
                           showDialog(
@@ -53,15 +54,15 @@ class HospitalsScreen extends StatelessWidget {
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(hospitalData['name']),
-                                content: Text(
-                                  "Address: ${hospitalData['location']['address']}\n"
-                                  "Services: ${hospitalData['services']}\n"
-                                  "Phone:${hospitalData['contact']['phone']} ",
+                                content: AutoText(
+                                  "ADDRESS ${hospitalData['location']['address']}\n"
+                                  "SERVICES ${hospitalData['services']}\n"
+                                  "PHONE ${hospitalData['contact']['phone']} ",
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: Text('Close'),
+                                    child: AutoText('CLOSE'),
                                   ),
                                 ],
                               );
@@ -77,8 +78,8 @@ class HospitalsScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Didn't see your hospital? Add it!.",
+            child: AutoText(
+              "DIDNT_SEE_YOUR_HOSPITAL",
               style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -98,7 +99,7 @@ class HospitalsScreen extends StatelessWidget {
           );
         },
         child: Icon(Icons.add),
-        tooltip: 'Add a Hospital',
+        tooltip: autoI8lnGen.translate("ADD_HOSPITAL"),
       ),
     );
   }

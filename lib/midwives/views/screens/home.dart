@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class MidWifeHomePage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Home'),
+              title:  AutoText('HOME_2'),
               centerTitle: true,
             ),
             body: Center(child: CircularProgressIndicator()),
@@ -60,24 +61,24 @@ class MidWifeHomePage extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Home'),
+              title:  AutoText('HOME_2'),
               centerTitle: true,
             ),
-            body: Center(child: Text('Error: ${snapshot.error}')),
+            body: Center(child: AutoText('ERROR: ${snapshot.error}')),
           );
         } else if (!snapshot.hasData || snapshot.data == null) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Home'),
+              title:  AutoText('HOME_2'),
               centerTitle: true,
             ),
-            body: Center(child: Text('No user data found')),
+            body: Center(child: AutoText('ERROR_9')),
           );
         }
 
         var userData = snapshot.data!;
-        String title = userData['position'] ?? 'Health Professional';
-        String name = userData['fullName'] ?? 'User';
+        String title = userData['position'] ?? 'HEALTH_PROFESSIONAL';
+        String name = userData['fullName'] ?? 'USER';
         String profilePictureUrl = userData['midWifeImage'] ?? '';
 
         // Extract user data for drawer
@@ -91,7 +92,7 @@ class MidWifeHomePage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Home'),
+            title: const AutoText('HOME_2'),
             centerTitle: true,
             actions: [
               StreamBuilder<int>(
@@ -171,8 +172,8 @@ class MidWifeHomePage extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    Text(
-                      'Hello!👋 ',
+                    AutoText(
+                      'HELLO',
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.w400),
                     ),
@@ -198,7 +199,7 @@ class MidWifeHomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: HomeComponents(
-                        text: 'Patients',
+                        text: "PATIENTS",
                         icon: 'assets/svgs/logo_Jambomama.svg',
                         onTap: () {
                           Navigator.push(
@@ -221,7 +222,7 @@ class MidWifeHomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: HomeComponents(
-                        text: 'Colleagues',
+                        text: 'COLLEAGUES',
                         icon: 'assets/svgs/file_directory.svg',
                         onTap: () {
                           Navigator.push(
@@ -252,7 +253,7 @@ class MidWifeHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: HomeComponents(
-                      text: 'Manage Tasks',
+                      text: 'MANAGE_TASKS',
                       icon: 'assets/svgs/learn_medicine.svg',
                       onTap: () {
                         Navigator.push(
@@ -275,7 +276,7 @@ class MidWifeHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: HomeComponents(
-                      text: 'My Account',
+                      text: 'MY_ACCOUNT',
                       icon: 'assets/svgs/person_account.svg',
                       onTap: () {
                         Navigator.push(

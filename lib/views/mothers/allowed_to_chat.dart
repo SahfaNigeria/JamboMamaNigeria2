@@ -1,9 +1,8 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/chat_service_mothers.dart';
-import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
-import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 
 class AllowedToChatScreen extends StatelessWidget {
   @override
@@ -14,7 +13,7 @@ class AllowedToChatScreen extends StatelessWidget {
     // In the pregnant woman app, filter by recipientId
     return Scaffold(
       appBar: AppBar(
-        title: Text('Health Provider'),
+        title: AutoText('HEALTH_PROVIDER'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -28,8 +27,10 @@ class AllowedToChatScreen extends StatelessWidget {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-                child: Text(
-                    'You do not have a connected Healthcare provider to talk with'));
+              child: AutoText(
+                'ERROR_17',
+              ),
+            );
           }
 
           final allowedChats = snapshot.data!.docs;
@@ -49,20 +50,20 @@ class AllowedToChatScreen extends StatelessWidget {
                     .get(),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return ListTile(title: Text('Loading...'));
+                    return ListTile(title: AutoText('LOADING_2'));
                   }
 
                   if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                    return ListTile(title: Text('User not found'));
+                    return ListTile(title: AutoText('USER_NOT_FOUND'));
                   }
 
                   final userData =
                       userSnapshot.data!.data() as Map<String, dynamic>;
                   final userName = userData['fullName'] ??
-                      'No name'; // Ensure field name matches
+                      'NO_NAME'; // Ensure field name matches
 
                   return ListTile(
-                    title: Text(
+                    title: AutoText(
                       userName,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),

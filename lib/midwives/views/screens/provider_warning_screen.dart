@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -39,13 +40,13 @@ class _HealthcareProfessionalAssessmentScreenState
 
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: AutoText('ERROR: ${snapshot.error}'),
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No emergency assessments found for this patient.'),
+            return  Center(
+              child: AutoText('ASSESSMENT_NOT_FOUND'),
             );
           }
 
@@ -97,7 +98,7 @@ class _HealthcareProfessionalAssessmentScreenState
     final timestamp = (data['timestamp'] as Timestamp?)?.toDate();
     final formattedDate = timestamp != null
         ? "${timestamp.day}/${timestamp.month}/${timestamp.year} at ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}"
-        : "Unknown date";
+        : "UNKNOWN_DATE";
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -113,16 +114,16 @@ class _HealthcareProfessionalAssessmentScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Emergency Assessment',
+                AutoText(
+                  'EMERGENCY_ASSESSMENT',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.teal[700],
                   ),
                 ),
-                Text(
-                  'Submitted: $formattedDate',
+                AutoText(
+                  'SUBMITTED $formattedDate',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -141,29 +142,29 @@ class _HealthcareProfessionalAssessmentScreenState
 
     // Check for high-priority symptoms
     if (data['hasVaginalBleeding'] == true &&
-        data['bleedingAmount'] == 'Heavy') {
+        data['bleedingAmount'] == autoI8lnGen.translate("HEAVY")) {
       alerts.add(
-          _buildAlert('CRITICAL: Heavy vaginal bleeding reported', Colors.red));
+          _buildAlert('CRITICAL_VAGINA', Colors.red));
     }
 
     if (data['babyStoppedMoving'] == true) {
       alerts.add(_buildAlert(
-          'URGENT: Patient reports baby stopped moving', Colors.red));
+          'URGENT_VAGINA', Colors.red));
     }
 
     if (data['hasContractions'] == true &&
-        data['contractionType'] == 'Regular and painful') {
+        data['contractionType'] == autoI8lnGen.translate('REGULAR_PAINFUL')) {
       alerts.add(
-          _buildAlert('URGENT: Regular painful contractions', Colors.orange));
+          _buildAlert('URGENT_VAGINA_2', Colors.orange));
     }
 
     if (data['hasFever'] == true) {
-      alerts.add(_buildAlert('WARNING: Fever present', Colors.orange));
+      alerts.add(_buildAlert('WARNING_1', Colors.orange));
     }
 
-    if (data['headacheSeverity'] == 'Severe') {
+    if (data['headacheSeverity'] == autoI8lnGen.translate('SEVERE')) {
       alerts
-          .add(_buildAlert('WARNING: Severe headache reported', Colors.orange));
+          .add(_buildAlert('WARNING_2', Colors.orange));
     }
 
     if (alerts.isEmpty) {
@@ -173,8 +174,8 @@ class _HealthcareProfessionalAssessmentScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'PRIORITY ALERTS',
+        AutoText(
+          'PRIORITY_ALERTS',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -201,7 +202,7 @@ class _HealthcareProfessionalAssessmentScreenState
           Icon(Icons.warning, color: color, size: 20),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
+            child: AutoText(
               message,
               style: TextStyle(
                 color: color,
@@ -217,50 +218,50 @@ class _HealthcareProfessionalAssessmentScreenState
   Widget _buildAssessmentSections(Map<String, dynamic> data) {
     return Column(
       children: [
-        _buildSection('Bleeding & Discharge', [
-          _buildSymptomRow('Vaginal Bleeding', data['hasVaginalBleeding'],
+        _buildSection('BLEEDING_DISCHARGE', [
+          _buildSymptomRow('V_BLEEDING', data['hasVaginalBleeding'],
               details: data['hasVaginalBleeding'] == true
-                  ? 'Amount: ${data['bleedingAmount'] ?? 'Not specified'}'
+                  ? 'AMNT ${data['bleedingAmount'] ?? 'NOT_SPECIFIED'}'
                   : null),
-          _buildSymptomRow('Vaginal Discharge', data['hasVaginalDischarge'],
+          _buildSymptomRow('V_DISCHARGE', data['hasVaginalDischarge'],
               details: data['hasVaginalDischarge'] == true
-                  ? 'Duration: ${data['dischargeDuration'] ?? 'Not specified'}'
+                  ? 'DURATION ${data['dischargeDuration'] ?? 'NOT_SPECIFIED'}'
                   : null),
-          _buildSymptomRow('Fluid Loss', data['hasFluidLoss'],
+          _buildSymptomRow('FLUID_LOSS', data['hasFluidLoss'],
               details: data['hasFluidLoss'] == true
-                  ? 'Amount: ${data['fluidAmount'] ?? 'Not specified'}'
+                  ? 'AMNT ${data['fluidAmount'] ?? 'NOT_SPECIFIED'}'
                   : null),
         ]),
-        _buildSection('Urinary & Digestive', [
-          _buildSymptomRow('Burning Urination', data['hasBurningUrination']),
-          _buildSymptomRow('Diarrhea', data['hasDiarrhea'],
+        _buildSection('U_D', [
+          _buildSymptomRow('B_U', data['hasBurningUrination']),
+          _buildSymptomRow('DIARRHEA', data['hasDiarrhea'],
               details: data['hasDiarrhea'] == true
-                  ? 'Duration: ${data['diarrheadays'] ?? 'Not specified'} days, Frequency: ${data['diarrheaFrequency'] ?? 'Not specified'}'
+                  ? 'DURATION ${data['diarrheadays'] ?? 'NOT_SPECIFIED'} DAYS, FREQUENCY ${data['diarrheaFrequency'] ?? 'NOT_SPECIFIED'}'
                   : null),
         ]),
-        _buildSection('General Symptoms', [
-          _buildSymptomRow('Fever', data['hasFever']),
-          _buildSymptomRow('Cough', data['hasCough'],
+        _buildSection('GENERAL_S', [
+          _buildSymptomRow('FEVER', data['hasFever']),
+          _buildSymptomRow('COUGH', data['hasCough'],
               details: data['hasCough'] == true
-                  ? 'Timing: ${data['coughTiming'] ?? 'Not specified'}, Duration: ${data['coughDays'] ?? 'Not specified'} days'
+                  ? 'TIMING ${data['coughTiming'] ?? 'NOT_SPECIFIED'}, DURATION ${data['coughDays'] ?? 'NOT_SPECIFIED'} DAYS'
                   : null),
-          _buildSymptomRow('Swollen Legs', data['hasSwollenLegs']),
-          _buildSymptomRow('Numbness', data['hasNumbness']),
-          _buildSymptomRow('Headache', data['hasHeadache'],
+          _buildSymptomRow('S_L', data['hasSwollenLegs']),
+          _buildSymptomRow('N_B', data['hasNumbness']),
+          _buildSymptomRow('H_D', data['hasHeadache'],
               details: data['hasHeadache'] == true
-                  ? 'Severity: ${data['headacheSeverity'] ?? 'Not specified'}'
+                  ? 'SEVERITY ${data['headacheSeverity'] ?? 'NOT_SPECIFIED'}'
                   : null),
         ]),
-        _buildSection('Pregnancy-Specific', [
-          _buildSymptomRow('Contractions', data['hasContractions'],
+        _buildSection('PREGNANCY_SPECIFIC', [
+          _buildSymptomRow('CONTRACTIONS', data['hasContractions'],
               details: data['hasContractions'] == true
-                  ? 'Type: ${data['contractionType'] ?? 'Not specified'}'
+                  ? 'TYPE ${data['contractionType'] ?? 'NOT_SPECIFIED'}'
                   : null),
-          _buildSymptomRow('Baby Stopped Moving', data['babyStoppedMoving']),
+          _buildSymptomRow('BABY_STOPPED_MOVING', data['babyStoppedMoving']),
         ]),
         if (data['otherConcerns'] != null &&
             data['otherConcerns'].toString().isNotEmpty)
-          _buildSection('Additional Concerns', [
+          _buildSection('ADDITIONAL_CONCERNS_2', [
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -269,7 +270,7 @@ class _HealthcareProfessionalAssessmentScreenState
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.blue[200]!),
               ),
-              child: Text(
+              child: AutoText(
                 data['otherConcerns'].toString(),
                 style: const TextStyle(fontSize: 14),
               ),
@@ -285,7 +286,7 @@ class _HealthcareProfessionalAssessmentScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          AutoText(
             title,
             style: TextStyle(
               fontSize: 16,
@@ -327,7 +328,7 @@ class _HealthcareProfessionalAssessmentScreenState
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
+                child: AutoText(
                   symptom,
                   style: TextStyle(
                     fontSize: 14,
@@ -336,7 +337,7 @@ class _HealthcareProfessionalAssessmentScreenState
                   ),
                 ),
               ),
-              Text(
+              AutoText(
                 isPresent ? 'YES' : 'NO',
                 style: TextStyle(
                   fontSize: 12,
@@ -349,7 +350,7 @@ class _HealthcareProfessionalAssessmentScreenState
           if (details != null && isPresent)
             Padding(
               padding: const EdgeInsets.only(left: 28, top: 4),
-              child: Text(
+              child: AutoText(
                 details,
                 style: TextStyle(
                   fontSize: 12,

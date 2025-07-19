@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:intl/intl.dart'; // For formatting the date
 import 'package:flutter/cupertino.dart';
@@ -99,7 +100,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
           isLoading = false;
         });
       });
-      showSnackMessage(context, 'Your account has been created');
+      showSnackMessage(context, 'ACCOUNT_CREATED');
 
       // Navigate to the sign-in screen
       Navigator.push(
@@ -113,7 +114,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
       setState(() {
         isLoading = false;
       });
-      return showSnackMessage(context, 'Please, populate the field(s)');
+      return showSnackMessage(context, 'POPULATE_FIELDS');
     }
   }
 
@@ -169,7 +170,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
           ),
         ),
         SizedBox(height: 5),
-        Text(
+        AutoText(
           label,
           style: TextStyle(
             fontSize: 12,
@@ -195,8 +196,8 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Text(
-                    "Mother's Registration",
+                  child: AutoText(
+                    "VALIDATION_Q_3",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -237,8 +238,8 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       ],
                     ),
                     SizedBox(height: 15),
-                    Text(
-                      'Choose your profile picture style:',
+                    AutoText(
+                      'CHOOSE_PROFILE_STYLE',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -246,13 +247,13 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildImageOption('Standard', 'default'),
-                        _buildImageOption('Headscarf', 'headscarf'),
-                        _buildImageOption('Hijab', 'hijab'),
+                        _buildImageOption('STANDARD', 'default'),
+                        _buildImageOption('SCARF', 'headscarf'),
+                        _buildImageOption('HIJAB', 'hijab'),
                       ],
                     ),
                     SizedBox(height: 10),
-                    Text(
+                    AutoText(
                       'OR',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -261,7 +262,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         selectingImage();
                       },
                       icon: Icon(Icons.add_a_photo),
-                      label: Text('Upload your own photo'),
+                      label: AutoText('UPLOAD_PHOTO'),
                     ),
                   ],
                 ),
@@ -270,8 +271,8 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        'Select one of our sample photos or add your own',
+                      child: AutoText(
+                        'SELECT_SAMPLES',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
@@ -345,7 +346,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please Hospital field is empty';
+                        return autoI8lnGen.translate("VALIDATION_Q_2");
                       } else {
                         return null;
                       }
@@ -354,7 +355,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       hospital = value;
                     },
                     decoration: InputDecoration(
-                      labelText: 'Hosptal',
+                      labelText: autoI8lnGen.translate("HOSPITAL"),
                     ),
                   ),
                 ),
@@ -384,8 +385,8 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                     },
                   ),
                 ),
-                Text(
-                  'Location',
+                AutoText(
+                  'LOCATION',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Padding(
@@ -418,14 +419,14 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please, Fill the Town & Village field';
+                            return autoI8lnGen.translate("VALIDATION_2");
                           } else {
                             return null;
                           }
                         },
                         decoration: InputDecoration(
-                          label: Text(
-                            'Town or Village',
+                          label: AutoText(
+                            "VALIDATION_Q",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -436,21 +437,21 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please, Fill the Address field';
+                            return autoI8lnGen.translate("VALIDATION_1");
                           } else {
                             return null;
                           }
                         },
                         decoration: InputDecoration(
-                          label: Text(
-                            'Street',
+                          label: AutoText(
+                            'STREET',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding:  EdgeInsets.all(10.0),
                         child: TextFormField(
                           obscureText: _obscureText,
                           validator: (value) {
@@ -478,9 +479,9 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                             password = value;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: autoI8lnGen.translate("PASSWORD"),
                             helperText:
-                                'Password must be at least 6 characters with letters and numbers',
+                            autoI8lnGen.translate("PASSWORD_V"),
                             helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -541,7 +542,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                           onTap: () {
                             _signUpUser();
                           },
-                          text: 'Register'),
+                          text: 'REGISTER'),
                 ),
               ],
             ),
