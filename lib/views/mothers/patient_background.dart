@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -164,14 +165,14 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
 
       setState(() {
         if (_bmi! < 18.5) {
-          _bmiMessage = 'Too low';
+          _bmiMessage = autoI8lnGen.translate("TOO_LOW");
         } else if (_bmi! >= 18.5 && _bmi! <= 24.9) {
-          _bmiMessage = 'Thumb up';
+          _bmiMessage = autoI8lnGen.translate("THUMB_UP");
         } else if (_bmi! >= 25 && _bmi! <= 29) {
-          _bmiMessage = 'Too high';
+          _bmiMessage = autoI8lnGen.translate("TOO_HIGH");
         } else {
-          _bmiMessage = 'Obese: danger!';
-          _addAlert('This BMI level indicates obesity');
+          _bmiMessage = autoI8lnGen.translate("OBESE_DANGER");
+          _addAlert(autoI8lnGen.translate("THIS_LEVEL_OBESE"));
         }
       });
     }
@@ -187,22 +188,22 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
             systolic <= 120 &&
             diastolic >= 60 &&
             diastolic <= 80) {
-          _bpMessage = 'Thumb up';
+          _bpMessage = autoI8lnGen.translate("THUMB_UP");
         } else if (systolic >= 121 &&
             systolic <= 129 &&
             diastolic >= 81 &&
             diastolic <= 89) {
-          _bpMessage = 'ELEVATED – change diet';
+          _bpMessage = autoI8lnGen.translate("E_C_D");
         } else if (systolic >= 130 && systolic <= 139 && diastolic >= 90) {
           _bpMessage =
-              'This level indicates Hypertension stage 1: diet change and treatment';
+              autoI8lnGen.translate("HEALTH_ISSUE_1");
         } else if (systolic >= 140 && diastolic >= 90) {
           _bpMessage =
-              'This level indicates Hypertension stage 2: needs monitoring and treatment';
+              autoI8lnGen.translate("HEALTH_ISSUE_2");
         } else if (systolic >= 160 && diastolic >= 100) {
           _bpMessage =
-              'This level indicates Hypertension emergency: immediate medical intervention needed';
-          _addAlert('Hypertension emergency');
+              autoI8lnGen.translate("HEALTH_ISSUE_3");
+          _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_4"));
         }
       });
     }
@@ -215,11 +216,11 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
       // Calculate pregnancy weeks to determine appropriate range
       setState(() {
         if (haemoglobin < 9.5) {
-          _haemoglobinMessage = 'Too low - nutrition change/treatment needed';
+          _haemoglobinMessage = autoI8lnGen.translate("HEALTH_ISSUE_5");
         } else if (haemoglobin > 15) {
-          _haemoglobinMessage = 'Too high - treatment needed';
+          _haemoglobinMessage = autoI8lnGen.translate("HEALTH_ISSUE_6");
         } else {
-          _haemoglobinMessage = 'Thumb up';
+          _haemoglobinMessage = autoI8lnGen.translate("THUMB_UP");
         }
       });
     }
@@ -231,12 +232,12 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     if (albumin != null) {
       setState(() {
         if (albumin <= 150) {
-          _albuminMessage = 'Normal (Thumb up)';
+          _albuminMessage = autoI8lnGen.translate("HEALTH_ISSUE_7");
         } else if (albumin > 150 && albumin <= 300) {
-          _albuminMessage = 'So-so: needs treatment';
+          _albuminMessage = autoI8lnGen.translate("HEALTH_ISSUE_8");
         } else {
-          _albuminMessage = 'Needs doctor\'s advice';
-          _addAlert('High albumin levels');
+          _albuminMessage = autoI8lnGen.translate("HEALTH_ISSUE_9");
+          _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_10"));
         }
       });
     }
@@ -248,13 +249,13 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     if (glucose != null) {
       setState(() {
         if (glucose < 7.8) {
-          _glucoseMessage = 'Normal';
+          _glucoseMessage = autoI8lnGen.translate("NORMAL");
         } else if (glucose >= 7.8 && glucose < 11.0) {
-          _glucoseMessage = '2nd test needed';
+          _glucoseMessage = autoI8lnGen.translate("HEALTH_ISSUE_11");
         } else {
           _glucoseMessage =
-              'This level indicates gestational diabetes. Your RHP will advise you';
-          _addAlert('Possible gestational diabetes');
+              autoI8lnGen.translate("HEALTH_ISSUE_12");
+          _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_13"));
         }
       });
     }
@@ -290,40 +291,40 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     final age = int.tryParse(_ageController.text);
     if (age != null) {
       if (age < 20 || age > 39) {
-        _addAlert('Age-related risk factor');
+        _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_14"));
       }
       if (_isFirstPregnancy && (age < 20 || age > 35)) {
-        _addAlert('First pregnancy with age risk');
+        _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_15"));
       }
     }
 
     final miscarriages = int.tryParse(_miscarriagesController.text);
     if (miscarriages != null && miscarriages > 0) {
-      _addAlert('Previous miscarriages');
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_16"));
     }
 
-    if (_lastPregnancyTiming == '>9 years') {
-      _addAlert('Long interval since last pregnancy');
+    if (_lastPregnancyTiming == autoI8lnGen.translate("LESS_9")) {
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_17"));
     }
 
     if (_hadCesarean) {
-      _addAlert('Previous cesarean section');
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_18"));
     }
 
-    if (_hadHeavyBleeding == 'Yes') {
-      _addAlert('Previous heavy bleeding');
+    if (_hadHeavyBleeding == autoI8lnGen.translate("YES_MESSAGE")) {
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_19"));
     }
 
     if (_onART) {
-      _addAlert('HIV positive on ART');
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_20"));
     }
 
     if (_currentlyOnTBTreatment) {
-      _addAlert('Currently on TB treatment');
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_21"));
     }
 
     if (_hasOtherIssues) {
-      _addAlert('Other chronic conditions');
+      _addAlert(autoI8lnGen.translate("HEALTH_ISSUE_22"));
     }
   }
 
@@ -349,7 +350,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
         print('✅ Connected provider found: $providerId');
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('❌ Connection required: $e')),
+          SnackBar(content: AutoText('CONNECTION_REQUIRED $e')),
         );
         return;
       }
@@ -451,7 +452,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
             .set(data, SetOptions(merge: true));
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Patient background saved successfully')),
+          SnackBar(content: AutoText('P_B_S_S')),
         );
 
         if (_alerts.isNotEmpty) {
@@ -459,7 +460,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving data: $e')),
+          SnackBar(content: AutoText('ERROR_S_D $e')),
         );
       }
     }
@@ -573,12 +574,12 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Health Provider Alerts'),
+          title: AutoText('H_P_A'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('The following alerts have been generated:'),
+              AutoText('T_F_AG'),
               SizedBox(height: 10),
               ..._alerts.map((alert) => Text('• $alert')).toList(),
             ],
@@ -586,7 +587,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK'),
+              child: AutoText('OK'),
             ),
           ],
         );
@@ -602,7 +603,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            AutoText(
               title,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -627,8 +628,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
+          labelText: autoI8lnGen.translate(label),
+          hintText: autoI8lnGen.translate(hint??""),
           border: OutlineInputBorder(),
         ),
         keyboardType: keyboardType,
@@ -655,7 +656,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
         items: items.map((String item) {
           return DropdownMenuItem<String>(
             value: item,
-            child: Text(item),
+            child: AutoText(item),
           );
         }).toList(),
         onChanged: onChanged,
@@ -727,7 +728,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                           size: 28,
                         ),
                         SizedBox(height: 8),
-                        Text(
+                        AutoText(
                           option,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -752,30 +753,32 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
   }
 
   IconData _getIconForOption(String option) {
-    switch (option.toLowerCase()) {
-      case 'yes':
-        return Icons.check_circle;
-      case 'no':
-        return Icons.cancel;
-      case "don't know":
-      case "don't remember":
-        return Icons.help;
-      case 'daily':
-        return Icons.today;
-      case 'weekly':
-        return Icons.calendar_view_week;
-      case 'less often':
-        return Icons.calendar_month;
-      case 'beer':
-        return Icons.local_bar;
-      case 'liquor':
-        return Icons.wine_bar;
-      case 'both':
-        return Icons.restaurant;
-      default:
-        return Icons.circle;
+    final lower = option.toLowerCase();
+    final yesTranslation = autoI8lnGen.translate("YES_MESSAGE").toLowerCase();
+
+    if (lower == yesTranslation) {
+      return Icons.check_circle;
+    } else if (lower == autoI8lnGen.translate("NO_2").toLowerCase()) {
+      return Icons.cancel;
+    } else if (lower == autoI8lnGen.translate("DONT_KNOW_2").toLowerCase() || lower == autoI8lnGen.translate("DONT_REMMEBR").toLowerCase()) {
+      return Icons.help;
+    } else if (lower == autoI8lnGen.translate("DAILY").toLowerCase()) {
+      return Icons.today;
+    } else if (lower == autoI8lnGen.translate("WEEKLY").toLowerCase()) {
+      return Icons.calendar_view_week;
+    } else if (lower == autoI8lnGen.translate("LESS_OFTEN").toLowerCase()) {
+      return Icons.calendar_month;
+    } else if (lower == autoI8lnGen.translate("BEER").toLowerCase()) {
+      return Icons.local_bar;
+    } else if (lower == autoI8lnGen.translate("LIQUOR").toLowerCase()) {
+      return Icons.wine_bar;
+    } else if (lower == autoI8lnGen.translate("BOTH").toLowerCase()) {
+      return Icons.restaurant;
+    } else {
+      return Icons.circle;
     }
   }
+
 
   Widget _buildYesNoButton({
     required String title,
@@ -785,7 +788,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        AutoText(
           title,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
@@ -813,8 +816,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                         size: 28,
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        'Yes',
+                      AutoText(
+                        'YES_MESSAGE',
                         style: TextStyle(
                           color: value ? Colors.white : Colors.black87,
                           fontWeight:
@@ -848,8 +851,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                         size: 28,
                       ),
                       SizedBox(height: 8),
-                      Text(
-                        'No',
+                      AutoText(
+                        'NO_2',
                         style: TextStyle(
                           color: !value ? Colors.white : Colors.black87,
                           fontWeight:
@@ -872,7 +875,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Background'),
+        title: AutoText('P_T_B'),
         backgroundColor: Colors.blue[700],
       ),
       body: Form(
@@ -881,21 +884,21 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
           child: Column(
             children: [
               // General Questions Section
-              _buildSection('General Questions', [
+              _buildSection('G_Q_1', [
                 _buildTextFormField(
                   controller: _schoolingController,
-                  label: 'Schooling (years)',
+                  label: 'G_Q_2',
                   keyboardType: TextInputType.number,
                 ),
                 _buildTextFormField(
                   controller: _ageController,
-                  label: 'Age in years',
+                  label: 'G_Q_3',
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
                       int? age = int.tryParse(value);
                       if (age != null && (age < 20 || age > 39)) {
-                        return 'Age outside typical range (20-39)';
+                        return autoI8lnGen.translate("G_Q_4");
                       }
                     }
                     return null;
@@ -906,14 +909,14 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     Expanded(
                       child: _buildTextFormField(
                         controller: _heightController,
-                        label: 'Height (cm)',
+                        label: 'G_Q_5',
                         keyboardType: TextInputType.number,
                         onChanged: (_) => _calculateBMI(),
                         validator: (value) {
                           if (value != null && value.isNotEmpty) {
                             double? height = double.tryParse(value);
                             if (height != null && height < 150) {
-                              return 'Height below 150cm requires attention';
+                              return autoI8lnGen.translate("G_Q_6");
                             }
                           }
                           return null;
@@ -924,14 +927,14 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     Expanded(
                       child: _buildTextFormField(
                         controller: _weightController,
-                        label: 'Weight (kg)',
+                        label: 'WEIGHT_KG',
                         keyboardType: TextInputType.number,
                         onChanged: (_) => _calculateBMI(),
                         validator: (value) {
                           if (value != null && value.isNotEmpty) {
                             double? weight = double.tryParse(value);
                             if (weight != null && weight < 45) {
-                              return 'Weight below 45kg requires attention';
+                              return autoI8lnGen.translate("G_Q_7");
                             }
                           }
                           return null;
@@ -944,7 +947,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _bmiMessage == 'Thumb up'
+                      color: _bmiMessage == autoI8lnGen.translate("THUMB_UP")
                           ? Colors.green[100]
                           : Colors.orange[100],
                       borderRadius: BorderRadius.circular(8),
@@ -952,15 +955,15 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          _bmiMessage == 'Thumb up'
+                          _bmiMessage == autoI8lnGen.translate("THUMB_UP")
                               ? Icons.thumb_up
                               : Icons.warning,
-                          color: _bmiMessage == 'Thumb up'
+                          color: _bmiMessage == autoI8lnGen.translate("THUMB_UP")
                               ? Colors.green
                               : Colors.orange,
                         ),
                         SizedBox(width: 8),
-                        Text('BMI: ${_bmi!.toStringAsFixed(1)} - $_bmiMessage'),
+                        AutoText('BMI ${_bmi!.toStringAsFixed(1)} - $_bmiMessage'),
                       ],
                     ),
                   ),
@@ -971,7 +974,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     Expanded(
                       child: _buildTextFormField(
                         controller: _systolicController,
-                        label: 'Systolic BP',
+                        label: autoI8lnGen.translate("G_Q_8"),
                         keyboardType: TextInputType.number,
                         onChanged: (_) => _checkBloodPressure(),
                       ),
@@ -980,7 +983,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     Expanded(
                       child: _buildTextFormField(
                         controller: _diastolicController,
-                        label: 'Diastolic BP',
+                        label: autoI8lnGen.translate("G_Q_9"),
                         keyboardType: TextInputType.number,
                         onChanged: (_) => _checkBloodPressure(),
                       ),
@@ -991,7 +994,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _bpMessage == 'Thumb up'
+                      color: _bpMessage == autoI8lnGen.translate("THUMB_UP")
                           ? Colors.green[100]
                           : Colors.red[100],
                       borderRadius: BorderRadius.circular(8),
@@ -999,10 +1002,10 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          _bpMessage == 'Thumb up'
+                          _bpMessage == autoI8lnGen.translate("THUMB_UP")
                               ? Icons.thumb_up
                               : Icons.warning,
-                          color: _bpMessage == 'Thumb up'
+                          color: _bpMessage == autoI8lnGen.translate("THUMB_UP")
                               ? Colors.green
                               : Colors.red,
                         ),
@@ -1015,7 +1018,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                 ],
                 _buildTextFormField(
                   controller: _haemoglobinController,
-                  label: 'Haemoglobin (g/dl)',
+                  label: autoI8lnGen.translate("HEAMOGOBLIN"),
                   keyboardType: TextInputType.number,
                   onChanged: (_) => _checkHaemoglobin(),
                 ),
@@ -1023,7 +1026,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _haemoglobinMessage == 'Thumb up'
+                      color: _haemoglobinMessage == autoI8lnGen.translate("THUMB_UP")
                           ? Colors.green[100]
                           : Colors.orange[100],
                       borderRadius: BorderRadius.circular(8),
@@ -1031,15 +1034,15 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          _haemoglobinMessage == 'Thumb up'
+                          _haemoglobinMessage == autoI8lnGen.translate("THUMB_UP")
                               ? Icons.thumb_up
                               : Icons.warning,
-                          color: _haemoglobinMessage == 'Thumb up'
+                          color: _haemoglobinMessage == autoI8lnGen.translate("THUMB_UP")
                               ? Colors.green
                               : Colors.orange,
                         ),
                         SizedBox(width: 8),
-                        Expanded(child: Text(_haemoglobinMessage)),
+                        Expanded(child: AutoText(_haemoglobinMessage)),
                       ],
                     ),
                   ),
@@ -1047,7 +1050,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                 ],
                 _buildTextFormField(
                   controller: _albuminController,
-                  label: 'Albumin in Urine (mg/L)',
+                  label: autoI8lnGen.translate("ALBUMIN_URINE"),
                   keyboardType: TextInputType.number,
                   onChanged: (_) => _checkAlbumin(),
                 ),
@@ -1055,7 +1058,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _albuminMessage.contains('Normal')
+                      color: _albuminMessage.contains(autoI8lnGen.translate("NORMAL"))
                           ? Colors.green[100]
                           : Colors.orange[100],
                       borderRadius: BorderRadius.circular(8),
@@ -1063,10 +1066,10 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          _albuminMessage.contains('Normal')
+                          _albuminMessage.contains(autoI8lnGen.translate("NORMAL"))
                               ? Icons.thumb_up
                               : Icons.warning,
-                          color: _albuminMessage.contains('Normal')
+                          color: _albuminMessage.contains(autoI8lnGen.translate("NORMAL"))
                               ? Colors.green
                               : Colors.orange,
                         ),
@@ -1079,7 +1082,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                 ],
                 _buildTextFormField(
                   controller: _glucoseController,
-                  label: 'Glucose in Urine (mmol/L)',
+                  label: autoI8lnGen.translate("GLUCOSE_URINE"),
                   keyboardType: TextInputType.number,
                   onChanged: (_) => _checkGlucose(),
                 ),
@@ -1087,7 +1090,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _glucoseMessage == 'Normal'
+                      color: _glucoseMessage == autoI8lnGen.translate("NORMAL")
                           ? Colors.green[100]
                           : Colors.orange[100],
                       borderRadius: BorderRadius.circular(8),
@@ -1095,10 +1098,10 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          _glucoseMessage == 'Normal'
+                          _glucoseMessage == autoI8lnGen.translate("NORMAL")
                               ? Icons.thumb_up
                               : Icons.warning,
-                          color: _glucoseMessage == 'Normal'
+                          color: _glucoseMessage == autoI8lnGen.translate("NORMAL")
                               ? Colors.green
                               : Colors.orange,
                         ),
@@ -1110,50 +1113,50 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   SizedBox(height: 8),
                 ],
                 _buildDropdownFormField(
-                  label: 'Urinalysis',
+                  label: autoI8lnGen.translate("URINEANALYSIS"),
                   value: _urinalysisResult,
-                  items: ['Normal', 'So-so', 'Danger'],
+                  items: [autoI8lnGen.translate("NORMAL"),autoI8lnGen.translate("SO_SO"),autoI8lnGen.translate("DANGER"),],
                   onChanged: (value) =>
                       setState(() => _urinalysisResult = value),
                 ),
               ]),
 
               // Lifestyle Questions Section
-              _buildSection('Lifestyle Questions', [
+              _buildSection('G_Q_10', [
                 _buildYesNoButton(
-                  title: 'Do you smoke or chew tobacco?',
+                  title: 'G_Q_11',
                   value: _smokesTobacco,
                   onChanged: (value) => setState(() => _smokesTobacco = value),
                 ),
                 if (_smokesTobacco) ...[
                   _buildTextFormField(
                     controller: _smokingDetailsController,
-                    label: 'Specify tobacco use',
+                    label: 'G_Q_12',
                   ),
                   _buildButtonGroup(
-                    title: 'How often?',
+                    title: 'G_Q_13',
                     value: _smokingFrequency,
-                    options: ['Daily', 'Weekly', 'Less often'],
+                    options: [autoI8lnGen.translate("DAILY_2"), autoI8lnGen.translate("WEEKLY_2"), autoI8lnGen.translate("L_O"), ],
                     onChanged: (value) =>
                         setState(() => _smokingFrequency = value!),
                   ),
                 ],
                 _buildYesNoButton(
-                  title: 'Do you drink alcohol?',
+                  title: 'D_Y_A',
                   value: _drinksAlcohol,
                   onChanged: (value) => setState(() => _drinksAlcohol = value),
                 ),
                 if (_drinksAlcohol) ...[
                   _buildButtonGroup(
-                    title: 'Type of alcohol',
+                    title: 'T_O_A',
                     value: _alcoholType,
-                    options: ['Beer', 'Liquor', 'Both'],
+                    options: [autoI8lnGen.translate("BEER_2"), autoI8lnGen.translate("LIQUOR_2"), autoI8lnGen.translate("BOTH_2"), ],
                     onChanged: (value) => setState(() => _alcoholType = value!),
                   ),
                   _buildButtonGroup(
-                    title: 'How often?',
+                    title: 'HOWT',
                     value: _alcoholFrequency,
-                    options: ['Daily', 'Weekly', 'Less often'],
+                    options: [autoI8lnGen.translate("DAILY_2"), autoI8lnGen.translate("WEEKLY_2"), autoI8lnGen.translate("L_O"), ],
                     onChanged: (value) =>
                         setState(() => _alcoholFrequency = value!),
                   ),
@@ -1162,9 +1165,9 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
 
               // Medical History Section
 
-              _buildSection('Medical History', [
+              _buildSection('M_H', [
                 _buildYesNoButton(
-                  title: 'Do you use herbal medicine?',
+                  title: 'D_Y_HM',
                   value: _usesHerbalMedicine,
                   onChanged: (value) =>
                       setState(() => _usesHerbalMedicine = value),
@@ -1172,152 +1175,145 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                 if (_usesHerbalMedicine) ...[
                   _buildTextFormField(
                     controller: _herbalMedicineController,
-                    label: 'Which herbs?',
+                    label: autoI8lnGen.translate("WHB"),
                   ),
                   _buildButtonGroup(
-                    title: 'How often?',
+                    title: 'G_Q_13',
                     value: _herbalFrequency,
-                    options: ['Daily', 'Weekly', 'Less often'],
+                    options: [autoI8lnGen.translate("DAILY_2"), autoI8lnGen.translate("WEEKLY_2"), autoI8lnGen.translate("L_O"), ],
                     onChanged: (value) =>
                         setState(() => _herbalFrequency = value!),
                   ),
                 ],
                 _buildYesNoButton(
-                  title: 'Do you regularly use modern medicine?',
+                  title: 'D_R_M_M',
                   value: _usesModernMedicine,
                   onChanged: (value) =>
                       setState(() => _usesModernMedicine = value),
                 ),
                 if (_usesModernMedicine) ...[
                   _buildButtonGroup(
-                    title: 'Type of medicine',
+                    title: 'T_Y_P_M',
                     value: _modernMedicineType,
-                    options: [
-                      'Without prescription (like paracetamol)',
-                      'With prescription (like antibiotics)'
-                    ],
+                    options: [autoI8lnGen.translate("W_T_O_P"), autoI8lnGen.translate("W_O_P"), ],
                     onChanged: (value) =>
                         setState(() => _modernMedicineType = value!),
                   ),
                 ],
                 _buildButtonGroup(
-                  title: 'Have you been tested for HIV/AIDS?',
+                  title: 'H_TV',
                   value: _hivTestSelf,
-                  options: ['Yes', 'No', 'Don\'t Know'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _hivTestSelf = value!),
                 ),
                 _buildButtonGroup(
                   title: 'Has your partner been tested for HIV/AIDS?',
                   value: _hivTestPartner,
-                  options: ['Yes', 'No', 'Don\'t Know'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) =>
                       setState(() => _hivTestPartner = value!),
                 ),
                 _buildYesNoButton(
-                  title: 'Are you on Antiretroviral Therapy (ART)?',
+                  title: 'ARE_YOU_THERAPY',
                   value: _onART,
                   onChanged: (value) => setState(() => _onART = value),
                 ),
                 if (_onART) ...[
                   _buildTextFormField(
                     controller: _artStartController,
-                    label: 'Since when? (Month/Year)',
+                    label: 'SINCE_WHEN',
                     hint: 'MM/YYYY',
                   ),
                   _buildButtonGroup(
-                    title: 'Is your partner also treated?',
+                    title: 'P_ALSO_TREATED',
                     value: _partnerARTStatus,
-                    options: ['Yes', 'No', 'Don\'t know'],
+                    options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                     onChanged: (value) =>
                         setState(() => _partnerARTStatus = value!),
                   ),
                 ],
                 _buildButtonGroup(
-                  title: 'Have you and your spouse been tested for Syphilis?',
+                  title: 'G_Q_14',
                   value: _syphilisTest,
-                  options: ['Yes', 'No', 'Don\'t know'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _syphilisTest = value!),
                 ),
                 if (_syphilisTest == 'Yes') ...[
                   _buildTextFormField(
                     controller: _syphilisTreatmentController,
-                    label: 'Name treatment',
+                    label:autoI8lnGen.translate("G_Q_15"),
                   ),
                 ],
                 _buildButtonGroup(
-                  title: 'Have you been tested for TB?',
+                  title: 'G_Q_16',
                   value: _tbTest,
-                  options: ['Yes', 'No', 'Don\'t Know'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _tbTest = value!),
                 ),
                 _buildButtonGroup(
-                  title: 'Have you been vaccinated against TB?',
+                  title: 'G_Q_17',
                   value: _tbVaccination,
-                  options: ['Yes', 'No', 'Don\'t know'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _tbVaccination = value!),
                 ),
-                if (_tbVaccination == 'Yes') ...[
+                if (_tbVaccination == autoI8lnGen.translate("YES_MESSAGE")) ...[
                   _buildTextFormField(
                     controller: _tbVaccinationYearController,
-                    label: 'When? (Year)',
+                    label: 'G_Q_18',
                     keyboardType: TextInputType.number,
                   ),
                 ],
                 _buildYesNoButton(
-                  title: 'Have you been on TB treatment?',
+                  title: 'G_Q_19',
                   value: _onTBTreatment,
                   onChanged: (value) => setState(() => _onTBTreatment = value),
                 ),
                 if (_onTBTreatment) ...[
                   _buildTextFormField(
                     controller: _tbTreatmentStartController,
-                    label: 'When did you start? (M/Y)',
+                    label: 'G_Q_20',
                     hint: 'MM/YYYY',
                   ),
                   _buildTextFormField(
                     controller: _tbTreatmentStopController,
-                    label: 'When did you stop? (M/Y)',
+                    label: 'G_Q_21',
                     hint: 'MM/YYYY',
                   ),
                 ],
                 _buildYesNoButton(
-                  title: 'Are you on TB treatment now?',
+                  title: 'G_Q_22',
                   value: _currentlyOnTBTreatment,
                   onChanged: (value) =>
                       setState(() => _currentlyOnTBTreatment = value),
                 ),
                 _buildButtonGroup(
-                  title: 'How many tetanus vaccinations have you had?',
+                  title: 'G_Q_23',
                   value: _tetanusVaccinations.toString(),
                   options: ['0', '1', '2', '3', '4'],
                   onChanged: (value) =>
                       setState(() => _tetanusVaccinations = int.parse(value!)),
                 ),
                 _buildButtonGroup(
-                  title: 'When was the most recent tetanus vaccination?',
+                  title: 'G_Q_24',
                   value: _tetanusRecent,
-                  options: [
-                    'Less than 1 year ago',
-                    'More than a year ago',
-                    'Don\'t remember'
-                  ],
+                  options: [autoI8lnGen.translate("L_1_YR"), autoI8lnGen.translate("L_A_YEAR"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _tetanusRecent = value!),
                 ),
                 _buildButtonGroup(
-                  title: 'Have you been tested for malaria?',
+                  title: 'TESTED_MALARIA',
                   value: _malariaTest,
-                  options: ['Yes', 'No', 'Don\'t know'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _malariaTest = value!),
                 ),
-                if (_malariaTest == 'Yes') ...[
+                if (_malariaTest == autoI8lnGen.translate("YES_MESSAGE")) ...[
                   _buildTextFormField(
                     controller: _malariaTestDateController,
-                    label: 'When? (Month/Year)',
+                    label: 'G_Q_25',
                     hint: 'MM/YYYY',
                   ),
                 ],
                 _buildYesNoButton(
-                  title: 'Are you using antimalarial treatment now?',
+                  title: 'G_Q_26',
                   value: _onAntimalarials,
                   onChanged: (value) =>
                       setState(() => _onAntimalarials = value),
@@ -1325,57 +1321,49 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                 if (_onAntimalarials) ...[
                   _buildTextFormField(
                     controller: _antimalarialTreatmentController,
-                    label: 'Name of treatment',
+                    label: autoI8lnGen.translate("G_Q_27"),
                   ),
                 ],
                 _buildButtonGroup(
-                  title: 'When did you use antimalarials most recently?',
+                  title: autoI8lnGen.translate("G_Q_28"),
                   value: _antimalarialRecent,
-                  options: [
-                    'Less than 3 months ago',
-                    '3-6 months ago',
-                    'Over 6 months ago'
-                  ],
+                  options: [autoI8lnGen.translate("G_Q_29"), autoI8lnGen.translate("G_Q_30"), autoI8lnGen.translate("G_Q_31"), ],
                   onChanged: (value) =>
                       setState(() => _antimalarialRecent = value!),
                 ),
                 _buildButtonGroup(
-                  title: 'Have you been tested for worms?',
+                  title: 'G_Q_32',
                   value: _wormTest,
-                  options: ['Yes', 'No', 'Don\'t remember'],
+                  options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _wormTest = value!),
                 ),
                 _buildButtonGroup(
-                  title: 'When did you take worm medicine for the last time?',
+                  title: 'G_Q_33',
                   value: _wormMedicineRecent,
-                  options: [
-                    'Never took it',
-                    'Less than 6 months ago',
-                    'Over 6 months ago'
-                  ],
+                  options: [autoI8lnGen.translate("G_Q_34"), autoI8lnGen.translate("G_Q_35"), autoI8lnGen.translate("G_Q_36"), ],
                   onChanged: (value) =>
                       setState(() => _wormMedicineRecent = value!),
                 ),
                 _buildYesNoButton(
-                  title: 'Any other issues? (disability or chronic condition)',
+                  title: 'G_Q_37',
                   value: _hasOtherIssues,
                   onChanged: (value) => setState(() => _hasOtherIssues = value),
                 ),
                 if (_hasOtherIssues) ...[
                   _buildTextFormField(
                     controller: _disabilityController,
-                    label: 'Please specify',
-                    hint: 'Diabetes, Hypertension, Heart disease, etc.',
+                    label: autoI8lnGen.translate('G_Q_38'),
+                    hint: autoI8lnGen.translate('G_Q_39'),
                   ),
                 ],
               ]),
 
               // Pregnancy Related Questions Section
 
-              _buildSection('Pregnancy Related Questions', [
+              _buildSection("G_Q_40", [
                 _buildTextFormField(
                   controller: _lastMenstrualPeriodController,
-                  label: 'First day of last menstrual period',
+                  label: autoI8lnGen.translate("G_Q_41"),
                   hint: 'DD/MM/YYYY',
                   onChanged: (_) => _calculateExpectedDeliveryDate(),
                 ),
@@ -1391,8 +1379,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                       children: [
                         Icon(Icons.baby_changing_station, color: Colors.pink),
                         SizedBox(width: 8),
-                        Text(
-                          'Your baby is expected on: ${_expectedDeliveryDate!.day}/${_expectedDeliveryDate!.month}/${_expectedDeliveryDate!.year}',
+                        AutoText(
+                          'Y_B_E ${_expectedDeliveryDate!.day}/${_expectedDeliveryDate!.month}/${_expectedDeliveryDate!.year}',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -1401,109 +1389,109 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   SizedBox(height: 8),
                 ],
                 _buildYesNoButton(
-                  title: 'Is this your first pregnancy?',
+                  title: 'G_Q_42',
                   value: _isFirstPregnancy,
                   onChanged: (value) =>
                       setState(() => _isFirstPregnancy = value),
                 ),
                 _buildTextFormField(
                   controller: _miscarriagesController,
-                  label: 'How many miscarriages did you have before?',
+                  label: autoI8lnGen.translate("G_Q_43"),
                   keyboardType: TextInputType.number,
-                  hint: 'Enter 0 if none',
+                  hint: autoI8lnGen.translate("G_Q_44"),
                 ),
                 if (!_isFirstPregnancy) ...[
                   _buildTextFormField(
                     controller: _liveBirthsController,
-                    label: 'Number of previous live births?',
+                    label: autoI8lnGen.translate("G_Q_45"),
                     keyboardType: TextInputType.number,
-                    hint: 'Enter 0 if none',
+                    hint: autoI8lnGen.translate("G_Q_44"),
                   ),
                   _buildTextFormField(
                     controller: _previousPregnanciesController,
-                    label: 'Number of previous pregnancies?',
+                    label: autoI8lnGen.translate("G_Q_46"),
                     keyboardType: TextInputType.number,
-                    hint: 'Enter 0 if none',
+                    hint: autoI8lnGen.translate("G_Q_44"),
                   ),
                   _buildButtonGroup(
-                    title: 'When was your last pregnancy before this one?',
+                    title: autoI8lnGen.translate("G_Q_47"),
                     value: _lastPregnancyTiming,
-                    options: ['>9 years', 'Between 9 and 5 years', '<5 years'],
+                    options: [autoI8lnGen.translate("G_Q_48"), autoI8lnGen.translate("G_Q_49"), autoI8lnGen.translate("G_Q_50")],
                     onChanged: (value) =>
                         setState(() => _lastPregnancyTiming = value!),
                   ),
                   _buildTextFormField(
                     controller: _stillbornController,
-                    label: 'Any stillborn or baby died at or soon after birth?',
+                    label: autoI8lnGen.translate("G_Q_51"),
                     keyboardType: TextInputType.number,
-                    hint: 'Enter 0 if none',
+                    hint: autoI8lnGen.translate("G_Q_44"),
                   ),
                   _buildYesNoButton(
-                    title: 'Already had a cesarean section?',
+                    title: "G_Q_52",
                     value: _hadCesarean,
                     onChanged: (value) => setState(() => _hadCesarean = value),
                   ),
                   if (_hadCesarean) ...[
                     _buildTextFormField(
                       controller: _cesareanCountController,
-                      label: 'How many?',
+                      label: autoI8lnGen.translate("G_Q_53"),
                       keyboardType: TextInputType.number,
                     ),
                   ],
                   _buildButtonGroup(
-                    title: 'Ever had birth with forceps or vacuum extractor?',
+                    title: 'G_Q_54',
                     value: _hadForcepsVacuum,
-                    options: ['Yes', 'No', 'Don\'t know'],
+                    options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                     onChanged: (value) =>
                         setState(() => _hadForcepsVacuum = value!),
                   ),
                   _buildButtonGroup(
-                    title: 'Ever had heavy bleeding AT or AFTER delivery?',
+                    title: 'G_Q_55',
                     value: _hadHeavyBleeding,
-                    options: ['Yes', 'No', 'Don\'t know'],
+                    options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                     onChanged: (value) =>
                         setState(() => _hadHeavyBleeding = value!),
                   ),
                   _buildButtonGroup(
-                    title: 'Did you have any tears?',
+                    title: 'G_Q_56',
                     value: _hadTears,
-                    options: ['Yes', 'No', 'Don\'t know'],
+                    options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                     onChanged: (value) => setState(() => _hadTears = value!),
                   ),
-                  if (_hadTears == 'Yes') ...[
+                  if (_hadTears == autoI8lnGen.translate("YES_MESSAGE")) ...[
                     _buildButtonGroup(
-                      title: 'Did they need stitching?',
+                      title: 'G_Q_57',
                       value: _tearsNeedStitching,
-                      options: ['Yes', 'No', 'Don\'t know'],
+                      options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                       onChanged: (value) =>
                           setState(() => _tearsNeedStitching = value!),
                     ),
                     _buildButtonGroup(
-                      title: 'Did they heal by themselves?',
+                      title: 'G_Q_58',
                       value: _tearsHealedNaturally,
-                      options: ['Yes', 'No', 'Don\'t know'],
+                      options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                       onChanged: (value) =>
                           setState(() => _tearsHealedNaturally = value!),
                     ),
                     _buildButtonGroup(
-                      title: 'Are they still bothering you?',
+                      title: 'G_Q_59',
                       value: _tearsStillBothering,
-                      options: ['Yes', 'No', 'Don\'t know'],
+                      options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                       onChanged: (value) =>
                           setState(() => _tearsStillBothering = value!),
                     ),
                   ],
                   _buildTextFormField(
                     controller: _deliveryRemarksController,
-                    label: 'Any other remarks about previous deliveries?',
-                    hint: 'If you can\'t write them, tell your HP at visit',
+                    label: autoI8lnGen.translate("G_Q_60"),
+                    hint: autoI8lnGen.translate("G_Q_61"),
                   ),
                 ],
               ]),
 
               // Alerts Section
               if (_alerts.isNotEmpty) ...[
-                _buildSection('Health Provider Alerts', [
+                _buildSection('G_Q_62', [
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -1518,8 +1506,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                           children: [
                             Icon(Icons.warning, color: Colors.red),
                             SizedBox(width: 8),
-                            Text(
-                              'Alerts for Health Provider:',
+                            AutoText(
+                              'G_Q_63',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red[700],
@@ -1531,7 +1519,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                         ..._alerts
                             .map((alert) => Padding(
                                   padding: EdgeInsets.only(bottom: 4),
-                                  child: Text('• $alert'),
+                                  child: AutoText('• $alert'),
                                 ))
                             .toList(),
                       ],
@@ -1554,22 +1542,22 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Important Information:',
+                    AutoText(
+                      'G_Q_64',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.blue[700],
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                        '• Incomplete data will not prevent saving your information'),
-                    Text(
-                        '• You and your Health Provider can see gaps to complete later'),
-                    Text(
-                        '• This information helps monitor your pregnancy evolution'),
-                    Text(
-                        '• Contact your Health Provider if you have questions'),
+                    AutoText(
+                        'G_Q_65'),
+                    AutoText(
+                        'G_Q_66'),
+                    AutoText(
+                        'G_Q_67'),
+                    AutoText(
+                        'G_Q_68'),
                   ],
                 ),
               ),
@@ -1589,8 +1577,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 16),
             ),
-            child: Text(
-              'Save Patient Background',
+            child: AutoText(
+              '',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
