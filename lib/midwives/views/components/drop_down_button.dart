@@ -6,7 +6,8 @@ import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DropDownButton extends StatefulWidget {
-  const DropDownButton({Key? key}) : super(key: key);
+  final double? width;
+  const DropDownButton({Key? key, this.width}) : super(key: key);
 
   @override
   State<DropDownButton> createState() => _DropDownButtonState();
@@ -82,10 +83,10 @@ class _DropDownButtonState extends State<DropDownButton> {
 
           Restart.restartApp();
         },
-        buttonStyleData: const ButtonStyleData(
+        buttonStyleData:  ButtonStyleData(
           padding: EdgeInsets.symmetric(horizontal: 16),
           height: 40,
-          width: 300,
+          width:   widget.width?? 300,
         ),
         menuItemStyleData: const MenuItemStyleData(
           height: 40,

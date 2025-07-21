@@ -287,7 +287,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please Email field is empty';
+                        return autoI8lnGen.translate("P_E_M");
                       } else {
                         return null;
                       }
@@ -296,7 +296,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       email = value;
                     },
                     decoration: InputDecoration(
-                      labelText: 'Enter Email',
+                      labelText: autoI8lnGen.translate("LOGIN_VALIDATION_4"),
                     ),
                   ),
                 ),
@@ -305,7 +305,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please Fullname field is empty';
+                        return autoI8lnGen.translate("P_FF_E");
                       } else {
                         return null;
                       }
@@ -314,7 +314,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       fullName = value;
                     },
                     decoration: InputDecoration(
-                      labelText: 'Enter Full Name',
+                      labelText: autoI8lnGen.translate("E_F_N"),
                     ),
                   ),
                 ),
@@ -326,14 +326,14 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                       child: TextFormField(
                         controller: _dobController,
                         decoration: InputDecoration(
-                          labelText: 'Date of Birth',
+                          labelText: autoI8lnGen.translate("DOB"),
                           hintText: _selectedDate != null
                               ? DateFormat('yyyy-MM-dd').format(_selectedDate!)
-                              : 'Select Date',
+                              : autoI8lnGen.translate("S_D_A"),
                         ),
                         validator: (value) {
                           if (_selectedDate == null) {
-                            return 'Please select your Date of Birth';
+                            return autoI8lnGen.translate("P_S_DOB");
                           }
                           return null;
                         },
@@ -397,6 +397,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         height: 10,
                       ),
                       CSCPickerPlus(
+
                         onCountryChanged: (value) {
                           setState(() {
                             countryValue = value;
@@ -456,22 +457,22 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                           obscureText: _obscureText,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a password';
+                              return autoI8lnGen.translate("P_E_P");
                             }
                             // Check password length - minimum 6 characters
                             if (value.length < 6) {
-                              return 'Password must be at least 6 characters long';
+                              return autoI8lnGen.translate("P_E_6_H");
                             }
                             // Check if password is only numbers
                             if (RegExp(r'^\d+$').hasMatch(value) &&
                                 value.length < 8) {
-                              return 'Numeric passwords must be at least 8 digits long';
+                              return autoI8lnGen.translate("N_P_8");
                             }
                             // Optional: Check for password strength
                             if (!RegExp(r'[A-Z]').hasMatch(value) ||
                                 !RegExp(r'[a-z]').hasMatch(value) ||
                                 !RegExp(r'[0-9]').hasMatch(value)) {
-                              return 'Password should contain uppercase, lowercase letters and numbers';
+                              return autoI8lnGen.translate("P_S_C_U");
                             }
                             return null;
                           },

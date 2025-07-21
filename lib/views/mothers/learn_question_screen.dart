@@ -6,7 +6,7 @@ class QuestionairePregnantFeelingsForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pregnancy Feelings Form'),
+        title: AutoText('P_F_F_4'),
       ),
       body: FeelingsForm(),
     );
@@ -20,16 +20,16 @@ class FeelingsForm extends StatefulWidget {
 
 class _FeelingsFormState extends State<FeelingsForm> {
   final List<String> _questions = [
-    "Are you feeling well today?",
-    "Are you experiencing any discomfort?",
-    "Do you feel tired or fatigued?",
-    "Are you experiencing any mood swings?",
-    "Do you have any cravings or aversions?",
-    "Are you experiencing any nausea or morning sickness?",
-    "Are you getting enough restful sleep?",
-    "Do you feel stressed or anxious?",
-    "Are you feeling baby movements regularly?",
-    "Do you have any concerns about your pregnancy?"
+    autoI8lnGen.translate("HQ_1"),
+    autoI8lnGen.translate("HQ_2"),
+    autoI8lnGen.translate("HQ_3"),
+    autoI8lnGen.translate("HQ_4"),
+    autoI8lnGen.translate("HQ_5"),
+    autoI8lnGen.translate("HQ_6"),
+    autoI8lnGen.translate("HQ_7"),
+    autoI8lnGen.translate("HQ_8"),
+    autoI8lnGen.translate("HQ_9"),
+    autoI8lnGen.translate("HQ_10"),
   ];
 
   final List<String> _responses = List.filled(10, '');
@@ -155,7 +155,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
           ),
           ElevatedButton(
             onPressed: _submitForm,
-            child: const Text('SUBMIT'),
+            child: const AutoText('SUBMIT'),
           ),
         ],
       ),

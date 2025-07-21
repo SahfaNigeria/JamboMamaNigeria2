@@ -79,7 +79,7 @@ class _MidwiveResgisteratioScreenState
         EasyLoading.dismiss();
       });
 
-      _formKey.currentState!.reset();
+      _formKey.currentState?.reset();
       image = null;
       _isImageSelected = false;
       print('Clicked');

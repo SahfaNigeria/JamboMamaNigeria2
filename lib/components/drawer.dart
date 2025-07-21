@@ -5,12 +5,11 @@ import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
 import 'package:jambomama_nigeria/views/mothers/birth_plan_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/patient_background.dart';
-
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
-import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/health_facilities_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
 import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../views/mothers/home.dart';
 
@@ -68,6 +67,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginOrRegister()),
@@ -116,7 +117,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Home",
+            text: "HOME_2",
           ),
           DrawerTiles(
             icon: Icons.local_hospital,
@@ -128,8 +129,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Health Facilities",
-            subtitle: "Nearest dispensary, health centre or hospital.",
+            text: "HEALTH_FACILITIES",
+            subtitle: "N_D_HC_H",
           ),
 
           DrawerTiles(
@@ -142,7 +143,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         ProfessionalsList(location: userLocation ?? '')),
               );
             },
-            text: "Health Providers",
+            text: "H_P",
           ),
           DrawerTiles(
             icon: Icons.medical_services_outlined,
@@ -154,7 +155,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: " Connections",
+            text: " CONNECTIONS",
           ),
 
           DrawerTiles(
@@ -167,7 +168,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Birth Plan",
+            text: "BIRTHDAY_PLAN",
           ),
           DrawerTiles(
             icon: Icons.assignment,
@@ -181,7 +182,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Patient Background",
+            text: "P_T_B",
           ),
 
           DrawerTiles(
@@ -202,7 +203,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: "Settings",
+            text: "SETTINGS",
           ),
 
           DrawerTiles(
@@ -210,7 +211,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             onTap: () {
               logout();
             },
-            text: "Logout",
+            text: "LOGOUT",
           ),
         ],
       ),

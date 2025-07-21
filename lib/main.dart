@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
+import 'package:jambomama_nigeria/midwives/views/auth/midwive_registeration_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
+import 'package:jambomama_nigeria/views/mothers/auth/splash_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 import 'locale/localization_service.dart';
+import 'midwives/views/auth/auth_screen.dart';
+import 'midwives/views/auth/mid_wive_forgotten_password_page.dart';
+import 'midwives/views/auth/mid_wive_sign_in_page.dart';
+import 'midwives/views/auth/mid_wive_sign_up_page.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -57,8 +63,14 @@ class MyApp extends StatelessWidget {
 
       builder: EasyLoading.init(),
       routes: {
-        '/': (context) => LoginOrRegister(),
+        '/': (context) => SplashScreen(),
+        '/login_register': (context) => LoginOrRegister(),
         '/MidWifeHomePage': (context) => MidWifeHomePage(),
+        '/mid_wife_reg_screen': (context) => MidwiveAuthScreen(),
+        '/midwive_sign_up_page': (context) => MidWiveSignUpPage(),
+        '/midwive_password_reset_page': (context) => MidWiveForgottenPasswordPage(),
+        // '/register': (context) => RegisterScreen(),
+        // '/forgot-password': (context) => ForgotPasswordScreen(),
         '/HomePage': (context) => HomePage(isHealthProvider: false),
         '/ChatScreen': (context) {
           final args = ModalRoute.of(context)!.settings.arguments

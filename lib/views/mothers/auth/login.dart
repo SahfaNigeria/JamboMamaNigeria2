@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
+import 'package:jambomama_nigeria/midwives/views/components/drop_down_button.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
 import 'package:jambomama_nigeria/views/mothers/learn.dart';
 
@@ -36,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     if (_formKey.currentState!.validate()) {
       String res = await _auth.loginUser(email, password, context, setLoading);
+
 
       if (res != 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,6 +84,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        actions: [
+          DropDownButton(
+            width: 200,
+          ),
+        ],
+      ),
       body: Center(
         child: Form(
           key: _formKey,
