@@ -537,9 +537,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                         _buildMultipleChoice(
                           value: headacheSeverity,
                           options: [
-                            'A little',
-                            'On and off',
-                            'Very much or the whole time'
+                            autoI8lnGen.translate("A_LITTlE"),
+                            autoI8lnGen.translate("ON_OFF"),
+                            autoI8lnGen.translate("V_M_W_T")
                           ],
                           onChanged: (value) =>
                               setState(() => headacheSeverity = value),
@@ -551,9 +551,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Contractions
                 _buildQuestionCard(
-                  title: 'Do you have contractions?',
+                  title: 'D_Y_H_C',
                   description:
-                      'Light contractions before week 37 may stop by themselves. Strong contractions may indicate labor or complications.',
+                      'L_C_C',
                   icon: Icons.pregnant_woman,
                   iconColor: Colors.purple,
                   content: Column(
@@ -574,9 +574,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                         _buildMultipleChoice(
                           value: contractionType,
                           options: [
-                            'Light and far apart',
-                            'Strong and regular',
-                            'Very painful'
+                            autoI8lnGen.translate("L_F_A"),
+                            autoI8lnGen.translate("S_A_REG"),
+                            autoI8lnGen.translate("V_PAINFUL")
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -619,7 +619,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                     controller: _otherConcernsController,
                     maxLines: 3,
                     decoration: InputDecoration(
-                      hintText: 'ANY_OTHER_QUESTION_1',
+                      hintText: autoI8lnGen.translate('ANY_OTHER_QUESTION_1'),
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) => otherConcerns = value,
@@ -839,18 +839,18 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
       bool? babyStoppedMoving) {
     // Heavy bleeding
     if (hasVaginalBleeding == true &&
-        (bleedingAmount == 'A cup full' ||
-            bleedingAmount == 'More than a cup full')) {
+        (bleedingAmount == autoI8lnGen.translate("A_CUP_FULL") ||
+            bleedingAmount == autoI8lnGen.translate("MORE_THAN_A_CUP_FULL"))) {
       return true;
     }
 
     // Water broke (sudden puddle)
-    if (hasFluidLoss == true && fluidAmount == 'A sudden puddle') {
+    if (hasFluidLoss == true && fluidAmount == autoI8lnGen.translate("A_S_PU")) {
       return true;
     }
 
     // Very painful contractions
-    if (hasContractions == true && contractionType == 'Very painful') {
+    if (hasContractions == true && contractionType == autoI8lnGen.translate("V_PAINFUL")) {
       return true;
     }
 

@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart' show autoI8lnGen;
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -28,7 +29,7 @@ class CustomTextField extends StatelessWidget {
         color: Colors.black87,
       ),
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: autoI8lnGen.translate(hintText),
         hintStyle: TextStyle(
           fontSize: 16,
           color: Colors.grey[500],

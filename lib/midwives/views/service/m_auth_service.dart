@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MAuthService {
@@ -51,21 +52,21 @@ class MAuthService {
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
-        return 'No user found for that email.';
+        return autoI8lnGen.translate("N_USER_F");
       case 'wrong-password':
-        return 'Wrong password provided.';
+        return autoI8lnGen.translate("WRONG_P");
       case 'email-already-in-use':
-        return 'The account already exists for that email.';
+        return autoI8lnGen.translate("AEC");
       case 'weak-password':
-        return 'The password provided is too weak.';
+        return autoI8lnGen.translate("WEAK_T_P");
       case 'invalid-email':
-        return 'The email address is not valid.';
+        return autoI8lnGen.translate("THE_A_V");
       case 'user-disabled':
-        return 'This user account has been disabled.';
+        return autoI8lnGen.translate("D_ACCOUNT");;
       case 'too-many-requests':
-        return 'Too many requests. Try again later.';
+        return autoI8lnGen.translate("TRTL");;
       default:
-        return 'An error occurred. Please try again.';
+        return autoI8lnGen.translate("ERR_CCRD");
     }
   }
 }

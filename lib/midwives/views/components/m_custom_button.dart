@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -54,7 +55,7 @@ class CustomButton extends StatelessWidget {
               valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
             ),
           )
-              : Text(
+              : AutoText(
             text,
             style: TextStyle(
               fontSize: 16,

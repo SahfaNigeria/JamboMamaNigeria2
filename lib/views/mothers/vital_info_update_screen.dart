@@ -228,34 +228,34 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
     double? bmi = widget.initialBmi;
     String guidance = '';
     if (widget.currentWeek <= 18 && weightGain > 3) {
-      guidance = 'Rapid weight gain before 28 weeks: call your RHP';
+      guidance = autoI8lnGen.translate("R_W_G_1");
     } else if (widget.currentWeek >= 19 &&
         widget.currentWeek <= 28 &&
         (weightGain < 2 || weightGain > 4)) {
-      guidance = 'Weight gain should be 2-4 kg for weeks 19-28';
+      guidance = autoI8lnGen.translate("R_W_G_2");
     } else if (widget.currentWeek >= 29 && (weightGain < 3 || weightGain > 5)) {
-      guidance = 'Weight gain should be 3-5 kg for weeks 29-40';
+      guidance = autoI8lnGen.translate("R_W_G_3");
     }
     if (bmi != null) {
       if (bmi < 18.5) {
-        guidance += '\nBMI < 18.5: More weight gain allowed';
+        guidance += autoI8lnGen.translate("R_W_G_4");
       } else if (bmi <= 24.9) {
-        guidance += '\nBMI 18.5-24.9: Total weight gain 11.5-16 kg is fine';
+        guidance += autoI8lnGen.translate("R_W_G_5");
       } else if (bmi < 30) {
-        guidance += '\nBMI ≥25: Less weight gain is safer';
+        guidance += autoI8lnGen.translate("R_W_G_6");
       } else {
-        guidance += '\nBMI ≥30: Weight gain must be kept as low as possible';
+        guidance += autoI8lnGen.translate("R_W_G_7");
       }
     }
     return guidance;
   }
 
   String _getHaemoglobinGuidance(double? hb) {
-    if (hb == null) return '';
-    if (hb < 10.5) return 'You are anaemic. Ask HP for iron pills now.';
-    if (hb <= 12) return 'Low iron: Ask your HP for iron pills at next visit';
-    if (hb > 14) return 'Contact your HP to bring it down';
-    return 'Normal iron levels';
+    if (hb == null) return autoI8lnGen.translate("R_W_G_8");
+    if (hb < 10.5) return autoI8lnGen.translate("R_W_G_9");
+    if (hb <= 12) return autoI8lnGen.translate("R_W_G_10");
+    if (hb > 14) return autoI8lnGen.translate("R_W_G_11");
+    return '';
   }
 
   String _getBloodPressureGuidance(int? systolic, int? diastolic) {
@@ -264,37 +264,37 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
         systolic <= 120 &&
         diastolic >= 60 &&
         diastolic <= 80) {
-      return '👍 Normal blood pressure';
+      return autoI8lnGen.translate("👍 R_W_G_11");
     } else if (systolic <= 129 && diastolic <= 89) {
-      return 'ELEVATED: Take rest, reduce salt, tell your health provider';
+      return autoI8lnGen.translate("R_W_G_12");
     } else if (systolic <= 139 && diastolic < 90) {
-      return 'Hypertension stage 1: Caution, visit your healthcare provider';
+      return autoI8lnGen.translate("R_W_G_13");
     } else if (systolic > 140 && diastolic > 90) {
-      return 'Hypertension stage 2: Call Emergency Service';
+      return autoI8lnGen.translate("R_W_G_14");
     } else if (systolic > 160 && diastolic > 100) {
-      return 'Hypertension Crisis: Call Emergency Service Immediately';
+      return autoI8lnGen.translate("R_W_G_15");
     }
-    return '';
+    return autoI8lnGen.translate("R_W_G_16");
   }
 
   String _getAlbuminGuidance(double? albumin) {
     if (albumin == null) return '';
-    if (albumin <= 150) return '👍 Normal';
-    return 'Needs treatment - HP will be alerted';
+    if (albumin <= 150) return autoI8lnGen.translate("👍 NORMAL");
+    return autoI8lnGen.translate("R_W_G_17");
   }
 
   String _getGlucoseGuidance(double? glucose) {
     if (glucose == null) return '';
-    if (glucose < 7.8) return '👍 Normal';
-    if (glucose < 11.0) return '2nd test needed';
-    return 'Gestational diabetes - HP will be alerted';
+    if (glucose < 7.8) return autoI8lnGen.translate("👍 NORMAL");
+    if (glucose < 11.0) return autoI8lnGen.translate("R_W_G_18");;
+    return autoI8lnGen.translate("R_W_G_19");
   }
 
   String _getPulseGuidance(int? pulse) {
     if (pulse == null) return '';
-    if (pulse <= 90) return '👍 Normal pulse';
-    if (pulse <= 100) return 'Take rest + contact your HP';
-    return 'Danger! Your HP will be alerted';
+    if (pulse <= 90) return autoI8lnGen.translate("👍 R_W_G_20");
+    if (pulse <= 100) return autoI8lnGen.translate("R_W_G_21");;
+    return autoI8lnGen.translate("R_W_G_22");
   }
 
   Widget _buildGuidance(String message) {
@@ -365,7 +365,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: AutoText(
-                    'We need updates for:',
+                    'R_W_G_23',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -390,13 +390,13 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                     spacing: 8,
                     runSpacing: 4,
                     children: [
-                      _buildInfoChip('🩺 Blood pressure'),
-                      _buildInfoChip('💓 Pulse'),
-                      _buildInfoChip('⚖️ Weight'),
-                      _buildInfoChip('💧 Urine'),
-                      _buildInfoChip('🩸 Haemoglobin'),
-                      _buildInfoChip('🤰 Belly height'),
-                      _buildInfoChip('👶 Baby heartbeat'),
+                      _buildInfoChip(autoI8lnGen.translate('🩺 R_W_G_24')),
+                      _buildInfoChip(autoI8lnGen.translate('💓 R_W_G_25')),
+                      _buildInfoChip(autoI8lnGen.translate('⚖️ WEIGHT')),
+                      _buildInfoChip(autoI8lnGen.translate('💧 URINE')),
+                      _buildInfoChip(autoI8lnGen.translate('🩸 HAEMOGLO')),
+                      _buildInfoChip(autoI8lnGen.translate('🤰 B_H')),
+                      _buildInfoChip(autoI8lnGen.translate('👶 B_H_B')),
                     ],
                   ),
                 ],
@@ -416,7 +416,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: AutoText(
-                      'Need help? Contact your referent health provider or ANC clinic',
+                      'NHCAC',
                       style: TextStyle(
                         fontSize: 12,
                         fontStyle: FontStyle.italic,

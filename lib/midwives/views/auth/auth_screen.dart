@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart'; // Firebase UI Auth for prebuilt screens
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/midwives/views/auth/mid_wive_sign_in_page.dart';
+import 'package:jambomama_nigeria/midwives/views/auth/mid_wive_sign_up_page.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/landing_screen.dart';
 
 class MidwiveAuthScreen extends StatefulWidget {
@@ -50,7 +51,7 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           // Display the built-in Firebase registration screen
-          return MidWiveSignInPage();
+          return MidWiveSignUpPage();
         }
 
         User? user = snapshot.data;
@@ -63,7 +64,7 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
         }
 
         // Fallback in case user data is null
-        return MidWiveSignInPage();
+        return MidWiveSignUpPage();
       },
     );
   }

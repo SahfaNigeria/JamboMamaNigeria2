@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 import '../../../controllers/auth_controller.dart' show AuthController;
@@ -30,37 +31,58 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
   void isLoading(bool value) {}
 
   Future<void> _signIn() async {
-    if (mounted) {
-      if (!_formKey.currentState!.validate()) return;
+    if (!mounted) return;
+    if (!_formKey.currentState!.validate()) return;
 
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-      try {
-        await _authService2.loginUser(
-          _emailController.text.trim(),
-          _passwordController.text,
-          context,
-          isLoading,
-        );
+    try {
+      final res = await _authService2.loginUser(
+        _emailController.text.trim(),
+        _passwordController.text,
+        context,
+            (bool isLoading) {
+          if (mounted) {
+            setState(() {
+              _isLoading = isLoading;
+            });
+          }
+        },
+      );
 
-        // Navigate to home screen or show success
+      if (res == 'success') {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign in successful!')),
+          SnackBar(content: AutoText('Login successful')),
         );
-      } catch (e) {
+
+        // Navigate to home page or wherever
+        // Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        if (mounted) {
+          setState(() {
+            _errorMessage = res;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
           _errorMessage = e.toString();
         });
-      } finally {
+      }
+    } finally {
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +98,8 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 150),
-                  Text(
-                    'Sign in',
+                  AutoText(
+                    'SI',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
@@ -87,18 +109,17 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                   SizedBox(height: 8),
                   Row(
                     children: [
-                      Text(
-                        "Don't have an account? ",
+                      AutoText(
+                        "DAHC ",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => Navigator.pushNamed(
-                            context, '/midwive_sign_up_page'),
-                        child: Text(
-                          'Register',
+                        onTap: () => Navigator.pop(context),
+                        child: AutoText(
+                          'REGISTER',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
@@ -111,15 +132,15 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                   SizedBox(height: 40),
                   CustomTextField(
                     controller: _emailController,
-                    hintText: 'Email',
+                    hintText: 'EMAIL',
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return autoI8lnGen.translate("ENTER_EMAIL_2");
                       }
                       if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                           .hasMatch(value)) {
-                        return 'Please enter a valid email';
+                        return autoI8lnGen.translate("LOGIN_VALIDATION_2");
                       }
                       return null;
                     },
@@ -127,14 +148,14 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                   SizedBox(height: 20),
                   CustomTextField(
                     controller: _passwordController,
-                    hintText: 'Password',
+                    hintText: 'PASSWORD',
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return autoI8lnGen.translate("P_E_P_2");
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return autoI8lnGen.translate("PASSWORD_V");
                       }
                       return null;
                     },
@@ -145,8 +166,8 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                     child: GestureDetector(
                       onTap: () => Navigator.pushNamed(
                           context, '/midwive_password_reset_page'),
-                      child: Text(
-                        'Forgotten password?',
+                      child: AutoText(
+                        'F_P_2',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -156,7 +177,7 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                   ),
                   SizedBox(height: 40),
                   CustomButton(
-                    text: 'Sign in',
+                    text: 'SI',
                     onPressed: _isLoading ? null : _signIn,
                     isLoading: _isLoading,
                   ),

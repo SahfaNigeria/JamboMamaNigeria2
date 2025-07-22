@@ -67,6 +67,7 @@ class MyApp extends StatelessWidget {
         '/login_register': (context) => LoginOrRegister(),
         '/MidWifeHomePage': (context) => MidWifeHomePage(),
         '/mid_wife_reg_screen': (context) => MidwiveAuthScreen(),
+        '/mid_wife_sign_in_screen': (context) => MidWiveSignInPage(),
         '/midwive_sign_up_page': (context) => MidWiveSignUpPage(),
         '/midwive_password_reset_page': (context) => MidWiveForgottenPasswordPage(),
         // '/register': (context) => RegisterScreen(),

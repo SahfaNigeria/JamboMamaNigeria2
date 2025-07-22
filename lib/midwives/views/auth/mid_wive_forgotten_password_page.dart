@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/midwives/views/service/m_auth_service.dart';
 import '../components/m_auth_textfield.dart';
@@ -60,8 +61,8 @@ class _MidWiveForgottenPasswordPageState extends State<MidWiveForgottenPasswordP
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 150),
-                  Text(
-                    'Forgotten password',
+                  AutoText(
+                    'F_P_2',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
@@ -69,10 +70,10 @@ class _MidWiveForgottenPasswordPageState extends State<MidWiveForgottenPasswordP
                     ),
                   ),
                   SizedBox(height: 16),
-                  Text(
+                  AutoText(
                     _emailSent
-                        ? 'Password reset email sent! Check your inbox.'
-                        : 'Provide your email and we will send you a link to reset your password',
+                        ? 'PESI'
+                        : 'PERP',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -83,28 +84,29 @@ class _MidWiveForgottenPasswordPageState extends State<MidWiveForgottenPasswordP
                   if (!_emailSent) ...[
                     CustomTextField(
                       controller: _emailController,
-                      hintText: 'Email',
+                      hintText: 'EMAIL',
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return autoI8lnGen.translate("ENTER_EMAIL_2");
                         }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                          return 'Please enter a valid email';
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
+                          return autoI8lnGen.translate("LOGIN_VALIDATION_2");
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 40),
                     CustomButton(
-                      text: 'Reset password',
+                      text: 'R_S_P',
                       onPressed: _isLoading ? null : _resetPassword,
                       isLoading: _isLoading,
                     ),
                   ] else ...[
                     SizedBox(height: 40),
                     CustomButton(
-                      text: 'Back to Sign in',
+                      text: 'BTSI',
                       onPressed: () => Navigator.pushNamedAndRemoveUntil(
                         context,
                         '/mid_wife_reg_screen',
@@ -117,8 +119,8 @@ class _MidWiveForgottenPasswordPageState extends State<MidWiveForgottenPasswordP
                   Center(
                     child: GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: Text(
-                        'Go back',
+                      child: AutoText(
+                        'BGM',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],

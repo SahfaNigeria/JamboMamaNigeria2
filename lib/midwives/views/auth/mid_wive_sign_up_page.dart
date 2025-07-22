@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 import '../components/m_auth_textfield.dart';
@@ -30,32 +31,34 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
   }
 
   Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      await _authService.createUserWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration successful!')),
-      );
-
-      Navigator.pushReplacementNamed(context, '/signin');
-    } catch (e) {
+    if (mounted) {
+      if (!_formKey.currentState!.validate()) return;
+      
       setState(() {
-        _errorMessage = e.toString();
+        _isLoading = true;
+        _errorMessage = null;
       });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      
+      try {
+        await _authService.createUserWithEmailAndPassword(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
+      
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: AutoText('R_M_S')),
+        );
+        //
+        // Navigator.pushReplacementNamed(context, '/signin');
+      } catch (e) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -72,8 +75,8 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 150),
-                  Text(
-                    'Register',
+                  AutoText(
+                    'REGISTER',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
@@ -83,17 +86,18 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
                   SizedBox(height: 8),
                   Row(
                     children: [
-                      Text(
-                        "Already have an account? ",
+                      AutoText(
+                        "AHAC ",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Text(
-                          'Sign in',
+                        onTap: () => Navigator.pushNamed(
+                            context, '/mid_wife_sign_in_screen'),
+                        child: AutoText(
+                          'SI',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
@@ -106,14 +110,15 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
                   SizedBox(height: 40),
                   CustomTextField(
                     controller: _emailController,
-                    hintText: 'Email',
+                    hintText: 'EMAIL',
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return autoI8lnGen.translate("ENTER_EMAIL_2");
                       }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'Please enter a valid email';
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
+                        return autoI8lnGen.translate("LOGIN_VALIDATION_2");
                       }
                       return null;
                     },
@@ -121,14 +126,14 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
                   SizedBox(height: 20),
                   CustomTextField(
                     controller: _passwordController,
-                    hintText: 'Password',
+                    hintText: 'PASSWORD',
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return autoI8lnGen.translate("P_E_P_2");
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return autoI8lnGen.translate("PASSWORD_V");
                       }
                       return null;
                     },
@@ -136,21 +141,21 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
                   SizedBox(height: 20),
                   CustomTextField(
                     controller: _confirmPasswordController,
-                    hintText: 'Confirm password',
+                    hintText: 'C_P',
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
+                        return autoI8lnGen.translate("P_C_Y_P");
                       }
                       if (value != _passwordController.text) {
-                        return 'Passwords do not match';
+                        return autoI8lnGen.translate("PDNM");
                       }
                       return null;
                     },
                   ),
                   SizedBox(height: 40),
                   CustomButton(
-                    text: 'Register',
+                    text: 'REGISTER',
                     onPressed: _isLoading ? null : _register,
                     isLoading: _isLoading,
                   ),

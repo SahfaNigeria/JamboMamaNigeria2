@@ -122,7 +122,7 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a Hospital'),
+        title: AutoText('ADD_HOSPITAL'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -131,10 +131,10 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Hospital Name'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("HOSPITAL_NAME")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter hospital name';
+                    return autoI8lnGen.translate("VALIDATION_Q_15");
                   }
                   return null;
                 },
@@ -143,10 +143,10 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Address'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("Address")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter address';
+                    return autoI8lnGen.translate("VALIDATION_Q_16");
                   }
                   return null;
                 },
@@ -155,24 +155,24 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Phone'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("PHONE")),
                 onSaved: (value) {
                   phone = value!;
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Services includes'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("SERVICES_INCLUDED")),
                 onSaved: (value) {
                   services = value!;
                 },
               ),
               DropdownButtonFormField<int>(
-                decoration: InputDecoration(labelText: 'Level'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("LEVEL_COLUMN")),
                 value: level,
                 items: [
-                  DropdownMenuItem(value: 1, child: Text('Level 1')),
-                  DropdownMenuItem(value: 2, child: Text('Level 2')),
-                  DropdownMenuItem(value: 3, child: Text('Level 3')),
+                  DropdownMenuItem(value: 1, child: AutoText('L_1')),
+                  DropdownMenuItem(value: 2, child: AutoText('L_2')),
+                  DropdownMenuItem(value: 3, child: AutoText('L_3')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -203,7 +203,7 @@ class _AddHospitalFormScreenState extends State<AddHospitalFormScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Submit'),
+                child: AutoText('SUBMIT'),
               ),
             ],
           ),

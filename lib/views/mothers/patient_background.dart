@@ -696,7 +696,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        AutoText(
           title,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
@@ -1207,7 +1207,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   onChanged: (value) => setState(() => _hivTestSelf = value!),
                 ),
                 _buildButtonGroup(
-                  title: 'Has your partner been tested for HIV/AIDS?',
+                  title: 'HAS_TESTED_HIV',
                   value: _hivTestPartner,
                   options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) =>
@@ -1238,7 +1238,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   options: [autoI8lnGen.translate("YES_MESSAGE"), autoI8lnGen.translate("NO_2"), autoI8lnGen.translate("D_ONT_KNOW"), ],
                   onChanged: (value) => setState(() => _syphilisTest = value!),
                 ),
-                if (_syphilisTest == 'Yes') ...[
+                if (_syphilisTest == autoI8lnGen.translate("YES_MESSAGE")) ...[
                   _buildTextFormField(
                     controller: _syphilisTreatmentController,
                     label:autoI8lnGen.translate("G_Q_15"),
@@ -1578,7 +1578,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
               padding: EdgeInsets.symmetric(vertical: 16),
             ),
             child: AutoText(
-              '',
+              'SUBMIT',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),

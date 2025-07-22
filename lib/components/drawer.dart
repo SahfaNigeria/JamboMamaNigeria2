@@ -155,7 +155,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
               );
             },
-            text: " CONNECTIONS",
+            text: "CONNECTIONS",
           ),
 
           DrawerTiles(
