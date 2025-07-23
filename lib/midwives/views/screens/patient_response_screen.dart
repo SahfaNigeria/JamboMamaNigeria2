@@ -359,7 +359,7 @@ class _ProviderPatientResponsesScreenState
   void _markAsReviewed(String responseId) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Response marked as reviewed'),
+        content: AutoText('R_M_R'),
         backgroundColor: Colors.green,
       ),
     );

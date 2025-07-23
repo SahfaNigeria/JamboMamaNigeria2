@@ -168,21 +168,21 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
   void _checkForEmergencies() {
     if (hasVaginalBleeding == true) {
-      if (bleedingAmount == 'A cup full' ||
-          bleedingAmount == 'More than a cup full') {
+      if (bleedingAmount == autoI8lnGen.translate("A_CUP_FULL") ||
+          bleedingAmount == autoI8lnGen.translate("MORE_THAN_A_CUP_FULL")) {
         _showEmergencyAlert(
             'VAGINAL_BLEEDING');
         return;
       }
     }
 
-    if (hasFluidLoss == true && fluidAmount == 'A sudden puddle') {
+    if (hasFluidLoss == true && fluidAmount == autoI8lnGen.translate("A_S_PU")) {
       _showEmergencyAlert(
           'BABY_COMING');
       return;
     }
 
-    if (hasContractions == true && contractionType == 'Very painful') {
+    if (hasContractions == true && contractionType == autoI8lnGen.translate("V_PAINFUL")) {
       _showEmergencyAlert(
           'CONTRACTION_DETECTED');
       return;
@@ -265,9 +265,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                         _buildMultipleChoice(
                           value: bleedingAmount,
                           options: [
-                            'A few drops',
-                            'A cup full',
-                            'More than a cup full'
+                            autoI8lnGen.translate("A_FEW_DROPS"),
+                            autoI8lnGen.translate("CUP_FULL"),
+                            autoI8lnGen.translate("MORE_THAN_A_CUP_FULL"),
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -472,9 +472,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                         _buildMultipleChoice(
                           value: coughTiming,
                           options: [
-                            'At night',
-                            'During day',
-                            'When doing something strenuous'
+                            autoI8lnGen.translate("AT_NIGHT"),
+                            autoI8lnGen.translate("DURING_DAY"),
+                            autoI8lnGen.translate("W_D_S_S"),
                           ],
                           onChanged: (value) =>
                               setState(() => coughTiming = value),

@@ -922,5 +922,9 @@
   "B_H": "Urefu wa tumbo",
   "B_H_B": "Mapigo ya moyo ya mtoto",
   "NHCAC": "Unahitaji msaada? Wasiliana na mtoa huduma yako ya afya au kliniki ya antenatal",
-  "R_S_P": "Weka upya nenosiri"
+  "R_S_P": "Weka upya nenosiri",
+
+  "AT_NIGHT": "Usiku",
+  "DURING_DAY": "Wakati wa mchana",
+  "W_D_S_S": "Unapofanya kitu kigumu"
 }

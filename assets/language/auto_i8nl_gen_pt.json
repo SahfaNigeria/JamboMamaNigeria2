@@ -921,5 +921,9 @@
   "B_H": "Altura da barriga",
   "B_H_B": "Batimento cardíaco do bebê",
   "NHCAC": "Precisa de ajuda? Entre em contato com seu provedor de saúde referência ou clínica de pré-natal",
-  "R_S_P": "Redefinir senha"
+  "R_S_P": "Redefinir senha",
+
+  "AT_NIGHT": "À noite",
+  "DURING_DAY": "Durante o dia",
+  "W_D_S_S": "Ao fazer algo extenuante"
 }

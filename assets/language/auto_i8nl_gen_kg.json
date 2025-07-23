@@ -923,5 +923,9 @@
   "B_H_B": "Batifu ya ntima ya mwana",
   "NHCAC": "Nge ke mfunu ya lusadisu? Sungana ti nkengi na nge to kliniki ya buta",
   "R_S_P": "Sakola password na mutindu ya mpa",
-  "R_S_P": "Sinthani chinsinsi"
+  "R_S_P": "Sinthani chinsinsi",
+
+  "AT_NIGHT": "Na butu",
+  "DURING_DAY": "Na moyi",
+  "W_D_S_S": "Na ntangu ya misala ya mpasi"
 }

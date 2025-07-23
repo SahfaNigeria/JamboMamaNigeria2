@@ -979,7 +979,13 @@
   "B_H_B": "Baby heartbeat",
   "NHCAC": "Need help? Contact your referent health provider or ANC clinic",
   "R_S_P": "Reset password",
-  "R_W_G_6": "\\nBMI ≥25: Less weight gain is safer"
+  "R_W_G_6": "\\nBMI ≥25: Less weight gain is safer",
+
+  "AT_NIGHT": "At night",
+  "DURING_DAY": "During day",
+  "W_D_S_S": "When doing something strenuous",
+  "R_HOME": "How do you return home after the birth?",
+  "R_M_R": "Response marked as reviewed"
 
 
 

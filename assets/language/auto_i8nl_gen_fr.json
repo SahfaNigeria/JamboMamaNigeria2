@@ -922,5 +922,9 @@
   "B_H": "Hauteur du ventre",
   "B_H_B": "Battement de cœur du bébé",
   "NHCAC": "Besoin d'aide ? Contactez votre prestataire de santé référent ou la clinique de soins prénatals",
-  "R_S_P": "Réinitialiser le mot de passe"
+  "R_S_P": "Réinitialiser le mot de passe",
+
+  "AT_NIGHT": "La nuit",
+  "DURING_DAY": "Pendant la journée",
+  "W_D_S_S": "Lors d’un effort intense"
 }

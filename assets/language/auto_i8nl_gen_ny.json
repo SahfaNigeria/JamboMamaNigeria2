@@ -922,5 +922,9 @@
   "B_H": "Kutalika kwa m'mimba",
   "B_H_B": "Kugunda kwa mtima kwa mwana",
   "NHCAC": "Mukufuna thandizo? Lumikizanani ndi dokotala wanu kapena chipatala cha amayi",
-  "R_S_P": "Sinthani chinsinsi"
+  "R_S_P": "Sinthani chinsinsi",
+
+  "AT_NIGHT": "Usiku",
+  "DURING_DAY": "Pa tsiku",
+  "W_D_S_S": "Mukachita ntchito yovuta"
 }

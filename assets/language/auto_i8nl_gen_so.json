@@ -921,5 +921,10 @@
   "B_H": "Dhererka caloosha",
   "B_H_B": "Dheg-dhegka wadnaha ilmaha",
   "NHCAC": "U baahan caawimaad? La xiriir bixiyaha caafimaadka ama isbitaalka uurka",
-  "R_S_P": "Dib u dejiso ereyga sirta ah"
+  "R_S_P": "Dib u dejiso ereyga sirta ah",
+
+
+  "AT_NIGHT": "Habeenkii",
+  "DURING_DAY": "Maalintii",
+  "W_D_S_S": "Markaad samaynayso wax adag"
 }

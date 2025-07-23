@@ -394,7 +394,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
 
             SizedBox(height: 20),
             // 8. How do you return home after the birth?
-            Text("How do you return home after the birth?",
+            AutoText("R_HOME",
                 style: TextStyle(fontSize: 14)),
             SizedBox(height: 10),
             Row(

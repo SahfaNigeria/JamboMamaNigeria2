@@ -338,7 +338,7 @@ class _HealthcareProfessionalAssessmentScreenState
                 ),
               ),
               AutoText(
-                isPresent ? 'YES' : 'NO',
+                isPresent ? 'YES_MESSAGE' : 'NO_2',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
