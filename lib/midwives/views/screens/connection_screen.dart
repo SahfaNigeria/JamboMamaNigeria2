@@ -44,30 +44,39 @@ class ConnectionScreen extends StatelessWidget {
 
   Widget buildNotificationItem(
       NotificationModel notification, BuildContext context) {
-    final connectionStateModel =
-        Provider.of<ConnectionStateModel>(context, listen: false);
+    return Consumer<ConnectionStateModel>(
+      builder: (context, model, _) {
+        bool isLoading = model.isLoading(notification.id);
 
-    return ListTile(
-      title: Text(
-        '${notification.requesterName}',
-        style: TextStyle(fontWeight: FontWeight.w600),
-      ),
-      subtitle: Text('sent you a connection request'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
-            onPressed: () => connectionStateModel.handleConnectionAction(
-                notification.id, 'accepted'),
-            child: Text('Accept'),
+        return ListTile(
+          title: Text(
+            '${notification.requesterName}',
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          TextButton(
-            onPressed: () => connectionStateModel.handleConnectionAction(
-                notification.id, 'declined'),
-            child: Text('Decline'),
-          ),
-        ],
-      ),
+          subtitle: Text('sent you a connection request'),
+          trailing: isLoading
+              ? SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: () => model.handleConnectionAction(
+                          notification.id, 'accepted'),
+                      child: Text('Accept'),
+                    ),
+                    TextButton(
+                      onPressed: () => model.handleConnectionAction(
+                          notification.id, 'declined'),
+                      child: Text('Decline'),
+                    ),
+                  ],
+                ),
+        );
+      },
     );
   }
 }

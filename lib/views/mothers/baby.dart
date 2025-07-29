@@ -1,18 +1,116 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/components/fyp_component.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
-class Baby extends StatelessWidget {
+class Baby extends StatefulWidget {
   const Baby({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    void navToYouPage() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const You()),
-      );
+  State<Baby> createState() => _BabyState();
+}
+
+class _BabyState extends State<Baby> {
+  List<Map<String, dynamic>> babyDevelopmentContent = [];
+  bool isLoading = true;
+  String errorMessage = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    print('Baby widget initState called');
+    _loadBabyDevelopmentContent();
+  }
+
+  Future<List<Map<String, dynamic>>> getBabyDevelopmentContent() async {
+    try {
+      print('Fetching baby development content...');
+
+      // First, try to get ANY document from the content collection
+      QuerySnapshot testSnapshot =
+          await _firestore.collection('content').limit(5).get();
+      print(
+          'Test query - Found ${testSnapshot.docs.length} total documents in content collection');
+
+      for (var doc in testSnapshot.docs) {
+        print('Document ${doc.id}: ${doc.data()}');
+      }
+
+      // Try the query without orderBy first to see if we get data
+      QuerySnapshot snapshot = await _firestore
+          .collection('content')
+          .where('type', isEqualTo: 'educative')
+          .where('subType', isEqualTo: 'baby_development')
+          .where('module', isEqualTo: 'mothers')
+          .where('isActive', isEqualTo: true)
+          .get();
+
+      print('Query without orderBy - Found ${snapshot.docs.length} documents');
+
+      List<Map<String, dynamic>> result = snapshot.docs.map((doc) {
+        Map<String, dynamic> data = {
+          'id': doc.id,
+          ...doc.data() as Map<String, dynamic>
+        };
+        print('Document data: $data');
+        return data;
+      }).toList();
+
+      // Sort manually by displayOrder
+      result.sort((a, b) {
+        int orderA = a['displayOrder'] ?? 0;
+        int orderB = b['displayOrder'] ?? 0;
+        return orderA.compareTo(orderB);
+      });
+
+      print('Sorted ${result.length} documents by displayOrder');
+      return result;
+    } catch (e) {
+      print('Error fetching baby development content: $e');
+      throw e; // Re-throw to be caught by the calling method
     }
+  }
+
+  Future<void> _loadBabyDevelopmentContent() async {
+    print('_loadBabyDevelopmentContent called');
+    try {
+      setState(() {
+        isLoading = true;
+        errorMessage = '';
+      });
+
+      print('About to call getBabyDevelopmentContent');
+      final content = await getBabyDevelopmentContent();
+      print('getBabyDevelopmentContent returned ${content.length} items');
+
+      setState(() {
+        babyDevelopmentContent = content;
+        isLoading = false;
+      });
+
+      print(
+          'State updated - isLoading: $isLoading, content length: ${babyDevelopmentContent.length}');
+    } catch (e) {
+      print('Error in _loadBabyDevelopmentContent: $e');
+      setState(() {
+        errorMessage = 'Failed to load content: ${e.toString()}';
+        isLoading = false;
+      });
+    }
+  }
+
+  void navToYouPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const You()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(
+        'Baby widget build called - isLoading: $isLoading, errorMessage: $errorMessage, content length: ${babyDevelopmentContent.length}');
 
     return Scaffold(
       appBar: AppBar(
@@ -21,149 +119,87 @@ class Baby extends StatelessWidget {
           style: TextStyle(fontSize: 16),
         ),
         centerTitle: true,
-      ),
-      body: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(),
-        children: [
-          Fypcomponent(
-            timetext: 'How it starts: Week 2',
-            imagePath: 'assets/images/2 weeks.jpg',
-            firstparagraph:
-                'Your pregnancy starts when during sexual congress the mans sperm fertilizes an egg in your womb.',
-            secparagraph:
-                ' At the start of this week, you ovulate. Your egg is fertilized 12 to 24 hours later if a sperm penetrates it. Over the next several days, the fertilized egg (called a zygote) will start dividing into multiple cells as it travels down the fallopian tube, enters your uterus, and starts to burrow into the uterine lining..',
-            thirdparagraph: '',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK 4',
-            imagePath: 'assets/images/week-5.jpg',
-            firstparagraph:
-                'Your ball of cells is now officially an embryo. You are now about 4 weeks from the beginning of your last period',
-            secparagraph:
-                'Now a start is made with his face and neck. The heart and veins continue to develop. The lungs, stomach and liver start to develop too.',
-            thirdparagraph:
-                'It is around this time – when your next period would normally be due –  that you might be able to get a positive result on a home pregnancy test.',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'Your baby is 12 weeks old',
-            imagePath: 'assets/images/week 12.jpg',
-            firstparagraph:
-                'He measures about 5cm and starts to make its own movement. The baby heartbeat can be heard but only with a special instrument. ',
-            secparagraph:
-                ' This week your babys reflexes kick in: Their fingers will soon begin to open and close, toes will curl, and their mouth will make sucking movements.',
-            thirdparagraph: '',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'Your Baby is 16 weeks old',
-            imagePath: 'assets/images/week 16.jpg',
-            firstparagraph:
-                ' The babys eyes can blink and the heart and blood vessels are fully formed. The patterning on your babys scalp has begun, though their hair is not visible yet.',
-            secparagraph:
-                'Their legs are more developed, their head is more upright, and their ears are close to their final position. The babys fingers and toes have fingerprints. The baby now measures about 11-12cm and weighs about 100 grams. ',
-            thirdparagraph:
-                'The top of your uterus (belly) is now 7.8cm below your belly button.',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK 16-19',
-            imagePath: 'assets/images/week 21.jpg',
-            firstparagraph:
-                'Add some meat, fish, beans or eggs with your cassava or plantain stew to give energy to your baby. ',
-            secparagraph:
-                'Add every day some fruit and leafy veggies, peanuts are good too, reduce salt in your food.',
-            thirdparagraph:
-                ' You should be less nauseous now. If nausea continues, tell your health worker at antenatal clinic',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'Week 24 ',
-            imagePath: 'assets/images/24 week.jpg',
-            firstparagraph:
-                'His weight is 500-600 grams now. He responds to sounds by moving or his heat beats faster. If you feel jerking motions he has hiccups. The baby may feel it is upside down in the womb. He can hear music, your voice, feel your movement, feel your hands when you tour him. ',
-            secparagraph:
-                'Your baby cuts a pretty long and lean figure, but chubbier times are coming. Their skin is still thin and translucent, but that will begin to change soon too',
-            thirdparagraph: '',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK 28',
-            imagePath: 'assets/images/week 27.jpg',
-            firstparagraph:
-                'The baby is 35cm long and weighs a kilo. He moves around and kicks a lot now. He is playing if labour started too early, your baby could survive but it is really better he stays inside for 10 weeks more!.',
-            secparagraph:
-                ' Your babys eyesight is developing, which may enable them to sense light filtering in from the outside. They can blink, and their eyelashes have grown in .',
-            thirdparagraph:
-                'Ask your doctor about preterm labour warning signs. Re view your birth plan and prepare yourself for childbirth, learn the anger and warning signs, and how labour starts. ',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK 35',
-            imagePath: 'assets/images/30 week.jpg',
-            firstparagraph:
-                'The baby weighs almost 2kgs now and is moving around a lot. Skin wrinkles disappear as fat starts to fprm under the skin. Between now and his birth, your baby will gain up between one to two kilos more  ',
-            secparagraph:
-                ' You are probably gaining about a pound a week now. Half of that goes straight to your baby, who will gain one-third to half their birth weight in the next seven weeks in preparation for life outside the womb ',
-            thirdparagraph: '',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'Week 39',
-            imagePath: 'assets/images/37 week.jpg',
-            firstparagraph:
-                ' Babies differ in size, Boys are often bigger than bigger than girls, twins are smaller thasingletons, the parents are bigger or smaller.  ',
-            secparagraph:
-                'If your baby is smalll but growing steadily is OK. At this stage he is about 47cm and weighs close to 2,7kg. The brain and lungs are nearly finished. ',
-            thirdparagraph:
-                'The head is facing downwards by now, ready for the birth. Birth between 37-42 weeks is best.  ',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'Week 40 ',
-            imagePath: 'assets/images/delivered baby.jpg',
-            firstparagraph:
-                'There he is! The babys due date for full growth is calculated for 40 weeks of gestation, but a full term birth can be fro week 38 thruough 42. ',
-            secparagraph:
-                'If labour doesnt start spontaneously at 42 weeks, labour may be medically induced by the health provider for the babys and your own safety. ',
-            thirdparagraph:
-                'If youre past your due date, you may not be as late as you think, especially if you calculated it solely based on the day of your last period. Sometimes women ovulate later than expected.',
-            baby: 'Baby',
-            you: 'You',
-            onTap: () {},
-            onClick: navToYouPage,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadBabyDevelopmentContent,
           ),
         ],
       ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : errorMessage.isNotEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        errorMessage,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.red[600],
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadBabyDevelopmentContent,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
+              : babyDevelopmentContent.isEmpty
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.baby_changing_station,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'No baby development content available',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const PageScrollPhysics(),
+                      itemCount: babyDevelopmentContent.length,
+                      itemBuilder: (context, index) {
+                        final content = babyDevelopmentContent[index];
+
+                        return Fypcomponent(
+                          timetext: content['timeText'] ?? '',
+                          imagePath: content['imageUrl'] ?? '',
+                          firstparagraph: content['firstParagraph'] ?? '',
+                          secparagraph: content['secParagraph'] ?? '',
+                          thirdparagraph: content['thirdParagraph'] ?? '',
+                          baby: 'Baby',
+                          you: 'You',
+                          onTap: () {
+                            // Handle baby tab tap if needed
+                          },
+                          onClick: navToYouPage,
+                        );
+                      },
+                    ),
     );
   }
 }

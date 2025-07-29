@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HealthcareProfessionalAssessmentScreen extends StatefulWidget {
   final String patientId;
-  //final String patientName;
+  final String assessmentId;
 
   const HealthcareProfessionalAssessmentScreen({
     Key? key,
     required this.patientId,
-    // required this.patientName,
+    required this.assessmentId,
   }) : super(key: key);
 
   @override
@@ -217,6 +217,7 @@ class _HealthcareProfessionalAssessmentScreenState
   Widget _buildAssessmentSections(Map<String, dynamic> data) {
     return Column(
       children: [
+        _buildHeader(data['patientName'] ?? 'Unknown Patient'),
         _buildSection('Bleeding & Discharge', [
           _buildSymptomRow('Vaginal Bleeding', data['hasVaginalBleeding'],
               details: data['hasVaginalBleeding'] == true
@@ -363,16 +364,3 @@ class _HealthcareProfessionalAssessmentScreenState
     );
   }
 }
-
-// Usage example - you would call this screen like:
-/*
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => HealthcareProfessionalAssessmentScreen(
-      patientId: 'patient-user-id',
-      patientName: 'Patient Name',
-    ),
-  ),
-);
-*/

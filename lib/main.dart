@@ -5,6 +5,7 @@ import 'package:jambomama_nigeria/controllers/notifications.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/chat_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/connection_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/provider_warning_screen.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
@@ -59,6 +60,14 @@ class MyApp extends StatelessWidget {
           );
         },
         '/ConnectionScreen': (context) => ConnectionScreen(),
+        '/HealthcareProfessionalAssessmentScreen': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          return HealthcareProfessionalAssessmentScreen(
+            patientId: args['patientId'],
+            assessmentId: args['assessmentId'],
+          );
+        },
       },
       theme: ThemeData(
         textTheme: TextTheme(

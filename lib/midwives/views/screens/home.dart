@@ -8,7 +8,7 @@ import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/colleague_screen.dart';
 // import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/task_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/instruction_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/notification.dart';
 
 class MidWifeHomePage extends StatelessWidget {
@@ -252,13 +252,13 @@ class MidWifeHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: HomeComponents(
-                      text: 'Manage Tasks',
+                      text: 'Instructions',
                       icon: 'assets/svgs/learn_medicine.svg',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => TaskListScreen(),
+                            builder: (context) => PregnancyCareModulesPage(),
                           ),
                         );
                       },

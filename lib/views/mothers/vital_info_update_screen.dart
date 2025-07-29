@@ -1,5 +1,3 @@
-// Vital Info Update Screen - with JamboMama UI theme + guidance logic
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -147,79 +145,6 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
       setState(() => _isLoading = false);
     }
   }
-
-  // Future<void> _submitVitalInfo() async {
-  //   if (!_formKey.currentState!.validate()) return;
-
-  //   setState(() => _isLoading = true);
-
-  //   try {
-  //     final vitalInfoData = {
-  //       'userId': widget.userId,
-  //       'currentWeek': widget.currentWeek,
-  //       'weight': _weightController.text.isNotEmpty
-  //           ? double.tryParse(_weightController.text)
-  //           : null,
-  //       'haemoglobin': _haemoglobinController.text.isNotEmpty
-  //           ? double.tryParse(_haemoglobinController.text)
-  //           : null,
-  //       'systolicPressure': _systolicController.text.isNotEmpty
-  //           ? int.tryParse(_systolicController.text)
-  //           : null,
-  //       'diastolicPressure': _diastolicController.text.isNotEmpty
-  //           ? int.tryParse(_diastolicController.text)
-  //           : null,
-  //       'albumin': _albuminController.text.isNotEmpty
-  //           ? double.tryParse(_albuminController.text)
-  //           : null,
-  //       'glucose': _glucoseController.text.isNotEmpty
-  //           ? double.tryParse(_glucoseController.text)
-  //           : null,
-  //       'urineAnalysis': _urineAnalysis,
-  //       'pulseRate': _pulseController.text.isNotEmpty
-  //           ? int.tryParse(_pulseController.text)
-  //           : null,
-  //       'fundalHeight': _fundaHeightController.text.isNotEmpty
-  //           ? double.tryParse(_fundaHeightController.text)
-  //           : null,
-  //       'babyHeartbeat': _babyHeartbeatController.text.isNotEmpty
-  //           ? int.tryParse(_babyHeartbeatController.text)
-  //           : null,
-  //       'timestamp': FieldValue.serverTimestamp(),
-  //       'dateRecorded': DateTime.now().toIso8601String(),
-  //     };
-
-  //     // Save to Firestore collection
-  //     await _firestore.collection('vital_info').add(vitalInfoData);
-
-  //     // Also update user's latest vital info
-  //     await _firestore.collection('users').doc(widget.userId).update({
-  //       'latestVitalInfo': vitalInfoData,
-  //       'lastVitalInfoUpdate': FieldValue.serverTimestamp(),
-  //     });
-
-  //     // Show success message
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         content: Text('Vital information saved successfully!'),
-  //         backgroundColor: Colors.green,
-  //       ),
-  //     );
-
-  //     // Navigate back or to next screen
-  //     Navigator.pop(context);
-  //   } catch (e) {
-  //     // Show error message
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Error saving vital info: ${e.toString()}'),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   } finally {
-  //     setState(() => _isLoading = false);
-  //   }
-  // }
 
   String _getWeightGuidance(double? currentWeight) {
     if (currentWeight == null || widget.initialWeight == null) return '';

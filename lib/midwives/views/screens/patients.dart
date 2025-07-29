@@ -5,7 +5,7 @@ import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
 import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/provider_vital_info_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/provider_warning_screen.dart';
-import 'alternative_response.dart';
+import 'provider_patient_background.dart';
 
 import 'patient_response_screen.dart';
 
@@ -165,14 +165,16 @@ class _PatientsState extends State<Patients> {
                                 color: Colors.black,
                               ),
                               onPressed: () {
-                                // // Navigate to the account page
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         VitalInfoScreen(patientId: requesterId),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProviderPatientBackgroundScreen(
+                                      patientId: requesterId,
+                                      providerId: userId,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             IconButton(
@@ -219,22 +221,44 @@ class _PatientsState extends State<Patients> {
                               },
                             ),
                             IconButton(
-                              icon: Icon(
-                                Icons.emergency,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        HealthcareProfessionalAssessmentScreen(
-                                      patientId: requesterId,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                                icon: Icon(
+                                  Icons.emergency,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () async {
+                                  final latestAssessment =
+                                      await FirebaseFirestore.instance
+                                          .collection('emergency_assessments')
+                                          .where('userId',
+                                              isEqualTo: requesterId)
+                                          .orderBy('timestamp',
+                                              descending: true)
+                                          .limit(1)
+                                          .get();
+
+                                  if (latestAssessment.docs.isNotEmpty) {
+                                    final assessmentId =
+                                        latestAssessment.docs.first.id;
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            HealthcareProfessionalAssessmentScreen(
+                                          patientId: requesterId,
+                                          assessmentId: assessmentId,
+                                          patientName: userName,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'No emergency assessment found')),
+                                    );
+                                  }
+                                }),
                           ],
                         ),
                       );
