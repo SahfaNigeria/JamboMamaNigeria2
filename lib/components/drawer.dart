@@ -7,7 +7,6 @@ import 'package:jambomama_nigeria/views/mothers/birth_plan_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/patient_background.dart';
 
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
-import 'package:jambomama_nigeria/views/mothers/deliverydate.dart';
 import 'package:jambomama_nigeria/views/mothers/health_facilities_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
 import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';

@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.jambomama_nigeria"
+       namespace "com.example.jambomama_nigeria"
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
@@ -36,6 +36,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    // namespace "com.example.jambomama_nigeria"
+    // compileSdkVersion 34
+    // ndkVersion flutter.ndkVersion
+
+    // compileOptions {
+    //     sourceCompatibility JavaVersion.VERSION_1_8
+    //     targetCompatibility JavaVersion.VERSION_1_8
+    // }
+
+    // kotlinOptions {
+    //     jvmTarget = '1.8'
+    // }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'

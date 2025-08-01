@@ -21,6 +21,11 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
       lastDate: DateTime(2100),
     );
 
+    // setState(() {
+    //   _lmpController.text = _dateFormat.format(selectedDate!);
+
+    // });
+
     if (selectedDate != null) {
       setState(() {
         _lmpController.text = _dateFormat.format(selectedDate);

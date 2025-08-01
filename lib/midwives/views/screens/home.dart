@@ -6,9 +6,10 @@ import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/colleague_screen.dart';
-// import 'package:jambomama_nigeria/midwives/views/screens/directory_screen.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/instruction_screen.dart';
+
+import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
+
 import 'package:jambomama_nigeria/views/mothers/notification.dart';
 
 class MidWifeHomePage extends StatelessWidget {
@@ -258,7 +259,7 @@ class MidWifeHomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PregnancyCareModulesPage(),
+                            builder: (context) => PractitionerContentScreen(),
                           ),
                         );
                       },

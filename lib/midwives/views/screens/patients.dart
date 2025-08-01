@@ -247,7 +247,7 @@ class _PatientsState extends State<Patients> {
                                             HealthcareProfessionalAssessmentScreen(
                                           patientId: requesterId,
                                           assessmentId: assessmentId,
-                                          patientName: userName,
+                                          
                                         ),
                                       ),
                                     );

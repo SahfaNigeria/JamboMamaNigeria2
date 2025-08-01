@@ -217,7 +217,7 @@ class _HealthcareProfessionalAssessmentScreenState
   Widget _buildAssessmentSections(Map<String, dynamic> data) {
     return Column(
       children: [
-        _buildHeader(data['patientName'] ?? 'Unknown Patient'),
+        _buildHeader(data['patientName'] ?? 'Unknown Patient'), //New Addition, untested.
         _buildSection('Bleeding & Discharge', [
           _buildSymptomRow('Vaginal Bleeding', data['hasVaginalBleeding'],
               details: data['hasVaginalBleeding'] == true

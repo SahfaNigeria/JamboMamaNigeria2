@@ -821,7 +821,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
 
       // Fallback: get providerId if not passed properly
       String? providerId = widget.requesterId;
-      if (providerId == null || providerId.isEmpty) {
+      if (providerId.isEmpty) {
         final fallback = await FirebaseFirestore.instance
             .collection('allowed_to_chat')
             .where('requesterId', isEqualTo: userId)
