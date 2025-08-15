@@ -32,27 +32,30 @@ dependencies:
     sdk: flutter
 
   flutter_svg: ^2.0.5
-  firebase_core: ^2.1.1
-  cloud_firestore: ^4.0.3
-  firebase_auth: ^4.16.0
-  firebase_storage: ^11.0.3
+  firebase_auth: ^5.6.2
+  firebase_storage: ^12.4.9
+  firebase_core: ^3.15.1
+  cloud_firestore: ^5.6.11
   image_picker: ^0.8.6
   cached_network_image: ^3.3.1
   firebase_ui_auth: ^1.5.0
+  auto_i8ln: ^0.0.3
+  restart_app: ^1.3.2
+  dropdown_button2: ^2.3.9
+  flutter_localization: ^0.3.3
   country_state_city_picker: ^1.2.8
-  csc_picker: ^0.2.7
+  csc_picker_plus: ^0.0.3
   flutter_easyloading: ^3.0.5
   provider: ^6.1.2
   intl_phone_number_input: 0.7.3+1
   intl: ^0.20.2
-  flutter_local_notifications: ^16.0.0
-  firebase_messaging: ^14.6.0
+  flutter_local_notifications: ^19.3.0
+  firebase_messaging: ^15.2.9
   http: ^1.1.0
-
+  shared_preferences: ^2.5.3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  win32: 5.14.0
 
 dev_dependencies:
   flutter_test:
@@ -72,14 +75,14 @@ dev_dependencies:
 flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
-  # the material Icons class.
+  # the material Icons class.s
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
     - assets/svgs/
-  #
+    - assets/language/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

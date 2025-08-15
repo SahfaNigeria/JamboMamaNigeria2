@@ -5,11 +5,13 @@ import 'package:intl/intl.dart';
 class ProviderPatientBackgroundScreen extends StatefulWidget {
   final String patientId;
   final String providerId;
+  final String? patientName;
 
   const ProviderPatientBackgroundScreen({
     Key? key,
     required this.patientId,
     required this.providerId,
+    this.patientName,
   }) : super(key: key);
 
   @override

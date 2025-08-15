@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:csc_picker/csc_picker.dart';
+import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jambomama_nigeria/midwives/contollers/controllers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -257,7 +257,7 @@ class _MidwiveResgisteratioScreenState
                     SizedBox(
                       height: 10,
                     ),
-                    CSCPicker(
+                    CSCPickerPlus(
                       onCountryChanged: (value) {
                         setState(() {
                           countryValue = value;
