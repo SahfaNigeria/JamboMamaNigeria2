@@ -1,0 +1,101 @@
+[33mcommit 081d94a123e4723de5022d31cd9d3947d186e45d[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/backup-my-work[m[33m, [m[1;32mbackup-my-work[m[33m)[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Fri Aug 15 09:45:12 2025 +0100
+
+    Ensure all fixes saved
+
+[33mcommit 7593c40385e1d6b8dfe5bea1f72c4537930cc6e9[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Fri Aug 1 14:42:22 2025 +0100
+
+    Backup my work before copying dev's setup
+
+[33mcommit 7223b19f7e7eb22dce9c6de62edcb60d86892cb1[m[33m ([m[1;32mmy-work-backup[m[33m)[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Tue Jul 29 15:17:54 2025 +0100
+
+    The Commit that sorted the issue with patient being able to edit, see their input for the healthbackgroud page
+
+[33mcommit 778bea45f607e4955b32b9922e2aeab348502f57[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Tue Jul 8 16:07:25 2025 +0100
+
+    Latest Version About 80 percent done
+
+[33mcommit 6d435d55864a329fc26c0ba8fdce72b29bd3124b[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Tue Apr 29 16:41:03 2025 +0100
+
+    An array of solutions, especially the notification with Divine
+
+[33mcommit d5faf8a898f6dd365988c0be0c076b846e671e98[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Fri Feb 28 15:45:43 2025 +0100
+
+    Added alot of things like notification, although it isnt fully functional yet
+
+[33mcommit ae5d0b23856de2bd007e5a2e81a143122c6834d5[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Wed Dec 4 15:41:48 2024 +0100
+
+    First Commit after a long time, I have come a long way, we are almost finishing the project
+
+[33mcommit 6aa1a3cb2be9db18f5879b10c6976289479c47cf[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Mon Oct 14 15:10:53 2024 +0100
+
+    Added the birth plan screen, although it is incomplete right now, Also, sorted the password visibilty on the login screen
+
+[33mcommit 8a833d01dc2f9b4aa7334bb6f1bf87b9261148b1[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Mon Sep 30 15:47:58 2024 +0100
+
+     Added search and telephone number validity in the mother app, yet to do it in the hp app
+
+[33mcommit 78c701eaf9656be427fb3ff9972036f4b6e75650[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Fri Sep 27 15:20:23 2024 +0100
+
+    Sorted the chat issues, created the health facilities page, might still do more
+
+[33mcommit a4aef389921a5b6d2d0e55732737e85e34c398c3[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Mon Sep 23 15:51:38 2024 +0100
+
+    Sorted the questionnaire issue and did a little shuffle with the homescreen UI
+
+[33mcommit 4e3a3d594f3e37a0be24a13c97a319c535fbcdeb[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Thu Sep 19 14:48:02 2024 +0100
+
+    Health Providers can fill the form and post it to the backend. Patients can access their vital info successfully
+
+[33mcommit 99cf9b5dc987c527c1f2e34b6c1eb7a505d37ec7[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Thu Sep 19 11:22:56 2024 +0100
+
+    Fixed the delivery date calculator to include a date picker and added a picture of a  baby
+
+[33mcommit 5d674421bdb7a9545af48b45abdabfb30b07f5eb[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Wed Sep 18 14:08:55 2024 +0100
+
+     successfully completed the connected ui update
+
+[33mcommit 80ef5c75ff66eeec839b546f98fc072b10bcba97[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Wed Sep 18 12:37:20 2024 +0100
+
+     Sorted the issue of mass sending of connection
+
+[33mcommit 549a25868169d88640ab8f6d0348a151673f3922[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Thu Aug 29 00:40:50 2024 +0100
+
+    First Instance to be sent to Laetitia, Still many things to do, there was a memory leak error message about location. Again, many things to do
+
+[33mcommit a390e30aa88819d2ed16252b9ec7065e87d49df8[m
+Author: Nnabundo <76398093+Nnabundo@users.noreply.github.com>
+Date:   Sat Aug 24 05:15:05 2024 +0100
+
+    Sorted out the patients and new mother search to include a dynamic location, updated their forms and created pages that do not yet work
