@@ -1,31 +1,35 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/providers/notification_model.dart';
 
 class ConnectionScreen extends StatelessWidget {
+  const ConnectionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // Obtain the provider ID from the model or authentication
     final connectionStateModel = Provider.of<ConnectionStateModel>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Requests'),
+        title: AutoText('REQUESTS'),
       ),
       body: FutureBuilder<List<NotificationModel>>(
         future: connectionStateModel.fetchNotifications(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: AutoText('ERROR: ${snapshot.error}'),
+            );
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No notifications'));
+            return Center(child: AutoText('ERROR_4'));
           }
 
           final notifications = snapshot.data!;
@@ -50,12 +54,12 @@ class ConnectionScreen extends StatelessWidget {
 
         return ListTile(
           title: Text(
-            '${notification.requesterName}',
-            style: TextStyle(fontWeight: FontWeight.w600),
+            notification.requesterName ?? '',
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          subtitle: Text('sent you a connection request'),
+          subtitle: AutoText('REQUEST_1'),
           trailing: isLoading
-              ? SizedBox(
+              ? const SizedBox(
                   width: 24,
                   height: 24,
                   child: CircularProgressIndicator(strokeWidth: 2),
@@ -66,12 +70,12 @@ class ConnectionScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () => model.handleConnectionAction(
                           notification.id, 'accepted'),
-                      child: Text('Accept'),
+                      child: AutoText('ACCEPT'),
                     ),
                     TextButton(
                       onPressed: () => model.handleConnectionAction(
                           notification.id, 'declined'),
-                      child: Text('Decline'),
+                      child: AutoText('DECLINE'),
                     ),
                   ],
                 ),

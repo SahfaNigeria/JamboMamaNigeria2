@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,8 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _feedbackContentController =
       TextEditingController();
-  String? _userRole = "Patient";
-  String? _feedbackType = "Suggestion";
+  String? _userRole = autoI8lnGen.translate("PATIENT");
+  String? _feedbackType = autoI8lnGen.translate("SUGGESTION");
 
   Future<void> _submitFeedback() async {
     if (_formKey.currentState!.validate()) {
@@ -35,12 +36,12 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
 
       // Show confirmation
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Feedback submitted!')));
+          .showSnackBar(SnackBar(content: AutoText('FEED_BACK_SUBMITTED')));
 
       // Clear the form
       _formKey.currentState!.reset();
-      _userRole = "Patient";
-      _feedbackType = "Suggestion";
+      _userRole = autoI8lnGen.translate("PATIENT");
+      _feedbackType = autoI8lnGen.translate("SUGGESTION");
     }
   }
 
@@ -48,7 +49,7 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Submit Feedback'),
+        title: AutoText('SUBMIT_FEEDBACK'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -58,47 +59,47 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
             children: [
               TextFormField(
                 controller: _userIdController,
-                decoration: InputDecoration(labelText: 'User ID'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("USER_ID")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your User ID';
+                    return autoI8lnGen.translate("VALIDATION_Q_17");
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _userNameController,
-                decoration: InputDecoration(labelText: 'User Name'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("USER_NAME")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return autoI8lnGen.translate("ENTER_NAME");
                   }
                   return null;
                 },
               ),
               DropdownButtonFormField<String>(
                 value: _userRole,
-                decoration: InputDecoration(labelText: 'User Role'),
-                items: ["Patient", "Provider"].map((role) {
+                decoration: InputDecoration(labelText: autoI8lnGen.translate('USER_ROLE')),
+                items: [autoI8lnGen.translate("PATIENT"), autoI8lnGen.translate('autoI8lnGen.translate')].map((role) {
                   return DropdownMenuItem(value: role, child: Text(role));
                 }).toList(),
                 onChanged: (value) => setState(() => _userRole = value),
               ),
               DropdownButtonFormField<String>(
                 value: _feedbackType,
-                decoration: InputDecoration(labelText: 'Feedback Type'),
-                items: ["Suggestion", "Bug Report", "General"].map((type) {
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("FEED_BACK_TYPE")),
+                items: [autoI8lnGen.translate("SUGGESTION"), autoI8lnGen.translate("BUG_REPORT"), autoI8lnGen.translate("GENERAL")].map((type) {
                   return DropdownMenuItem(value: type, child: Text(type));
                 }).toList(),
                 onChanged: (value) => setState(() => _feedbackType = value),
               ),
               TextFormField(
                 controller: _feedbackContentController,
-                decoration: InputDecoration(labelText: 'Feedback Content'),
+                decoration: InputDecoration(labelText: autoI8lnGen.translate("FEEDBACK_CONTENT")),
                 maxLines: 5,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your feedback';
+                    return autoI8lnGen.translate("VALIDATION_Q_18");
                   }
                   return null;
                 },
@@ -106,7 +107,7 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitFeedback,
-                child: Text('Submit Feedback'),
+                child: AutoText('SUBMIT_FEEDBACK'),
               ),
             ],
           ),

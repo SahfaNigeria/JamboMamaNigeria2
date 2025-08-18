@@ -251,6 +251,9 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                         _buildImageOption('STANDARD', 'default'),
                         _buildImageOption('SCARF', 'headscarf'),
                         _buildImageOption('HIJAB', 'hijab'),
+                        _buildImageOption('STANDARD', 'default'),
+                        _buildImageOption('SCARF', 'headscarf'),
+                        _buildImageOption('HIJAB', 'hijab'),
                       ],
                     ),
                     SizedBox(height: 10),
@@ -450,7 +453,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                           ),
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.all(10.0),
                         child: TextFormField(
@@ -468,7 +470,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                                 value.length < 8) {
                               return autoI8lnGen.translate("N_P_8");
                             }
-                            // Optional: Check for password strength
+                            // Optional: Check for password strengthz
                             if (!RegExp(r'[A-Z]').hasMatch(value) ||
                                 !RegExp(r'[a-z]').hasMatch(value) ||
                                 !RegExp(r'[0-9]').hasMatch(value)) {
@@ -480,8 +482,9 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                             password = value;
                           },
                           decoration: InputDecoration(
-                            labelText: autoI8lnGen.translate("PASSWORD"),
-                            helperText: autoI8lnGen.translate("PASSWORD_V"),
+                            labelText: 'Password',
+                            helperText:
+                                'Password must be at least 6 characters with letters and numbers',
                             helperMaxLines: 2,
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -498,40 +501,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
                           ),
                         ),
                       )
-                      // Padding(
-                      //   padding: const EdgeInsets.all(10.0),
-                      //   child: TextFormField(
-                      //     obscureText: _obscureText, // Use the state variable
-                      //     validator: (value) {
-                      //       if (value!.isEmpty) {
-                      //         return 'Please Password field is empty';
-                      //       } else {
-                      //         return null;
-                      //       }
-                      //     },
-                      //     onChanged: (value) {
-                      //       password = value;
-                      //     },
-                      //     decoration: InputDecoration(
-                      //       labelText: 'Password',
-                      //       suffixIcon: IconButton(
-                      //         icon: Icon(
-                      //           _obscureText
-                      //               ? Icons
-                      //                   .visibility // Show eye icon when text is obscured
-                      //               : Icons
-                      //                   .visibility_off, // Show crossed eye icon when text is visible
-                      //         ),
-                      //         onPressed: () {
-                      //           setState(() {
-                      //             _obscureText =
-                      //                 !_obscureText; // Toggle the obscure text state
-                      //           });
-                      //         },
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

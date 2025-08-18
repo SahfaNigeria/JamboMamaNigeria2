@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class AlternativeProviderPatientResponsesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Patient Responses'),
+        title:  AutoText('P_RESPONSES_1'),
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -27,11 +28,11 @@ class AlternativeProviderPatientResponsesScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading responses'));
+            return const Center(child: AutoText('ERROR_1'));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No responses available'));
+            return const Center(child: AutoText('ERROR_2'));
           }
 
           final responses = snapshot.data!.docs;
@@ -61,10 +62,10 @@ class AlternativeProviderPatientResponsesScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('🗓️ Date: $date',
+                      AutoText('DATE $date',
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text('Pregnancy Week: $pregnancyWeek'),
+                      AutoText('P_W $pregnancyWeek'),
                       const Divider(),
                       ListView.builder(
                         shrinkWrap: true,
@@ -99,7 +100,7 @@ class AlternativeProviderPatientResponsesScreen extends StatelessWidget {
                       ),
                       if (otherWorries.isNotEmpty) ...[
                         const Divider(),
-                        Text('Other Worries: $otherWorries',
+                        AutoText('OTHER_WORRIES $otherWorries',
                             style: const TextStyle(color: Colors.red)),
                       ],
                     ],

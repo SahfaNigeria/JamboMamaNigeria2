@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/components/fyp_component.dart';
@@ -19,22 +20,11 @@ class _YouState extends State<You> {
   @override
   void initState() {
     super.initState();
-    print('You widget initState called');
     _loadPregnancyJourneyContent();
   }
 
   Future<List<Map<String, dynamic>>> getPregnancyJourneyContent() async {
     try {
-      print('Fetching pregnancy journey content...');
-
-      QuerySnapshot testSnapshot =
-          await _firestore.collection('content').limit(5).get();
-      print(
-          'Test query - Found ${testSnapshot.docs.length} total documents in content collection');
-      for (var doc in testSnapshot.docs) {
-        print('Document ${doc.id}: ${doc.data()}');
-      }
-
       QuerySnapshot snapshot = await _firestore
           .collection('content')
           .where('type', isEqualTo: 'educative')
@@ -43,15 +33,8 @@ class _YouState extends State<You> {
           .where('isActive', isEqualTo: true)
           .get();
 
-      print('Query without orderBy - Found ${snapshot.docs.length} documents');
-
       List<Map<String, dynamic>> result = snapshot.docs.map((doc) {
-        Map<String, dynamic> data = {
-          'id': doc.id,
-          ...doc.data() as Map<String, dynamic>
-        };
-        print('Document data: $data');
-        return data;
+        return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
       }).toList();
 
       result.sort((a, b) {
@@ -60,35 +43,26 @@ class _YouState extends State<You> {
         return orderA.compareTo(orderB);
       });
 
-      print('Sorted ${result.length} documents by displayOrder');
       return result;
     } catch (e) {
-      print('Error fetching pregnancy journey content: $e');
       throw e;
     }
   }
 
   Future<void> _loadPregnancyJourneyContent() async {
-    print('_loadPregnancyJourneyContent called');
     try {
       setState(() {
         isLoading = true;
         errorMessage = '';
       });
 
-      print('About to call getPregnancyJourneyContent');
       final content = await getPregnancyJourneyContent();
-      print('getPregnancyJourneyContent returned ${content.length} items');
 
       setState(() {
         pregnancyJourneyContent = content;
         isLoading = false;
       });
-
-      print(
-          'State updated - isLoading: $isLoading, content length: ${pregnancyJourneyContent.length}');
     } catch (e) {
-      print('Error in _loadPregnancyJourneyContent: $e');
       setState(() {
         errorMessage = 'Failed to load content: ${e.toString()}';
         isLoading = false;
@@ -105,45 +79,28 @@ class _YouState extends State<You> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'You widget build called - isLoading: $isLoading, errorMessage: $errorMessage, content length: ${pregnancyJourneyContent.length}');
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Follow your Pregnancy ",
-          style: TextStyle(fontSize: 16),
+        title: AutoText(
+          "FOLLOW_YOUR_PREGNANCY",
+          style: const TextStyle(fontSize: 16),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadPregnancyJourneyContent,
-          ),
-        ],
       ),
       body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: Colors.red[400],
-                      ),
+                      Icon(Icons.error_outline,
+                          size: 64, color: Colors.red[400]),
                       const SizedBox(height: 16),
                       Text(
                         errorMessage,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.red[600],
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(color: Colors.red[600], fontSize: 16),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
@@ -158,43 +115,91 @@ class _YouState extends State<You> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.pregnant_woman,
-                            size: 64,
-                            color: Colors.grey,
-                          ),
+                          Icon(Icons.pregnant_woman,
+                              size: 64, color: Colors.grey),
                           SizedBox(height: 16),
                           Text(
                             'No pregnancy journey content available',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
                         ],
                       ),
                     )
-                  : ListView.builder(
+                  : ListView(
                       scrollDirection: Axis.horizontal,
                       physics: const PageScrollPhysics(),
-                      itemCount: pregnancyJourneyContent.length,
-                      itemBuilder: (context, index) {
-                        final content = pregnancyJourneyContent[index];
-
-                        return Fypcomponent(
-                          timetext: content['timeText'] ?? '',
-                          imagePath: content['imageUrl'] ?? '',
-                          firstparagraph: content['firstParagraph'] ?? '',
-                          secparagraph: content['secParagraph'] ?? '',
-                          thirdparagraph: content['thirdParagraph'] ?? '',
-                          baby: 'Baby',
-                          you: 'You',
+                      children: [
+                        // Static content
+                        Fypcomponent(
+                          timetext: "WEEK_1-3",
+                          imagePath: 'assets/images/firstgirl.jpg',
+                          firstparagraph: 'HEALTH_DESCRIPTION_32',
+                          secparagraph: 'HEALTH_DESCRIPTION_33',
+                          thirdparagraph: '',
+                          baby: "BABY",
+                          you: "YOU",
                           onTap: navToBabyPage,
-                          onClick: () {
-                            // Handle "You" tab tap if needed
-                          },
-                        );
-                      },
+                          onClick: () {},
+                        ),
+                        Fypcomponent(
+                          timetext: 'WEEK_4-7',
+                          imagePath: 'assets/images/breast changes.jpg',
+                          firstparagraph: 'HEALTH_DESCRIPTION_34',
+                          secparagraph: 'HEALTH_DESCRIPTION_35',
+                          thirdparagraph: 'HEALTH_DESCRIPTION_36',
+                          baby: "BABY",
+                          you: "YOU",
+                          onTap: navToBabyPage,
+                          onClick: () {},
+                        ),
+                        Fypcomponent(
+                          timetext: 'WEEK_8-11',
+                          imagePath: 'assets/images/tired.jpeg',
+                          firstparagraph: 'HEALTH_DESCRIPTION_37',
+                          secparagraph: 'HEALTH_DESCRIPTION_38',
+                          thirdparagraph: 'HEALTH_DESCRIPTION_39',
+                          baby: "BABY ",
+                          you: "YOU",
+                          onTap: navToBabyPage,
+                          onClick: () {},
+                        ),
+                        Fypcomponent(
+                          timetext: 'WEEK_12-15',
+                          imagePath: 'assets/images/prenatal-clinic.jpg',
+                          firstparagraph: 'HEALTH_DESCRIPTION_40',
+                          secparagraph: 'HEALTH_DESCRIPTION_41',
+                          thirdparagraph: 'HEALTH_DESCRIPTION_42',
+                          baby: "BABY",
+                          you: "YOU",
+                          onTap: navToBabyPage,
+                          onClick: () {},
+                        ),
+                        Fypcomponent(
+                          timetext: 'WEEK_16-19',
+                          imagePath: 'assets/images/eating fruits.jpg',
+                          firstparagraph: 'HEALTH_DESCRIPTION_43',
+                          secparagraph: 'HEALTH_DESCRIPTION_44',
+                          thirdparagraph: 'HEALTH_DESCRIPTION_45',
+                          baby: "BABY",
+                          you: "YOU",
+                          onTap: navToBabyPage,
+                          onClick: () {},
+                        ),
+                        // Dynamic Firestore content
+                        ...pregnancyJourneyContent.map((content) {
+                          return Fypcomponent(
+                            timetext: content['timeText'] ?? '',
+                            imagePath: content['imageUrl'] ?? '',
+                            firstparagraph: content['firstParagraph'] ?? '',
+                            secparagraph: content['secParagraph'] ?? '',
+                            thirdparagraph: content['thirdParagraph'] ?? '',
+                            baby: "BABY",
+                            you: "YOU",
+                            onTap: navToBabyPage,
+                            onClick: () {},
+                          );
+                        }).toList(),
+                      ],
                     ),
     );
   }

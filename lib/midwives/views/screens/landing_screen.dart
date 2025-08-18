@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _LandingScreenState extends State<LandingScreen> {
         }
 
         if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
+          return Center(child: AutoText('ERROR_10'));
         }
 
         if (!snapshot.hasData || !snapshot.data!.exists) {
@@ -44,7 +45,7 @@ class _LandingScreenState extends State<LandingScreen> {
         // Ensure the data exists and is not null
         var data = snapshot.data!.data();
         if (data == null) {
-          return Center(child: Text("No data available"));
+          return Center(child: AutoText("ERROR_11"));
         }
 
         MidWifeUserModels midWifeUserModels =
@@ -56,7 +57,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text("Welcome"),
+            title: AutoText("WELCOME"),
             centerTitle: true,
           ),
           body: Center(
@@ -81,8 +82,8 @@ class _LandingScreenState extends State<LandingScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Welcome!',
+                    AutoText(
+                      "WELCOME !",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                     ),
@@ -101,8 +102,8 @@ class _LandingScreenState extends State<LandingScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
-                Text(
-                  'Your application has been sent to our admin portal.\n We will get back to you as soon as possible.',
+                AutoText(
+                  'APPLICATION_SENT',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -115,8 +116,8 @@ class _LandingScreenState extends State<LandingScreen> {
                   onPressed: () async {
                     logout();
                   },
-                  child: Text(
-                    'Sign Out',
+                  child: AutoText(
+                    'SIGN_OUT',
                     style: TextStyle(color: Colors.red),
                   ),
                 ),

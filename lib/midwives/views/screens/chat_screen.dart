@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +24,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        title: AutoText('CHAT'),
       ),
       body: Column(
         children: [
@@ -36,7 +37,7 @@ class ChatScreen extends StatelessWidget {
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No messages'));
+                  return Center(child: AutoText('NO_MESSAGES'));
                 }
 
                 final messages = snapshot.data!;
@@ -123,7 +124,7 @@ class _MessageInputState extends State<MessageInput> {
               child: TextField(
                 controller: _controller,
                 decoration: InputDecoration(
-                  hintText: 'Enter message',
+                  hintText: autoI8lnGen.translate("ENTER_MESSAGE"),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),

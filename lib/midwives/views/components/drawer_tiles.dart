@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 class DrawerTiles extends StatelessWidget {
@@ -10,7 +11,7 @@ class DrawerTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
+      title: AutoText(
         text,
         style: const TextStyle(),
       ),

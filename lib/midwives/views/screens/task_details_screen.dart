@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -16,12 +17,12 @@ class TaskDetailsScreen extends StatelessWidget {
           .update({'status': 'Completed'});
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task marked as completed.')),
+        const SnackBar(content: AutoText('TASKED_MARKED_COMPLETE')),
       );
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update task: $e')),
+        SnackBar(content: AutoText('FAILED_TASK_UPDATE $e')),
       );
     }
   }
@@ -30,20 +31,20 @@ class TaskDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(task['title'] ?? 'No Title'),
+        title: AutoText(task['title'] ?? 'NO_TITLE'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Due Date: ${task['dueDate'] ?? 'N/A'}',
+            AutoText(
+              'DUE_DATE ${task['dueDate'] ?? 'N/A'}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Description: ${task['description'] ?? 'No description provided.'}',
+            AutoText(
+              'Description ${task['description'] ?? 'No description provided.'}',
               style: const TextStyle(fontSize: 18),
             ),
             const Spacer(),
@@ -52,7 +53,7 @@ class TaskDetailsScreen extends StatelessWidget {
                 _markAsCompleted(context);
                 Navigator.pop(context);
               },
-              child: const Text('Mark as Completed'),
+              child: const AutoText('Mark_AS_COMPLETED'),
             ),
           ],
         ),

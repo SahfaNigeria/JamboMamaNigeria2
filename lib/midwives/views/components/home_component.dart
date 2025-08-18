@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -30,7 +31,7 @@ class HomeComponents extends StatelessWidget {
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.only(top: 20),
-              child: Text(
+              child: AutoText(
                 text,
                 style: const TextStyle(color: Colors.white),
               ),

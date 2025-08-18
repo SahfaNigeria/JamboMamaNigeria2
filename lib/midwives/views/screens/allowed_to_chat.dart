@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class AllowedToChatScreen extends StatelessWidget {
     // In the health provider app, filter by recipientId
     return Scaffold(
       appBar: AppBar(
-        title: Text('Connected Patients'),
+        title: AutoText('PROGRESS_2'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -25,7 +26,7 @@ class AllowedToChatScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No users to chat with'));
+            return Center(child: AutoText('NO_USER'));
           }
 
           final allowedChats = snapshot.data!.docs;
@@ -44,20 +45,20 @@ class AllowedToChatScreen extends StatelessWidget {
                     .get(),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return ListTile(title: Text('Loading...'));
+                    return ListTile(title: AutoText('LOADING_TEXT'));
                   }
 
                   if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                    return ListTile(title: Text('User not found'));
+                    return ListTile(title: AutoText('USER_NOT_FOUND'));
                   }
 
                   final userData =
                       userSnapshot.data!.data() as Map<String, dynamic>;
                   final userName = userData['full name'] ??
-                      'No name'; // Ensure field name matches
+                      'NO_NAME'; // Ensure field name matches
 
                   return ListTile(
-                    title: Text(userName),
+                    title: AutoText(userName),
                     onTap: () {
                       startChat(context, requesterId); // Pass the context here
                     },

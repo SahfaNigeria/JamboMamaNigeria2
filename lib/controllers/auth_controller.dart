@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -209,6 +210,7 @@ class AuthController {
   Future<void> _checkUserTypeAndNavigate(
       User user, BuildContext context, Function setLoading) async {
     try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       DocumentSnapshot newMotherDoc =
           await _firestore.collection('New Mothers').doc(user.uid).get();
       DocumentSnapshot healthProfessionalDoc = await _firestore
@@ -217,8 +219,11 @@ class AuthController {
           .get();
 
       if (newMotherDoc.exists) {
+
+        prefs.setBool("isHealthProffessional", false);
         Navigator.pushReplacementNamed(context, '/HomePage');
       } else if (healthProfessionalDoc.exists) {
+        prefs.setBool("isHealthProffessional", true);
         bool isApproved = healthProfessionalDoc.get('approved') ?? false;
         if (isApproved) {
           Navigator.pushReplacementNamed(context, '/MidWifeHomePage');

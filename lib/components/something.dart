@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -28,7 +29,7 @@ class Something extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-                child: Text(
+                child: AutoText(
               text,
               style: const TextStyle(
                 color: Colors.white,

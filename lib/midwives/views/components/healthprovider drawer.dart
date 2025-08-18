@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
@@ -7,6 +8,7 @@ import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/settings_screens.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HealthProviderHomeDrawer extends StatefulWidget {
   final String email;
@@ -37,10 +39,13 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future logout() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginOrRegister()),
             (route) => false));
+
   }
 
   Widget build(BuildContext context) {
@@ -85,7 +90,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                 ),
               );
             },
-            text: "Home",
+            text: autoI8lnGen.translate("HOME_2"),
           ),
           DrawerTiles(
             icon: Icons.local_hospital,
@@ -97,7 +102,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                 ),
               );
             },
-            text: "Hospitals",
+            text: autoI8lnGen.translate("HOSPITALS_2"),
           ),
 
           DrawerTiles(
@@ -110,7 +115,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                 ),
               );
             },
-            text: "Patients",
+            text: autoI8lnGen.translate("PATIENTS_2"),
           ),
           DrawerTiles(
             icon: Icons.connect_without_contact,
@@ -120,7 +125,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                 MaterialPageRoute(builder: (context) => ConnectionScreen()),
               );
             },
-            text: "Connection",
+            text: autoI8lnGen.translate("CONNECTION"),
           ),
 
           DrawerTiles(
@@ -141,7 +146,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                 ),
               );
             },
-            text: "Settings",
+            text: autoI8lnGen.translate("SETTINGS"),
           ),
 
           DrawerTiles(
@@ -149,7 +154,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
             onTap: () {
               logout();
             },
-            text: "Logout",
+            text:autoI8lnGen.translate("LOGOUT"),
           ),
         ],
       ),

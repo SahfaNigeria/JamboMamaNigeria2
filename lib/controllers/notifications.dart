@@ -283,10 +283,14 @@ class NotificationService {
   }
 }
 
+
+
+
 // import 'dart:convert';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:jambomama_nigeria/main.dart';
+// // import 'package:shared_preferences/shared_preferences.dart';
 // import 'dart:math';
 // import 'auth_controller.dart';
 // import 'package:http/http.dart' as http;
@@ -308,7 +312,6 @@ class NotificationService {
 //   // API endpoint constants
 //   static const String baseUrl = "https://jumbo-mama-notify.onrender.com";
 //   static const String notificationEndpoint = "/api/notifications/push";
-
 //   Future<void> init() async {
 //     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 //     await requestPermisson();
@@ -317,7 +320,6 @@ class NotificationService {
 //     //get the token
 //     final token = await _messaging.getToken();
 //     print('fcm token: $token');
-
 //     FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
 //       print('FCM token refreshed: $token');
 //       AuthController().saveFcmToken(); // Save the new token
@@ -456,10 +458,10 @@ class NotificationService {
 //         AndroidInitializationSettings('@mipmap/uc_launcher');
 //     //ios
 //     final initializationSettingsDarwin = DarwinInitializationSettings(
-//       // onDidReceiveLocalNotification: (id, title, body, payload) async {
-//       //   print("Notification received on iOS: $title");
-//       // },
-//     );
+//         // onDidReceiveLocalNotification: (id, title, body, payload) async {
+//         //   print("Notification received on iOS: $title");
+//         // },
+//         );
 
 //     final initializationSettings = InitializationSettings(
 //       android: initializationSettingsAndroid,
@@ -555,3 +557,4 @@ class NotificationService {
 //     print('Handling a background message ${message.messageId}');
 //   }
 // }
+

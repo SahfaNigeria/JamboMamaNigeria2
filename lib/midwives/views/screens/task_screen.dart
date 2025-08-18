@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:jambomama_nigeria/midwives/views/screens/task_creation_screen.dart';
@@ -8,7 +9,7 @@ class TaskListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task Management'),
+        title: const AutoText('TASK_MANAGEMENT'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -28,7 +29,7 @@ class TaskListScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No tasks available.'));
+            return const Center(child: AutoText('NO_TASK_AVAILABLE'));
           }
 
           final tasks = snapshot.data!.docs.map((doc) {
@@ -50,7 +51,7 @@ class TaskListScreen extends StatelessWidget {
                 margin: const EdgeInsets.all(8.0),
                 child: ListTile(
                   title: Text(task['title']),
-                  subtitle: Text('Due: ${task['dueDate']}'),
+                  subtitle: AutoText('DUE ${task['dueDate']}'),
                   trailing: Chip(
                     label: Text(task['status']),
                     backgroundColor: task['status'] == 'Completed'

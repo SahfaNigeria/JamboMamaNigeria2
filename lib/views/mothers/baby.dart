@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/components/fyp_component.dart';
@@ -114,17 +115,11 @@ class _BabyState extends State<Baby> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Follow your Pregnancy ",
+        title: AutoText(
+          "FOLLOW_PREGNANCY",
           style: TextStyle(fontSize: 16),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadBabyDevelopmentContent,
-          ),
-        ],
       ),
       body: isLoading
           ? const Center(

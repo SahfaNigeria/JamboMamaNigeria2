@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 class Sbuttons extends StatelessWidget {
@@ -11,7 +12,7 @@ class Sbuttons extends StatelessWidget {
       onTap: onTap,
       child: Container(
         child: Center(
-          child: Text(
+          child:AutoText(
             text,
             style: TextStyle(
                 color: Colors.white,

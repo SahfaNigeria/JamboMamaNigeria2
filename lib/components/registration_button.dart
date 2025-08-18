@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationButton extends StatelessWidget {
@@ -29,7 +30,7 @@ class RegistrationButton extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Text(
+              child: AutoText(
                 text,
                 style: const TextStyle(color: Colors.white),
               ),
