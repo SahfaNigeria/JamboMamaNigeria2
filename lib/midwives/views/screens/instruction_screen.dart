@@ -1,324 +1,333 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PractitionerContentScreen extends StatelessWidget {
+class PractitionerContentScreen extends StatefulWidget {
+  const PractitionerContentScreen({super.key});
+
+  @override
+  State<PractitionerContentScreen> createState() => _PractitionerContentScreenState();
+}
+
+class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
+  List<Map<String, dynamic>> healthProviderContent = [];
+  bool isLoading = true;
+  String errorMessage = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance; 
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHealthProviderContent();
+  }
+
+  Future<List<Map<String, dynamic>>> getHealthProviderContent() async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('content')
+          .where('type', isEqualTo: 'educative')
+          .where('subType', isEqualTo: 'health_tips')
+          .where('module', isEqualTo: 'health_providers')
+          .where('isActive', isEqualTo: true)
+          .get();
+
+      List<Map<String, dynamic>> result = snapshot.docs.map((doc) {
+        return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
+      }).toList();
+
+      // Sort by createdAt if available, otherwise by displayOrder
+      result.sort((a, b) {
+        if (a['createdAt'] != null && b['createdAt'] != null) {
+          Timestamp timestampA = a['createdAt'] as Timestamp;
+          Timestamp timestampB = b['createdAt'] as Timestamp;
+          return timestampB.compareTo(timestampA); // descending order (newest first)
+        }
+        // Fallback to displayOrder if createdAt is not available
+        int orderA = a['displayOrder'] ?? 0;
+        int orderB = b['displayOrder'] ?? 0;
+        return orderA.compareTo(orderB);
+      });
+
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> _loadHealthProviderContent() async {
+    try {
+      setState(() {
+        isLoading = true;
+        errorMessage = '';
+      });
+
+      final content = await getHealthProviderContent();
+
+      setState(() {
+        healthProviderContent = content;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Failed to load content: ${e.toString()}';
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medical Practitioner Content'),
+        title: const Text("Learn"),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('content') // or your collection name
-            .where('targetAudience',
-                whereIn: ['Practitioner', 'Both']).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No content available.'));
-          }
-
-          final contentDocs = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: contentDocs.length,
-            itemBuilder: (context, index) {
-              final doc = contentDocs[index];
-              final title = doc['title'] ?? 'Untitled';
-              final description = doc['description'] ?? '';
-              final imageUrl = doc['imageUrl'];
-
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  leading: imageUrl != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            imageUrl,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline,
+                          size: 64, color: Colors.red[400]),
+                      const SizedBox(height: 16),
+                      Text(
+                        errorMessage,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.red[600], fontSize: 16),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadHealthProviderContent,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
+              : healthProviderContent.isEmpty
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.medical_services,
+                              size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No health provider content available',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
-                        )
-                      : const Icon(Icons.article),
-                  title: Text(title),
-                  subtitle: Text(description),
-                  onTap: () {
-                    // optional: navigate to detailed screen
-                  },
-                ),
-              );
-            },
-          );
-        },
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(10),
+                      itemCount: healthProviderContent.length,
+                      itemBuilder: (context, index) {
+                        final data = healthProviderContent[index];
+                        final title = data['title'] ?? "Untitled";
+                        final description = data['firstParagraph'] ?? "No description";
+                        final secDescription = data['secParagraph'] ?? "";
+                        final thirdDescription = data['thirdParagraph'] ?? "";
+                        final imageUrl = data['imageUrl']; // uploaded image if available
+                        final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
+
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 3,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PractitionerDetailScreen(
+                                    title: title,
+                                    description: description,
+                                    secDescription: secDescription,
+                                    thirdDescription: thirdDescription,
+                                    imageUrl: imageUrl,
+                                    createdAt: createdAt,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // show uploaded image if exists, otherwise placeholder
+                                if (imageUrl != null && imageUrl.isNotEmpty)
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(12),
+                                    ),
+                                    child: Image.network(
+                                      imageUrl,
+                                      height: 180,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          height: 180,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade200,
+                                            borderRadius: const BorderRadius.vertical(
+                                              top: Radius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.image_not_supported,
+                                            size: 60,
+                                            color: Colors.grey,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                else
+                                  Container(
+                                    height: 180,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.image_not_supported,
+                                      size: 60,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        title,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        description,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      if (createdAt != null)
+                                        Text(
+                                          "Posted on: ${createdAt.day}-${createdAt.month}-${createdAt.year}",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+    );
+  }
+}
+
+class PractitionerDetailScreen extends StatelessWidget {
+  final String title;
+  final String description;
+  final String secDescription;
+  final String thirdDescription;
+  final String? imageUrl;
+  final DateTime? createdAt;
+
+  const PractitionerDetailScreen({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.secDescription,
+    required this.thirdDescription,
+    this.imageUrl,
+    this.createdAt,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          if (imageUrl != null && imageUrl!.isNotEmpty)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                imageUrl!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.image_not_supported,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
+                  );
+                },
+              ),
+            )
+          else
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.image_not_supported,
+                size: 80,
+                color: Colors.grey,
+              ),
+            ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(description, style: const TextStyle(fontSize: 16)),
+          const SizedBox(height: 12),
+          Text(secDescription, style: const TextStyle(fontSize: 16)),
+          const SizedBox(height: 12),
+          Text(thirdDescription, style: const TextStyle(fontSize: 16)),
+          if (createdAt != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              "Published on: ${createdAt!.day}-${createdAt!.month}-${createdAt!.year}",
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+          ]
+        ],
       ),
     );
   }
 }
 
 
-
-
-// import 'package:flutter/material.dart';
-
-// class PregnancyCareModulesPage extends StatelessWidget {
-//   const PregnancyCareModulesPage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey[50],
-//       appBar: AppBar(
-//         title: const Text(
-//           'Pregnancy Care Instructions',
-//           style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//             color: Colors.white,
-//           ),
-//         ),
-//         backgroundColor: Colors.teal[700],
-//         elevation: 0,
-//       ),
-//       body: SafeArea(
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               // Header Section
-//               Container(
-//                 width: double.infinity,
-//                 padding: const EdgeInsets.all(20),
-//                 decoration: BoxDecoration(
-//                   gradient: LinearGradient(
-//                     colors: [Colors.teal[600]!, Colors.teal[400]!],
-//                     begin: Alignment.topLeft,
-//                     end: Alignment.bottomRight,
-//                   ),
-//                   borderRadius: BorderRadius.circular(12),
-//                   boxShadow: [
-//                     BoxShadow(
-//                       color: Colors.teal.withOpacity(0.3),
-//                       blurRadius: 8,
-//                       offset: const Offset(0, 4),
-//                     ),
-//                   ],
-//                 ),
-//                 child: const Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       'Clinical Assessment Modules',
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.white,
-//                       ),
-//                     ),
-//                     SizedBox(height: 8),
-//                     Text(
-//                       'Comprehensive pregnancy care instructions for healthcare providers',
-//                       style: TextStyle(
-//                         fontSize: 16,
-//                         color: Colors.white70,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-              
-//               const SizedBox(height: 20),
-              
-//               // Modules Grid
-//               Expanded(
-//                 child: GridView.count(
-//                   crossAxisCount: 2,
-//                   crossAxisSpacing: 12,
-//                   mainAxisSpacing: 12,
-//                   childAspectRatio: 1.1,
-//                   physics: const BouncingScrollPhysics(),
-//                   children: [
-//                     _buildModuleCard(
-//                       context,
-//                       'Blood Pressure',
-//                       Icons.favorite,
-//                       Colors.red[400]!,
-//                       () => _navigateToModule(context, 'Blood Pressure'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Heart Rate',
-//                       Icons.monitor_heart,
-//                       Colors.pink[400]!,
-//                       () => _navigateToModule(context, 'Heart Rate'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Urinalysis',
-//                       Icons.science,
-//                       Colors.amber[600]!,
-//                       () => _navigateToModule(context, 'Urine Test - Urinalysis'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Urine: Glucose',
-//                       Icons.water_drop,
-//                       Colors.orange[500]!,
-//                       () => _navigateToModule(context, 'Urine Test - Glucose'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Urine: Albumin',
-//                       Icons.opacity,
-//                       Colors.blue[400]!,
-//                       () => _navigateToModule(context, 'Urine Test - Albumin'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'BMI',
-//                       Icons.monitor_weight,
-//                       Colors.green[500]!,
-//                       () => _navigateToModule(context, 'BMI & Weight Gain'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Haemoglobin',
-//                       Icons.bloodtype,
-//                       Colors.deepOrange[400]!,
-//                       () => _navigateToModule(context, 'Haemoglobin'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Discharge',
-//                       Icons.health_and_safety,
-//                       Colors.purple[400]!,
-//                       () => _navigateToModule(context, 'Vaginal Discharge'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       'Fundal Height',
-//                       Icons.straighten,
-//                       Colors.teal[400]!,
-//                       () => _navigateToModule(context, 'Fundal Height'),
-//                     ),
-//                     _buildModuleCard(
-//                       context,
-//                       "Baby's Heart",
-//                       Icons.child_care,
-//                       Colors.indigo[400]!,
-//                       () => _navigateToModule(context, "Baby's Heart Beat"),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-              
-//               // Footer
-//               Container(
-//                 width: double.infinity,
-//                 padding: const EdgeInsets.all(16),
-//                 child: Text(
-//                   'Select a module to view detailed instructions',
-//                   textAlign: TextAlign.center,
-//                   style: TextStyle(
-//                     color: Colors.grey[600],
-//                     fontSize: 14,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildModuleCard(
-//     BuildContext context,
-//     String title,
-//     IconData icon,
-//     Color color,
-//     VoidCallback onTap,
-//   ) {
-//     return Card(
-//       elevation: 4,
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: InkWell(
-//         onTap: onTap,
-//         borderRadius: BorderRadius.circular(12),
-//         child: Container(
-//           padding: const EdgeInsets.all(16),
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(12),
-//             gradient: LinearGradient(
-//               colors: [
-//                 color.withOpacity(0.1),
-//                 color.withOpacity(0.05),
-//               ],
-//               begin: Alignment.topLeft,
-//               end: Alignment.bottomRight,
-//             ),
-//           ),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Container(
-//                 padding: const EdgeInsets.all(12),
-//                 decoration: BoxDecoration(
-//                   color: color.withOpacity(0.2),
-//                   borderRadius: BorderRadius.circular(50),
-//                 ),
-//                 child: Icon(
-//                   icon,
-//                   size: 32,
-//                   color: color,
-//                 ),
-//               ),
-//               const SizedBox(height: 12),
-//               Text(
-//                 title,
-//                 style: TextStyle(
-//                   fontSize: 16,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.grey[800],
-//                 ),
-//                 textAlign: TextAlign.center,
-//                 maxLines: 2,
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   void _navigateToModule(BuildContext context, String moduleName) {
-//     // Navigate to specific module instruction page
-//     // Replace this with your actual navigation logic
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text('Opening $moduleName module...'),
-//         backgroundColor: Colors.teal[600],
-//         duration: const Duration(seconds: 2),
-//       ),
-//     );
-    
-//     // Example navigation (uncomment and modify as needed):
-//     // Navigator.push(
-//     //   context,
-//     //   MaterialPageRoute(
-//     //     builder: (context) => ModuleInstructionPage(moduleName: moduleName),
-//     //   ),
-//     // );
-//   }
-// }

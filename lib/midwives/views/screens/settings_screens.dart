@@ -121,8 +121,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           .collection('user_notification_settings')
           .doc(userId)
           .set({'receiveNotifications': value}, SetOptions(merge: true));
-      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      sharedPreferences.setBool("disabled_notification_key", value,);
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setBool(
+        "disabled_notification_key",
+        value,
+      );
       if (value == false) {
         await FirebaseFirestore.instance
             .collection('users')
@@ -130,7 +134,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             .update({
           'fcmToken': "",
         });
-      }else{
+      } else {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user!.uid)
@@ -138,7 +142,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'fcmToken': NotificationService.instance.userFcmToken,
         });
       }
-
     } else {
       // Handle the case where the user is not signed in
       print("No user is signed in");
@@ -241,7 +244,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: AutoText('SETTINGS'),
-        actions: [IconButton(icon: Icon(Icons.help_outline), onPressed: () {})],
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -253,13 +255,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(height: 20),
           _buildPrivacySecuritySection(),
           SizedBox(height: 20),
-          _buildHealthFacilitySection(),
-          SizedBox(height: 20),
-          _buildSupportLegalSection(),
-          SizedBox(height: 20),
+          // _buildHealthFacilitySection(),
+          // SizedBox(height: 20),
+          // _buildSupportLegalSection(),
+          // SizedBox(height: 20),
           Center(
-              child:
-                  AutoText('VERSION 1.0.0', style: TextStyle(color: Colors.grey))),
+              child: AutoText('VERSION 1.0.0',
+                  style: TextStyle(color: Colors.grey))),
         ],
       ),
     );
@@ -290,20 +292,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: AutoText('RECEIVE_NOTIFICATIONS'),
               ),
               DropDownButton(),
-
-
-              // SwitchListTile(
-              //   value: true,
-              //   onChanged: (val) {},
-              //   title: Text('Health Check Reminders'),
-              // ),
-              SwitchListTile(
-                value: false,
-                onChanged: (val) {},
-                title: AutoText('APPOINTMENT_REMINDERS'),
-              ),
-
-
             ],
           ),
         ),
@@ -324,27 +312,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 );
               }),
-          // ListTile(title: Text('Enable Biometric Login'), onTap: () {}),
-          // ListTile(title: Text('Logout from All Devices'), onTap: () {}),
         ],
       );
 
-  Widget _buildHealthFacilitySection() => ListTile(
-        title: AutoText('HEALTH_FACILITY'),
-        subtitle: AutoText('LEVEL_2'),
-        trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () {},
-      );
-
-  Widget _buildSupportLegalSection() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AutoText('SUPPORT_LEGAL',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          // ListTile(title: Text('FAQs'), onTap: () {}),
-          ListTile(title: AutoText('CONTACT_SUPPORT'), onTap: () {}),
-          // ListTile(title: Text('Terms & Conditions'), onTap: () {}),
-          // ListTile(title: Text('Privacy Policy'), onTap: () {}),
-        ],
-      );
+  // Widget _buildSupportLegalSection() => Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         AutoText('SUPPORT_LEGAL',
+  //             style: TextStyle(fontWeight: FontWeight.bold)),
+  //         // ListTile(title: Text('FAQs'), onTap: () {}),
+  //         ListTile(title: AutoText('CONTACT_SUPPORT'), onTap: () {}),
+  //         // ListTile(title: Text('Terms & Conditions'), onTap: () {}),
+  //         // ListTile(title: Text('Privacy Policy'), onTap: () {}),
+  //       ],
+  //     );
 }

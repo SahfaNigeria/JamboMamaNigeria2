@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/banner_component.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
-import 'package:jambomama_nigeria/midwives/views/screens/account_screen.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/availability_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/colleague_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/instruction_screen.dart';
 
@@ -254,7 +254,7 @@ class MidWifeHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: HomeComponents(
-                      text: 'MANAGE_TASKS',
+                      text: 'LEARN',
                       icon: 'assets/svgs/learn_medicine.svg',
                       onTap: () {
                         Navigator.push(
@@ -277,13 +277,13 @@ class MidWifeHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: HomeComponents(
-                      text: 'MY_ACCOUNT',
+                      text: 'Availabilty',
                       icon: 'assets/svgs/person_account.svg',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const AccountScreen(),
+                            builder: (context) => AvailabilitySchedulePage(),
                           ),
                         );
                       },

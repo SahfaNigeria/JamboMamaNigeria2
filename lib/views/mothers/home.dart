@@ -12,6 +12,7 @@ import 'package:jambomama_nigeria/views/mothers/questionnaire.dart';
 import 'package:jambomama_nigeria/views/mothers/vital_info_update_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/warning.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   final bool isHealthProvider;
@@ -105,182 +106,291 @@ class _HomePageState extends State<HomePage> {
   }
 
   // New method to fetch user's vital and pregnancy data
-  Future<void> getUserVitalData() async {
-    final User? user = _auth.currentUser;
-    if (user == null) return;
 
+Future<void> getUserVitalData() async {
+  final User? user = _auth.currentUser;
+  if (user == null) return;
+
+  try {
+    // 🔹 1. Get Expected Delivery Date
     try {
-      // 1. Get Expected Delivery Date
-      final eddDoc =
-          await _firestore.collection('save_mother_edd').doc(user.uid).get();
-
-      if (eddDoc.exists && eddDoc.data() != null) {
-        expectedDeliveryDate = eddDoc.data()!['expectedDeliveryDate'];
-
-        // Calculate current week from EDD
-        if (expectedDeliveryDate != null) {
-          currentWeek = calculateCurrentWeek(expectedDeliveryDate!);
-        }
-      }
-
-      // 2. Get Initial Weight and BMI from patient background
-      final backgroundDoc = await _firestore
-          .collection('patients')
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
           .doc(user.uid)
-          .collection('background')
-          .doc('patient_background')
           .get();
 
-      if (backgroundDoc.exists && backgroundDoc.data() != null) {
-        final data = backgroundDoc.data()!;
-
-        // Get the correct field names from your _saveData function
-        userInitialWeight =
-            data['weight']?.toDouble(); // Initial weight from background
-        userInitialBmi = data['bmi']?.toDouble(); // BMI from background
-
-        // If BMI not stored but we have height and weight, calculate it
-        if (userInitialBmi == null &&
-            userInitialWeight != null &&
-            data['height'] != null) {
-          double heightInM = data['height'].toDouble() / 100; // Convert cm to m
-          userInitialBmi = userInitialWeight! / (heightInM * heightInM);
-        }
-
-        print('📊 Background data found:');
-        print('   Weight: ${data['weight']}');
-        print('   Height: ${data['height']}');
-        print('   BMI: ${data['bmi']}');
-        print('   BMI Message: ${data['bmi_message']}');
-      } else {
-        print('⚠️ No patient background found for user: ${user.uid}');
-      }
-
-      // 3. Get latest weight from vital info (with error handling for missing index)
-      try {
-        final vitalInfoQuery = await _firestore
-            .collection('vital_info')
-            .where('userId', isEqualTo: user.uid)
-            .orderBy('timestamp', descending: true)
-            .limit(1)
-            .get();
-
-        if (vitalInfoQuery.docs.isNotEmpty) {
-          final latestVital = vitalInfoQuery.docs.first.data();
-          userCurrentWeight = latestVital['weight']?.toDouble();
-        }
-      } catch (e) {
-        print('⚠️ Could not fetch latest vital info (index missing): $e');
-
-        // Fallback: Get all vital_info for user without ordering
-        try {
-          final fallbackQuery = await _firestore
-              .collection('vital_info')
-              .where('userId', isEqualTo: user.uid)
-              .get();
-
-          if (fallbackQuery.docs.isNotEmpty) {
-            // Find the most recent one manually
-            var mostRecent = fallbackQuery.docs.first;
-            for (var doc in fallbackQuery.docs) {
-              if (doc.data()['timestamp'] != null &&
-                  mostRecent.data()['timestamp'] != null) {
-                if ((doc.data()['timestamp'] as Timestamp).compareTo(
-                        mostRecent.data()['timestamp'] as Timestamp) >
-                    0) {
-                  mostRecent = doc;
-                }
-              }
+      if (userDoc.exists) {
+        final data = userDoc.data();
+        if (data != null && data['expectedDeliveryDate'] != null) {
+          setState(() {
+            // Store only the EDD as a string
+            expectedDeliveryDate = (data['expectedDeliveryDate'] as Timestamp)
+                .toDate()
+                .toIso8601String();
+            
+            // Calculate current week immediately after setting EDD
+            if (expectedDeliveryDate != null) {
+              currentWeek = calculateCurrentWeek(expectedDeliveryDate!);
             }
-            userCurrentWeight = mostRecent.data()['weight']?.toDouble();
-          }
-        } catch (fallbackError) {
-          print('❌ Fallback vital info query also failed: $fallbackError');
+          });
         }
       }
-
-      // 4. Fallback: Get data from user profile if available
-      final userDoc =
-          await _firestore.collection("New Mothers").doc(user.uid).get();
-
-      if (userDoc.exists && userDoc.data() != null) {
-        final userData = userDoc.data()!;
-
-        // Use fallback values if not found elsewhere
-        userInitialWeight ??=
-            userData['weight']?.toDouble(); // Try 'weight' first
-        userInitialWeight ??=
-            userData['initialWeight']?.toDouble(); // Then 'initialWeight'
-        userInitialBmi ??= userData['bmi']?.toDouble();
-        expectedDeliveryDate ??= userData['expectedDeliveryDate'];
-
-        // Calculate current week if we have EDD
-        if (currentWeek == null && expectedDeliveryDate != null) {
-          currentWeek = calculateCurrentWeek(expectedDeliveryDate!);
-        }
-
-        print('👤 User profile fallback data:');
-        print('   Weight: ${userData['weight']}');
-        print('   Initial Weight: ${userData['initialWeight']}');
-        print('   BMI: ${userData['bmi']}');
-        print('   EDD: ${userData['expectedDeliveryDate']}');
-      }
-
-      setState(() {
-        // Update UI with fetched data
-      });
-
-      print('✅ User vital data loaded:');
-      print('Current Week: $currentWeek');
-      print('Initial Weight: $userInitialWeight');
-      print('Current Weight: $userCurrentWeight');
-      print('Initial BMI: $userInitialBmi');
-      print('EDD: $expectedDeliveryDate');
     } catch (e) {
-      print('❌ Error fetching user vital data: $e');
+      print("Error fetching user data: $e");
     }
-  }
 
-  // Helper method to calculate current pregnancy week
-  int calculateCurrentWeek(String eddString) {
+    // 🔹 2. Get Initial Weight and BMI from patient background
+    final backgroundDoc = await _firestore
+        .collection('patients')
+        .doc(user.uid)
+        .collection('background')
+        .doc('patient_background')
+        .get();
+
+    if (backgroundDoc.exists && backgroundDoc.data() != null) {
+      final data = backgroundDoc.data()!;
+      userInitialWeight = data['weight']?.toDouble();
+      userInitialBmi = data['bmi']?.toDouble();
+
+      if (userInitialBmi == null &&
+          userInitialWeight != null &&
+          data['height'] != null) {
+        double heightInM = data['height'].toDouble() / 100;
+        userInitialBmi = userInitialWeight! / (heightInM * heightInM);
+      }
+    }
+
+    // 🔹 3. Get latest weight from vital info
     try {
-      DateTime edd;
+      final vitalInfoQuery = await _firestore
+          .collection('vital_info')
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('timestamp', descending: true)
+          .limit(1)
+          .get();
 
-      // Handle different date formats
-      if (eddString.contains('-') && eddString.split('-').length == 3) {
-        // Handle formats like "27-02-2026" or "2026-02-27"
-        List<String> parts = eddString.split('-');
-        if (parts[0].length == 4) {
-          // Format: YYYY-MM-DD
-          edd = DateTime.parse(eddString);
-        } else {
-          // Format: DD-MM-YYYY
-          edd = DateTime(
-            int.parse(parts[2]), // year
-            int.parse(parts[1]), // month
-            int.parse(parts[0]), // day
-          );
-        }
-      } else {
-        // Try ISO format
-        edd = DateTime.parse(eddString);
+      if (vitalInfoQuery.docs.isNotEmpty) {
+        final latestVital = vitalInfoQuery.docs.first.data();
+        userCurrentWeight = latestVital['weight']?.toDouble();
       }
-
-      DateTime now = DateTime.now();
-
-      // Calculate weeks from conception (EDD - 280 days = LMP)
-      DateTime lmp = edd.subtract(Duration(days: 280));
-      int daysSinceLmp = now.difference(lmp).inDays;
-      int weeks = (daysSinceLmp / 7).floor();
-
-      // Ensure week is within reasonable range (1-42)
-      return weeks.clamp(1, 42);
     } catch (e) {
-      print('Error calculating current week: $e');
-      print('Date string: $eddString');
-      return 20; // Default fallback
+      print('⚠️ Could not fetch latest vital info: $e');
     }
+
+    // 🔹 4. Fallback: Get data from "New Mothers" profile
+    final userDocFallback =
+        await _firestore.collection("New Mothers").doc(user.uid).get();
+
+    if (userDocFallback.exists && userDocFallback.data() != null) {
+      final userData = userDocFallback.data()!;
+      userInitialWeight ??= userData['weight']?.toDouble();
+      userInitialWeight ??= userData['initialWeight']?.toDouble();
+      userInitialBmi ??= userData['bmi']?.toDouble();
+      
+      // Handle fallback EDD and calculate current week
+      if (expectedDeliveryDate == null || expectedDeliveryDate!.isEmpty) {
+        expectedDeliveryDate = userData['expectedDeliveryDate'];
+        if (expectedDeliveryDate != null) {
+          setState(() {
+            currentWeek = calculateCurrentWeek(expectedDeliveryDate!);
+          });
+        }
+      }
+    }
+
+    // 🔹 5. Also check save_mother_edd collection for consistency
+    try {
+      final eddDoc = await _firestore
+          .collection('save_mother_edd')
+          .doc(user.uid)
+          .get();
+      
+      if (eddDoc.exists && eddDoc.data() != null) {
+        final eddFromSave = eddDoc.data()!['expectedDeliveryDate'] as String?;
+        if (eddFromSave != null && eddFromSave.isNotEmpty) {
+          setState(() {
+            expectedDeliveryDate = eddFromSave;
+            currentWeek = calculateCurrentWeek(eddFromSave);
+          });
+        }
+      }
+    } catch (e) {
+      print('⚠️ Could not fetch EDD from save_mother_edd: $e');
+    }
+
+    print('✅ User vital data loaded:');
+    print('Initial Weight: $userInitialWeight');
+    print('Current Weight: $userCurrentWeight');
+    print('Initial BMI: $userInitialBmi');
+    print('EDD: $expectedDeliveryDate');
+    print('Current Week: $currentWeek');
+  } catch (e) {
+    print('❌ Error fetching user vital data: $e');
   }
+}
+
+
+  // Future<void> getUserVitalData() async {
+  //   final User? user = _auth.currentUser;
+  //   if (user == null) return;
+
+  //   try {
+  //     // 🔹 1. Get Expected Delivery Date
+  //     try {
+  //       final userDoc = await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(user.uid)
+  //           .get();
+
+  //       if (userDoc.exists) {
+  //         final data = userDoc.data();
+  //         if (data != null && data['expectedDeliveryDate'] != null) {
+  //           setState(() {
+  //             // Store only the EDD as a string
+  //             expectedDeliveryDate = (data['expectedDeliveryDate'] as Timestamp)
+  //                 .toDate()
+  //                 .toIso8601String();
+  //           });
+  //         }
+  //       }
+  //     } catch (e) {
+  //       print("Error fetching user data: $e");
+  //     }
+
+  //     // 🔹 2. Get Initial Weight and BMI from patient background
+  //     final backgroundDoc = await _firestore
+  //         .collection('patients')
+  //         .doc(user.uid)
+  //         .collection('background')
+  //         .doc('patient_background')
+  //         .get();
+
+  //     if (backgroundDoc.exists && backgroundDoc.data() != null) {
+  //       final data = backgroundDoc.data()!;
+  //       userInitialWeight = data['weight']?.toDouble();
+  //       userInitialBmi = data['bmi']?.toDouble();
+
+  //       if (userInitialBmi == null &&
+  //           userInitialWeight != null &&
+  //           data['height'] != null) {
+  //         double heightInM = data['height'].toDouble() / 100;
+  //         userInitialBmi = userInitialWeight! / (heightInM * heightInM);
+  //       }
+  //     }
+
+  //     // 🔹 3. Get latest weight from vital info
+  //     try {
+  //       final vitalInfoQuery = await _firestore
+  //           .collection('vital_info')
+  //           .where('userId', isEqualTo: user.uid)
+  //           .orderBy('timestamp', descending: true)
+  //           .limit(1)
+  //           .get();
+
+  //       if (vitalInfoQuery.docs.isNotEmpty) {
+  //         final latestVital = vitalInfoQuery.docs.first.data();
+  //         userCurrentWeight = latestVital['weight']?.toDouble();
+  //       }
+  //     } catch (e) {
+  //       print('⚠️ Could not fetch latest vital info: $e');
+  //     }
+
+  //     // 🔹 4. Fallback: Get data from "New Mothers" profile
+  //     final userDocFallback =
+  //         await _firestore.collection("New Mothers").doc(user.uid).get();
+
+  //     if (userDocFallback.exists && userDocFallback.data() != null) {
+  //       final userData = userDocFallback.data()!;
+  //       userInitialWeight ??= userData['weight']?.toDouble();
+  //       userInitialWeight ??= userData['initialWeight']?.toDouble();
+  //       userInitialBmi ??= userData['bmi']?.toDouble();
+  //       expectedDeliveryDate ??= userData['expectedDeliveryDate'];
+  //     }
+
+  //     print('✅ User vital data loaded:');
+  //     print('Initial Weight: $userInitialWeight');
+  //     print('Current Weight: $userCurrentWeight');
+  //     print('Initial BMI: $userInitialBmi');
+  //     print('EDD: $expectedDeliveryDate');
+  //   } catch (e) {
+  //     print('❌ Error fetching user vital data: $e');
+  //   }
+  // }
+
+  // Helper method to calculate current pregnancy week 
+
+  int calculateCurrentWeek(String eddString) {
+  try {
+    DateTime edd;
+    
+    // Handle different date formats
+    if (eddString.contains('-') && eddString.split('-').length == 3) {
+      // Handle formats like "27-02-2026" or "2026-02-27"
+      List<String> parts = eddString.split('-');
+      if (parts[0].length == 4) {
+        // Format: YYYY-MM-DD
+        edd = DateTime.parse(eddString);
+      } else {
+        // Format: DD-MM-YYYY - Use DateFormat to parse correctly
+        edd = DateFormat('dd-MM-yyyy').parse(eddString);
+      }
+    } else {
+      // Try ISO format
+      edd = DateTime.parse(eddString);
+    }
+
+    DateTime now = DateTime.now();
+    
+    // Use the SAME logic as PregnantFeelingsForm
+    int pregnancyWeek = 40 - edd.difference(now).inDays ~/ 7;
+    
+    // Ensure week is within reasonable range (1-42)
+    return pregnancyWeek.clamp(1, 42);
+  } catch (e) {
+    print('Error calculating current week: $e');
+    print('Date string: $eddString');
+    return 20; // Default fallback
+  }
+}
+  // int calculateCurrentWeek(String eddString) {
+  //   try {
+  //     DateTime edd;
+
+  //     // Handle different date formats
+  //     if (eddString.contains('-') && eddString.split('-').length == 3) {
+  //       // Handle formats like "27-02-2026" or "2026-02-27"
+  //       List<String> parts = eddString.split('-');
+  //       if (parts[0].length == 4) {
+  //         // Format: YYYY-MM-DD
+  //         edd = DateTime.parse(eddString);
+  //       } else {
+  //         // Format: DD-MM-YYYY
+  //         edd = DateTime(
+  //           int.parse(parts[2]), // year
+  //           int.parse(parts[1]), // month
+  //           int.parse(parts[0]), // day
+  //         );
+  //       }
+  //     } else {
+  //       // Try ISO format
+  //       edd = DateTime.parse(eddString);
+  //     }
+
+  //     DateTime now = DateTime.now();
+
+  //     // Calculate weeks from conception (EDD - 280 days = LMP)
+  //     DateTime lmp = edd.subtract(Duration(days: 280));
+  //     int daysSinceLmp = now.difference(lmp).inDays;
+  //     int weeks = (daysSinceLmp / 7).round();
+
+  //     // Ensure week is within reasonable range (1-42)
+  //     return weeks.clamp(1, 42);
+  //   } catch (e) {
+  //     print('Error calculating current week: $e');
+  //     print('Date string: $eddString');
+  //     return 20; // Default fallback
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -39,13 +39,13 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future logout() async {
-    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
     sharedPreferences.clear();
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginOrRegister()),
             (route) => false));
-
   }
 
   Widget build(BuildContext context) {
@@ -111,7 +111,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Patients(),
+                  builder: (context) => const Patients(),
                 ),
               );
             },
@@ -154,7 +154,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
             onTap: () {
               logout();
             },
-            text:autoI8lnGen.translate("LOGOUT"),
+            text: autoI8lnGen.translate("LOGOUT"),
           ),
         ],
       ),
