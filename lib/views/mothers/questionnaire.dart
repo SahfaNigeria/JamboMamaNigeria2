@@ -362,7 +362,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
                         selectedValue: responses[0],
                         onSelected: (value) {
                           setState(() {
-                            responses[0] = value;
+                            responses[0] = '';
                             isAnswered[0] = true;
                             medicalResponses[0] = _generateResponse(0, value);
                           });
@@ -751,7 +751,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
   String _generateResponse(int index, String answer) {
     switch (index) {
       case 0:
-        return answer == autoI8lnGen.translate("FINE_3")
+        return answer == autoI8lnGen.translate("FINE_2")
             ? autoI8lnGen.translate("G_K_U")
             : answer == autoI8lnGen.translate("SO_SO")
                 ? autoI8lnGen.translate("CALL_CHW")

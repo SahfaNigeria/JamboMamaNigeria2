@@ -125,7 +125,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HospitalsScreen(),
+                  builder: (context) => HealthFacilitiesScreen(),
                 ),
               );
             },
