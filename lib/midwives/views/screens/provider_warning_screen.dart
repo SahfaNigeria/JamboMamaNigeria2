@@ -4,12 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HealthcareProfessionalAssessmentScreen extends StatefulWidget {
   final String patientId;
-  //final String patientName;
+  final String assessmentId;
 
   const HealthcareProfessionalAssessmentScreen({
     Key? key,
     required this.patientId,
-    // required this.patientName,
+    required this.assessmentId,
   }) : super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class _HealthcareProfessionalAssessmentScreenState
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return  Center(
+            return Center(
               child: AutoText('ASSESSMENT_NOT_FOUND'),
             );
           }
@@ -143,19 +143,16 @@ class _HealthcareProfessionalAssessmentScreenState
     // Check for high-priority symptoms
     if (data['hasVaginalBleeding'] == true &&
         data['bleedingAmount'] == autoI8lnGen.translate("HEAVY")) {
-      alerts.add(
-          _buildAlert('CRITICAL_VAGINA', Colors.red));
+      alerts.add(_buildAlert('CRITICAL_VAGINA', Colors.red));
     }
 
     if (data['babyStoppedMoving'] == true) {
-      alerts.add(_buildAlert(
-          'URGENT_VAGINA', Colors.red));
+      alerts.add(_buildAlert('URGENT_VAGINA', Colors.red));
     }
 
     if (data['hasContractions'] == true &&
         data['contractionType'] == autoI8lnGen.translate('REGULAR_PAINFUL')) {
-      alerts.add(
-          _buildAlert('URGENT_VAGINA_2', Colors.orange));
+      alerts.add(_buildAlert('URGENT_VAGINA_2', Colors.orange));
     }
 
     if (data['hasFever'] == true) {
@@ -163,8 +160,7 @@ class _HealthcareProfessionalAssessmentScreenState
     }
 
     if (data['headacheSeverity'] == autoI8lnGen.translate('SEVERE')) {
-      alerts
-          .add(_buildAlert('WARNING_2', Colors.orange));
+      alerts.add(_buildAlert('WARNING_2', Colors.orange));
     }
 
     if (alerts.isEmpty) {
@@ -364,16 +360,3 @@ class _HealthcareProfessionalAssessmentScreenState
     );
   }
 }
-
-// Usage example - you would call this screen like:
-/*
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => HealthcareProfessionalAssessmentScreen(
-      patientId: 'patient-user-id',
-      patientName: 'Patient Name',
-    ),
-  ),
-);
-*/

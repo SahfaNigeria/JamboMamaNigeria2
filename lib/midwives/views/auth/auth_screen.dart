@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart'; // Firebase UI Auth for prebuilt screens
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/midwives/views/auth/mid_wive_sign_in_page.dart';
 import 'package:jambomama_nigeria/midwives/views/auth/mid_wive_sign_up_page.dart';

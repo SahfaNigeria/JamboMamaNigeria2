@@ -1,5 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+    
     <application
+
         android:label="Jambomama_Nigeria"
         android:name="${applicationName}"
         android:icon="@mipmap/uc_launcher">
@@ -29,5 +38,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        
+        
+    
     </application>
 </manifest>

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class ProfessionalsList extends StatefulWidget {
   final String location;
   ProfessionalsList({required this.location});
@@ -22,9 +21,18 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
   void initState() {
     super.initState();
     _professionalsFuture = fetchHealthcareProfessionals(widget.location);
+
+    final connectionStateModel =
+        Provider.of<ConnectionStateModel>(context, listen: false);
+
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      connectionStateModel.loadConnectionStatus(userId);
+    }
   }
 
-  Future<List<DocumentSnapshot>> fetchHealthcareProfessionals(String location) async {
+  Future<List<DocumentSnapshot>> fetchHealthcareProfessionals(
+      String location) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('Health Professionals')
         .where('professional', isEqualTo: 'professional')
@@ -60,8 +68,8 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
                   builder: (context, connectionStateModel, child) {
                     bool requestSent = connectionStateModel
                         .hasRequestedConnectionFor(professionalId);
-                    bool isConnected = connectionStateModel
-                        .isConnectedTo(professionalId);
+                    bool isConnected =
+                        connectionStateModel.isConnectedTo(professionalId);
                     bool isLoading = _loadingIds.contains(professionalId);
 
                     return Padding(
@@ -78,7 +86,8 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
                                     width: 50,
                                     fit: BoxFit.cover,
                                   )
-                                : Icon(Icons.person, size: 40, color: Colors.grey.shade400),
+                                : Icon(Icons.person,
+                                    size: 40, color: Colors.grey.shade400),
                           ),
                           SizedBox(width: 20),
                           Expanded(
@@ -96,9 +105,11 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
                                     Text(','),
                                     SizedBox(width: 5),
                                     Expanded(
-                                      child: Text(professional['healthFacility'],
+                                      child: Text(
+                                          professional['healthFacility'],
                                           style: TextStyle(
-                                              color: Color.fromARGB(255, 183, 164, 164)),
+                                              color: Color.fromARGB(
+                                                  255, 183, 164, 164)),
                                           overflow: TextOverflow.ellipsis),
                                     ),
                                   ],
@@ -120,7 +131,8 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
                                       try {
                                         await connectionStateModel
                                             .sendConnectionRequest(
-                                          FirebaseAuth.instance.currentUser!.uid,
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid,
                                           professionalId,
                                         );
                                       } finally {
@@ -133,7 +145,8 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
                                   ? SizedBox(
                                       height: 18,
                                       width: 18,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2),
                                     )
                                   : AutoText(
                                       isConnected

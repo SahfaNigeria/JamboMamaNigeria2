@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
 import 'package:jambomama_nigeria/midwives/views/components/drop_down_button.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/edit_edd.dart';
 
 class SettingsScreen extends StatefulWidget {
   String email;
@@ -221,7 +222,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: AutoText('SETTINGS'),
-        actions: [IconButton(icon: Icon(Icons.help_outline), onPressed: () {})],
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -233,14 +233,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(height: 20),
           _buildPrivacySecuritySection(),
           SizedBox(height: 20),
-          _buildHealthFacilitySection(),
-          SizedBox(height: 20),
-          _buildSupportLegalSection(),
-          SizedBox(height: 20),
+          // _buildSupportLegalSection(),
+          // SizedBox(height: 20),
           ///todo:change to text span
           Center(
-              child:
-              AutoText('VERSION 1.0.0', style: TextStyle(color: Colors.grey))),
+              child: AutoText('VERSION 1.0.0',
+                  style: TextStyle(color: Colors.grey))),
         ],
       ),
     );
@@ -276,11 +274,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               //   onChanged: (val) {},
               //   title: Text('Health Check Reminders'),
               // ),
-              SwitchListTile(
-                value: false,
-                onChanged: (val) {},
-                title: AutoText('APPOINTMENT_REMINDERS'),
-              ),
             ],
           ),
         ),
@@ -301,16 +294,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 );
               }),
-          // ListTile(title: Text('Enable Biometric Login'), onTap: () {}),
-          // ListTile(title: Text('Logout from All Devices'), onTap: () {}),
+          ListTile(
+            title: AutoText('Edit Expected Delivery Date'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditExpectedDeliveryScreen(),
+                ),
+              );
+            },
+          ),
         ],
-      );
-
-  Widget _buildHealthFacilitySection() => ListTile(
-    title: AutoText('HEALTH_FACILITY'),
-    subtitle: AutoText('LEVEL_2'),
-        trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () {},
       );
 
   Widget _buildSupportLegalSection() => Column(

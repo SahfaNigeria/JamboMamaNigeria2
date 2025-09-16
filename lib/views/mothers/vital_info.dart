@@ -123,7 +123,7 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                         },
                         child: AutoText('GO_BACK'),
                       ),
-                    ],
+                    ], 
                   ),
                 )
               : Padding(

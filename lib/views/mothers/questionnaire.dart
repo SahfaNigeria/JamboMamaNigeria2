@@ -181,10 +181,12 @@ class _FeelingsFormState extends State<FeelingsForm> {
     Color responseColor;
     IconData responseIcon;
 
-    if (response.contains(autoI8lnGen.translate("GREAT")) || response.contains('👍')) {
+    if (response.contains(autoI8lnGen.translate("GREAT")) ||
+        response.contains('👍')) {
       responseColor = Colors.green[700]!;
       responseIcon = Icons.check_circle;
-    } else if (response.contains(autoI8lnGen.translate("CONTACT")) || response.contains(autoI8lnGen.translate("CALL"))) {
+    } else if (response.contains(autoI8lnGen.translate("CONTACT")) ||
+        response.contains(autoI8lnGen.translate("CALL"))) {
       responseColor = Colors.red[700]!;
       responseIcon = Icons.warning;
     } else {
@@ -345,19 +347,22 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // General feeling
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_7',
-                  description:
-                      'YOUR_OVER_ALL_WELL',
+                  description: 'YOUR_OVER_ALL_WELL',
                   icon: _getQuestionIcon(0),
                   iconColor: _getQuestionColor(0),
                   isAnswered: isAnswered[0],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                        options: [autoI8lnGen.translate("FINE_2"), autoI8lnGen.translate("SO_SO"), autoI8lnGen.translate("N_T_W"),],
+                        options: [
+                          autoI8lnGen.translate("FINE_2"),
+                          autoI8lnGen.translate("SO_SO"),
+                          autoI8lnGen.translate("N_T_W"),
+                        ],
                         selectedValue: responses[0],
                         onSelected: (value) {
                           setState(() {
-                            responses[0] = value;
+                            responses[0] = '';
                             isAnswered[0] = true;
                             medicalResponses[0] = _generateResponse(0, value);
                           });
@@ -371,15 +376,18 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Breathing
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_8',
-                  description:
-                      'S_O_B_N',
+                  description: 'S_O_B_N',
                   icon: _getQuestionIcon(1),
                   iconColor: _getQuestionColor(1),
                   isAnswered: isAnswered[1],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                        options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("SAB"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                        options: [
+                          autoI8lnGen.translate("YES_MESSAGE"),
+                          autoI8lnGen.translate("SAB"),
+                          autoI8lnGen.translate("NO_MESSAGE"),
+                        ],
                         selectedValue: responses[1],
                         onSelected: (value) {
                           setState(() {
@@ -396,17 +404,19 @@ class _FeelingsFormState extends State<FeelingsForm> {
 
                 // Headaches
                 _buildQuestionCard(
-                  title:
-                      'HEALTH_QUESTION_9',
-                  description:
-                      'F_D_P_E',
+                  title: 'HEALTH_QUESTION_9',
+                  description: 'F_D_P_E',
                   icon: _getQuestionIcon(2),
                   iconColor: _getQuestionColor(2),
                   isAnswered: isAnswered[2],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                       options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("SAB"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                        options: [
+                          autoI8lnGen.translate("YES_MESSAGE"),
+                          autoI8lnGen.translate("SAB"),
+                          autoI8lnGen.translate("NO_MESSAGE"),
+                        ],
                         selectedValue: responses[2],
                         onSelected: (value) {
                           setState(() {
@@ -425,15 +435,17 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 if (responses[2] == autoI8lnGen.translate("YES_MESSAGE"))
                   _buildQuestionCard(
                     title: 'HEALTH_QUESTION_10',
-                    description:
-                        'C_H_S_U',
+                    description: 'C_H_S_U',
                     icon: _getQuestionIcon(3),
                     iconColor: _getQuestionColor(3),
                     isAnswered: isAnswered[3],
                     content: Column(
                       children: [
                         _buildChoiceChips(
-                          options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                          options: [
+                            autoI8lnGen.translate("YES_MESSAGE"),
+                            autoI8lnGen.translate("NO_MESSAGE"),
+                          ],
                           selectedValue: responses[3],
                           onSelected: (value) {
                             setState(() {
@@ -451,15 +463,18 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Fever
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_11',
-                  description:
-                      'F_DP_B',
+                  description: 'F_DP_B',
                   icon: _getQuestionIcon(4),
                   iconColor: _getQuestionColor(4),
                   isAnswered: isAnswered[4],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                       options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), autoI8lnGen.translate("DONT_KNOW"), ],
+                        options: [
+                          autoI8lnGen.translate("YES_MESSAGE"),
+                          autoI8lnGen.translate("NO_MESSAGE"),
+                          autoI8lnGen.translate("DONT_KNOW"),
+                        ],
                         selectedValue: responses[4],
                         onSelected: (value) {
                           setState(() {
@@ -477,15 +492,17 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Nausea
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_12',
-                  description:
-                      'M_SICKNESS_C',
+                  description: 'M_SICKNESS_C',
                   icon: _getQuestionIcon(5),
                   iconColor: _getQuestionColor(5),
                   isAnswered: isAnswered[5],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                        options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                        options: [
+                          autoI8lnGen.translate("YES_MESSAGE"),
+                          autoI8lnGen.translate("NO_MESSAGE"),
+                        ],
                         selectedValue: responses[5],
                         onSelected: (value) {
                           setState(() {
@@ -503,15 +520,18 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Sleep
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_13',
-                  description:
-                      'G_B_H',
+                  description: 'G_B_H',
                   icon: _getQuestionIcon(6),
                   iconColor: _getQuestionColor(6),
                   isAnswered: isAnswered[6],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                        options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), autoI8lnGen.translate("SAME_BEFORE"), ],
+                        options: [
+                          autoI8lnGen.translate("YES_MESSAGE"),
+                          autoI8lnGen.translate("NO_MESSAGE"),
+                          autoI8lnGen.translate("SAME_BEFORE"),
+                        ],
                         selectedValue: responses[6],
                         onSelected: (value) {
                           setState(() {
@@ -530,15 +550,18 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 if (pregnancyWeek! >= 20)
                   _buildQuestionCard(
                     title: 'HEALTH_QUESTION_14',
-                    description:
-                        'B_M_G',
+                    description: 'B_M_G',
                     icon: _getQuestionIcon(7),
                     iconColor: _getQuestionColor(7),
                     isAnswered: isAnswered[7],
                     content: Column(
                       children: [
                         _buildChoiceChips(
-                         options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), autoI8lnGen.translate("DONT_KNOW"), ],
+                          options: [
+                            autoI8lnGen.translate("YES_MESSAGE"),
+                            autoI8lnGen.translate("NO_MESSAGE"),
+                            autoI8lnGen.translate("DONT_KNOW"),
+                          ],
                           selectedValue: responses[7],
                           onSelected: (value) {
                             setState(() {
@@ -556,15 +579,17 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Birth plan
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_15',
-                  description:
-                      'P_AHEAD',
+                  description: 'P_AHEAD',
                   icon: _getQuestionIcon(8),
                   iconColor: _getQuestionColor(8),
                   isAnswered: isAnswered[8],
                   content: Column(
                     children: [
                       _buildChoiceChips(
-                        options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                        options: [
+                          autoI8lnGen.translate("YES_MESSAGE"),
+                          autoI8lnGen.translate("NO_MESSAGE"),
+                        ],
                         selectedValue: responses[8],
                         onSelected: (value) {
                           setState(() {
@@ -582,17 +607,18 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Swelling (after 28 weeks)
                 if (pregnancyWeek! >= 28)
                   _buildQuestionCard(
-                    title:
-                        'HEALTH_QUESTION_16',
-                    description:
-                        'SWELLING_NORMAL',
+                    title: 'HEALTH_QUESTION_16',
+                    description: 'SWELLING_NORMAL',
                     icon: _getQuestionIcon(9),
                     iconColor: _getQuestionColor(9),
                     isAnswered: isAnswered[9],
                     content: Column(
                       children: [
                         _buildChoiceChips(
-                          options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                          options: [
+                            autoI8lnGen.translate("YES_MESSAGE"),
+                            autoI8lnGen.translate("NO_MESSAGE"),
+                          ],
                           selectedValue: responses[9],
                           onSelected: (value) {
                             setState(() {
@@ -610,17 +636,19 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Contractions (after 24 weeks)
                 if (pregnancyWeek! >= 24)
                   _buildQuestionCard(
-                    title:
-                        'HEALTH_QUESTION_17',
-                    description:
-                        'C_37',
+                    title: 'HEALTH_QUESTION_17',
+                    description: 'C_37',
                     icon: _getQuestionIcon(10),
                     iconColor: _getQuestionColor(10),
                     isAnswered: isAnswered[10],
                     content: Column(
                       children: [
                         _buildChoiceChips(
-                          options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"),autoI8lnGen.translate("N_S_U"),],
+                          options: [
+                            autoI8lnGen.translate("YES_MESSAGE"),
+                            autoI8lnGen.translate("NO_MESSAGE"),
+                            autoI8lnGen.translate("N_S_U"),
+                          ],
                           selectedValue: responses[10],
                           onSelected: (value) {
                             setState(() {
@@ -640,15 +668,17 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 if (pregnancyWeek! >= 36)
                   _buildQuestionCard(
                     title: 'HEALTH_QUESTION_18',
-                    description:
-                        'B_P_DE',
+                    description: 'B_P_DE',
                     icon: _getQuestionIcon(11),
                     iconColor: _getQuestionColor(11),
                     isAnswered: isAnswered[11],
                     content: Column(
                       children: [
                         _buildChoiceChips(
-                          options: [autoI8lnGen.translate("YES_MESSAGE"),autoI8lnGen.translate("NO_MESSAGE"), ],
+                          options: [
+                            autoI8lnGen.translate("YES_MESSAGE"),
+                            autoI8lnGen.translate("NO_MESSAGE"),
+                          ],
                           selectedValue: responses[11],
                           onSelected: (value) {
                             setState(() {
@@ -667,8 +697,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 // Other concerns
                 _buildQuestionCard(
                   title: 'A_O_Q',
-                  description:
-                      'F_F_C_H',
+                  description: 'F_F_C_H',
                   icon: Icons.message,
                   iconColor: Colors.blue[600],
                   content: TextField(
@@ -722,7 +751,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
   String _generateResponse(int index, String answer) {
     switch (index) {
       case 0:
-        return answer == autoI8lnGen.translate("FINE_3")
+        return answer == autoI8lnGen.translate("FINE_2")
             ? autoI8lnGen.translate("G_K_U")
             : answer == autoI8lnGen.translate("SO_SO")
                 ? autoI8lnGen.translate("CALL_CHW")
@@ -791,7 +820,8 @@ class _FeelingsFormState extends State<FeelingsForm> {
     for (int i = 0; i < responses.length; i++) {
       bool shouldAnswer = true;
 
-      if (i == 3 && responses[2] != autoI8lnGen.translate("YES_MESSAGE")) shouldAnswer = false;
+      if (i == 3 && responses[2] != autoI8lnGen.translate("YES_MESSAGE"))
+        shouldAnswer = false;
       if (i == 7 && pregnancyWeek! < 20) shouldAnswer = false;
       if (i == 9 && pregnancyWeek! < 28) shouldAnswer = false;
       if (i == 10 && pregnancyWeek! < 24) shouldAnswer = false;
@@ -822,7 +852,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
 
       // Fallback: get providerId if not passed properly
       String? providerId = widget.requesterId;
-      if (providerId == null || providerId.isEmpty) {
+      if (providerId.isEmpty) {
         final fallback = await FirebaseFirestore.instance
             .collection('allowed_to_chat')
             .where('requesterId', isEqualTo: userId)
@@ -894,8 +924,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
                 AutoText('R_S_U', style: TextStyle(color: Colors.green)),
               ],
             ),
-            content: AutoText(
-                'T_M_I'),
+            content: AutoText('T_M_I'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -921,134 +950,4 @@ class _FeelingsFormState extends State<FeelingsForm> {
       );
     }
   }
-
-  // void _submitForm() async {
-  //   print('DEBUG - widget.requesterId: ${widget.requesterId}');
-  //   // Check if all required questions are answered
-  //   List<int> unansweredQuestions = [];
-
-  //   for (int i = 0; i < responses.length; i++) {
-  //     bool shouldAnswer = true;
-
-  //     // Skip conditional questions if their parent wasn't triggered
-  //     if (i == 3 && responses[2] != autoI8lnGen.translate("YES_MESSAGE")) shouldAnswer = false;
-  //     if (i == 7 && pregnancyWeek! < 20) shouldAnswer = false;
-  //     if (i == 9 && pregnancyWeek! < 28) shouldAnswer = false;
-  //     if (i == 10 && pregnancyWeek! < 24) shouldAnswer = false;
-  //     if (i == 11 && pregnancyWeek! < 36) shouldAnswer = false;
-
-  //     if (shouldAnswer && responses[i].isEmpty) {
-  //       unansweredQuestions.add(i);
-  //       isAnswered[i] = false;
-  //     }
-  //   }
-
-  //   if (unansweredQuestions.isNotEmpty) {
-  //     setState(() {});
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Please answer all questions before submitting.'),
-  //         backgroundColor: Colors.red[600],
-  //       ),
-  //     );
-  //     return;
-  //   }
-
-  //   try {
-  //     final user = FirebaseAuth.instance.currentUser;
-  //     if (user == null || pregnancyWeek == null) return;
-
-  //     final userId = user.uid;
-  //     final date =
-  //         '${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}';
-
-  //     final data = {
-  //       'date': date,
-  //       'expectedDeliveryDate': widget.expectedDeliveryDate,
-  //       'pregnancyWeek': pregnancyWeek,
-  //       'questions': responses,
-  //       'medicalResponses': medicalResponses,
-  //       'otherWorries': worryController.text,
-  //     };
-
-  //     // Save the form response
-  //     final motherRef = FirebaseFirestore.instance
-  //         .collection('mother_pregnancy_data')
-  //         .doc(userId)
-  //         .collection('mother_periodic_feeling_form');
-  //     final docRef = await motherRef.add(data);
-
-  //     // Save/Update the EDD at the user's root document level
-  //     await FirebaseFirestore.instance
-  //         .collection('mother_pregnancy_data')
-  //         .doc(userId)
-  //         .set(
-  //             {
-  //           'expectedDeliveryDate': widget.expectedDeliveryDate,
-  //           'userId': userId,
-  //           'lastUpdated': FieldValue.serverTimestamp(),
-  //         },
-  //             SetOptions(
-  //                 merge:
-  //                     true)); // merge: true prevents overwriting other fields
-
-  //     // Save to provider's collection
-
-  //     // final providerRef = FirebaseFirestore.instance
-  //     //     .collection('health_provider_data')
-  //     //     .doc(widget.requesterId)
-  //     //     .collection('patience_responses')
-  //     //     .doc(userId)
-  //     //     .collection('responses');
-  //     // await providerRef.add({...data, 'motherDocId': docRef.id});
-
-  //     if (widget.requesterId.isNotEmpty) {
-  //       final providerRef = FirebaseFirestore.instance
-  //           .collection('health_provider_data')
-  //           .doc(widget.requesterId)
-  //           .collection('patience_responses')
-  //           .doc(userId)
-  //           .collection('responses');
-
-  //       await providerRef.add({...data, 'motherDocId': docRef.id});
-  //     }
-
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Row(
-  //             children: [
-  //               Icon(Icons.check_circle, color: Colors.green, size: 24),
-  //               SizedBox(width: 8),
-  //               Text('Report Submitted', style: TextStyle(color: Colors.green)),
-  //             ],
-  //           ),
-  //           content: Text(
-  //               'Thank you Mom! Your health provider will read this information and contact you if necessary.'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.of(context).pop(),
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-
-  //     setState(() {
-  //       responses.fillRange(0, responses.length, '');
-  //       medicalResponses.fillRange(0, medicalResponses.length, '');
-  //       isAnswered.fillRange(0, isAnswered.length, true);
-  //       worryController.clear();
-  //     });
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Failed to submit: $e'),
-  //         backgroundColor: Colors.red[600],
-  //       ),
-  //     );
-  //   }
-  // }
 }

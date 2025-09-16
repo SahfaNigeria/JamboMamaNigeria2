@@ -149,79 +149,6 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
     }
   }
 
-  // Future<void> _submitVitalInfo() async {
-  //   if (!_formKey.currentState!.validate()) return;
-
-  //   setState(() => _isLoading = true);
-
-  //   try {
-  //     final vitalInfoData = {
-  //       'userId': widget.userId,
-  //       'currentWeek': widget.currentWeek,
-  //       'weight': _weightController.text.isNotEmpty
-  //           ? double.tryParse(_weightController.text)
-  //           : null,
-  //       'haemoglobin': _haemoglobinController.text.isNotEmpty
-  //           ? double.tryParse(_haemoglobinController.text)
-  //           : null,
-  //       'systolicPressure': _systolicController.text.isNotEmpty
-  //           ? int.tryParse(_systolicController.text)
-  //           : null,
-  //       'diastolicPressure': _diastolicController.text.isNotEmpty
-  //           ? int.tryParse(_diastolicController.text)
-  //           : null,
-  //       'albumin': _albuminController.text.isNotEmpty
-  //           ? double.tryParse(_albuminController.text)
-  //           : null,
-  //       'glucose': _glucoseController.text.isNotEmpty
-  //           ? double.tryParse(_glucoseController.text)
-  //           : null,
-  //       'urineAnalysis': _urineAnalysis,
-  //       'pulseRate': _pulseController.text.isNotEmpty
-  //           ? int.tryParse(_pulseController.text)
-  //           : null,
-  //       'fundalHeight': _fundaHeightController.text.isNotEmpty
-  //           ? double.tryParse(_fundaHeightController.text)
-  //           : null,
-  //       'babyHeartbeat': _babyHeartbeatController.text.isNotEmpty
-  //           ? int.tryParse(_babyHeartbeatController.text)
-  //           : null,
-  //       'timestamp': FieldValue.serverTimestamp(),
-  //       'dateRecorded': DateTime.now().toIso8601String(),
-  //     };
-
-  //     // Save to Firestore collection
-  //     await _firestore.collection('vital_info').add(vitalInfoData);
-
-  //     // Also update user's latest vital info
-  //     await _firestore.collection('users').doc(widget.userId).update({
-  //       'latestVitalInfo': vitalInfoData,
-  //       'lastVitalInfoUpdate': FieldValue.serverTimestamp(),
-  //     });
-
-  //     // Show success message
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         content: Text('Vital information saved successfully!'),
-  //         backgroundColor: Colors.green,
-  //       ),
-  //     );
-
-  //     // Navigate back or to next screen
-  //     Navigator.pop(context);
-  //   } catch (e) {
-  //     // Show error message
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Error saving vital info: ${e.toString()}'),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   } finally {
-  //     setState(() => _isLoading = false);
-  //   }
-  // }
-
   String _getWeightGuidance(double? currentWeight) {
     if (currentWeight == null || widget.initialWeight == null) return '';
     double weightGain = currentWeight - widget.initialWeight!;
@@ -286,14 +213,16 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
   String _getGlucoseGuidance(double? glucose) {
     if (glucose == null) return '';
     if (glucose < 7.8) return autoI8lnGen.translate("👍 NORMAL");
-    if (glucose < 11.0) return autoI8lnGen.translate("R_W_G_18");;
+    if (glucose < 11.0) return autoI8lnGen.translate("R_W_G_18");
+    ;
     return autoI8lnGen.translate("R_W_G_19");
   }
 
   String _getPulseGuidance(int? pulse) {
     if (pulse == null) return '';
     if (pulse <= 90) return autoI8lnGen.translate("👍 R_W_G_20");
-    if (pulse <= 100) return autoI8lnGen.translate("R_W_G_21");;
+    if (pulse <= 100) return autoI8lnGen.translate("R_W_G_21");
+    ;
     return autoI8lnGen.translate("R_W_G_22");
   }
 
@@ -556,7 +485,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                   controller: _weightController,
                   keyboardType: TextInputType.number,
                   decoration:
-                       InputDecoration(hintText: autoI8lnGen.translate("E_C_W")),
+                      InputDecoration(hintText: autoI8lnGen.translate("E_C_W")),
                 ),
                 guidance: _weightGuidance,
               ),
@@ -567,7 +496,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                   controller: _haemoglobinController,
                   keyboardType: TextInputType.number,
                   decoration:
-                       InputDecoration(hintText:  autoI8lnGen.translate("EN_H")),
+                      InputDecoration(hintText: autoI8lnGen.translate("EN_H")),
                 ),
                 guidance: _hbGuidance,
               ),
@@ -580,8 +509,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                       child: TextFormField(
                         controller: _systolicController,
                         keyboardType: TextInputType.number,
-                        decoration:
-                             InputDecoration(labelText: autoI8lnGen.translate("SYSTOLIC")),
+                        decoration: InputDecoration(
+                            labelText: autoI8lnGen.translate("SYSTOLIC")),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -589,8 +518,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                       child: TextFormField(
                         controller: _diastolicController,
                         keyboardType: TextInputType.number,
-                        decoration:
-                             InputDecoration(labelText: autoI8lnGen.translate("DIASTOLIC")),
+                        decoration: InputDecoration(
+                            labelText: autoI8lnGen.translate("DIASTOLIC")),
                       ),
                     ),
                   ],
@@ -603,7 +532,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 child: TextFormField(
                   controller: _albuminController,
                   keyboardType: TextInputType.number,
-                  decoration:  InputDecoration(hintText: autoI8lnGen.translate("ENTER_ALBUMIN")),
+                  decoration: InputDecoration(
+                      hintText: autoI8lnGen.translate("ENTER_ALBUMIN")),
                 ),
                 guidance: _albuminGuidance,
               ),
@@ -613,7 +543,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 child: TextFormField(
                   controller: _glucoseController,
                   keyboardType: TextInputType.number,
-                  decoration:  InputDecoration(hintText: autoI8lnGen.translate("ENTER_GLUCOSE")),
+                  decoration: InputDecoration(
+                      hintText: autoI8lnGen.translate("ENTER_GLUCOSE")),
                 ),
                 guidance: _glucoseGuidance,
               ),
@@ -622,7 +553,11 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 icon: Icons.analytics,
                 child: DropdownButtonFormField<String>(
                   value: _urineAnalysis,
-                  items: [autoI8lnGen.translate("NORMAL"), autoI8lnGen.translate("SO_SO"), autoI8lnGen.translate("DANGER")].map((val) {
+                  items: [
+                    autoI8lnGen.translate("NORMAL"),
+                    autoI8lnGen.translate("SO_SO"),
+                    autoI8lnGen.translate("DANGER")
+                  ].map((val) {
                     return DropdownMenuItem(value: val, child: AutoText(val));
                   }).toList(),
                   onChanged: (val) => setState(() => _urineAnalysis = val!),
@@ -634,8 +569,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 child: TextFormField(
                   controller: _pulseController,
                   keyboardType: TextInputType.number,
-                  decoration:
-                       InputDecoration(hintText: autoI8lnGen.translate("ENTER_PULSE_RATE")),
+                  decoration: InputDecoration(
+                      hintText: autoI8lnGen.translate("ENTER_PULSE_RATE")),
                 ),
                 guidance: _pulseGuidance,
               ),
@@ -646,8 +581,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                   child: TextFormField(
                     controller: _fundaHeightController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                         InputDecoration(hintText: autoI8lnGen.translate("ENTER_F_HEIGHT")),
+                    decoration: InputDecoration(
+                        hintText: autoI8lnGen.translate("ENTER_F_HEIGHT")),
                   ),
                 ),
               if (widget.currentWeek >= 20)
@@ -657,8 +592,8 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                   child: TextFormField(
                     controller: _babyHeartbeatController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                         InputDecoration(hintText: autoI8lnGen.translate("ENTER_B_HEARTBEAT")),
+                    decoration: InputDecoration(
+                        hintText: autoI8lnGen.translate("ENTER_B_HEARTBEAT")),
                   ),
                 ),
               const SizedBox(height: 20),
