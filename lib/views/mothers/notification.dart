@@ -2,6 +2,7 @@ import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jambomama_nigeria/midwives/views/screens/provider_warning_screen.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -73,7 +74,6 @@ class NotificationsPage extends StatelessWidget {
         '/ChatScreen',
         arguments: {
           'chatId': data['chatId'],
-          // If needed later, you can pass senderId or fetch more user data
           'senderCollection': 'users',
           'senderNameField': 'name',
           'receiverCollection': 'health_providers',
@@ -88,6 +88,16 @@ class NotificationsPage extends StatelessWidget {
           'requesterId': data['requesterId'],
           'requesterName': data['requesterName'],
         },
+      );
+    } else if (type == 'emergency_warning') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HealthcareProfessionalAssessmentScreen(
+            assessmentId: data['assessmentId'],
+            patientId: data['patientId'],
+          ),
+        ),
       );
     }
   }

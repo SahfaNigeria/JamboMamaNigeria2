@@ -8,6 +8,12 @@ class ConnectionStateModel with ChangeNotifier {
   Set<String> _requestedProfessionalIds = {};
   Set<String> _connectedProfessionalIds = {};
 
+  // 🔄 Loading state per notification
+  final Map<String, bool> _loadingStates = {};
+
+  bool isLoading(String notificationId) =>
+      _loadingStates[notificationId] ?? false;
+
   bool hasRequestedConnectionFor(String professionalId) {
     return _requestedProfessionalIds.contains(professionalId);
   }
@@ -18,7 +24,6 @@ class ConnectionStateModel with ChangeNotifier {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // List to store notifications
   List<NotificationModel> _notifications = [];
 
   List<NotificationModel> get notifications => _notifications;
@@ -26,12 +31,10 @@ class ConnectionStateModel with ChangeNotifier {
   Future<void> sendConnectionRequest(
       String requesterId, String professionalId) async {
     try {
-      // Fetch requester details
       final requesterDoc =
           await _firestore.collection('New Mothers').doc(requesterId).get();
       final requesterName = requesterDoc.data()?['full name'] ?? 'Unknown';
 
-      // Create notification document regardless of token availability
       await _firestore.collection('notifications').add({
         'recipientId': professionalId,
         'requesterName': requesterName,
@@ -49,7 +52,6 @@ class ConnectionStateModel with ChangeNotifier {
         final professionalToken = professionalUserDoc.data()?['fcmToken'];
 
         if (professionalToken != null) {
-          // Send notification via API instead of direct push notification
           await NotificationService.instance.triggerNotificationViaApi(
             title: 'New Connection Request',
             message: '$requesterName sent you a connection request',
@@ -65,7 +67,6 @@ class ConnectionStateModel with ChangeNotifier {
         print('⚠️ Error triggering notification via API: $e');
       }
 
-      // Mark as requested regardless of token availability
       _requestedProfessionalIds.add(professionalId);
       print('📩 Connection request created in database');
       notifyListeners();
@@ -82,7 +83,6 @@ class ConnectionStateModel with ChangeNotifier {
     }
 
     try {
-      print('🔍 Fetching requester details for ID: $requesterId');
       final requesterDoc =
           await _firestore.collection('New Mothers').doc(requesterId).get();
 
@@ -98,7 +98,6 @@ class ConnectionStateModel with ChangeNotifier {
       }
 
       final requesterName = requesterData['full name'] ?? 'Unknown';
-      print('✅ Creating connection request for: $requesterName');
 
       final newNotification = {
         'type': 'connection_request',
@@ -120,16 +119,43 @@ class ConnectionStateModel with ChangeNotifier {
     }
   }
 
+  Future<void> loadConnectionStatus(String userId) async {
+    try {
+      // Fetch all accepted connections where the current user is the requester
+      final snapshot = await _firestore
+          .collection('allowed_to_chat')
+          .where('requesterId', isEqualTo: userId)
+          .get();
+
+      final connectedIds =
+          snapshot.docs.map((doc) => doc['recipientId'] as String).toSet();
+
+      // Fetch all *pending* requests from this user
+      final requestSnapshot = await _firestore
+          .collection('notifications')
+          .where('senderId', isEqualTo: userId)
+          .where('type', isEqualTo: 'connection_request')
+          .get();
+
+      final requestedIds = requestSnapshot.docs
+          .map((doc) => doc['recipientId'] as String)
+          .toSet();
+
+      _connectedProfessionalIds = connectedIds;
+      _requestedProfessionalIds = requestedIds;
+
+      notifyListeners();
+    } catch (e) {
+      print('❌ Error loading connection status: $e');
+    }
+  }
+
   Future<List<NotificationModel>> fetchNotifications() async {
     try {
-      print('🔍 Fetching notifications...');
-
       final userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) {
         throw Exception('User not logged in');
       }
-
-      print('📡 Fetching notifications for user: $userId');
 
       var snapshot = await _firestore
           .collection('notifications')
@@ -137,11 +163,11 @@ class ConnectionStateModel with ChangeNotifier {
           .orderBy('timestamp', descending: true)
           .get();
 
-      print('✅ Notifications fetched: ${snapshot.docs.length}');
-
-      return snapshot.docs
+      _notifications = snapshot.docs
           .map((doc) => NotificationModel.fromDocument(doc))
           .toList();
+
+      return _notifications;
     } catch (e) {
       print('❌ Error fetching notifications: $e');
       return [];
@@ -151,40 +177,33 @@ class ConnectionStateModel with ChangeNotifier {
   Future<void> handleConnectionAction(
       String notificationId, String action) async {
     try {
-      print('🔍 Handling connection action for notification: $notificationId');
-      print('📢 Action: $action');
+      // Start loading
+      _loadingStates[notificationId] = true;
+      notifyListeners();
 
-      // Fetch notification data to get sender and recipient info
-      DocumentSnapshot notificationDoc = await _firestore
+      final notificationDoc = await _firestore
           .collection('notifications')
           .doc(notificationId)
           .get();
 
-      Map<String, dynamic> notificationData =
-          notificationDoc.data() as Map<String, dynamic>;
+      final notificationData = notificationDoc.data() as Map<String, dynamic>;
 
-      String requesterId = notificationData['senderId'];
-      String recipientId = notificationData['recipientId'];
-      String requesterName = notificationData['requesterName'] ?? 'Unknown';
+      final requesterId = notificationData['senderId'];
+      final recipientId = notificationData['recipientId'];
+      final requesterName = notificationData['requesterName'] ?? 'Unknown';
       String title = 'Connection Request Update';
       String message = '';
 
-      // Handle different actions
       if (action == 'accepted') {
-        print('✅ Connection accepted. Creating chat access...');
-
-        // Create chat access
         await _firestore.collection('allowed_to_chat').add({
           'requesterId': requesterId,
           'recipientId': recipientId,
         });
 
         _connectedProfessionalIds.add(recipientId);
-        print('✅ Connection established and chat allowed');
 
         message = 'Your connection request was accepted';
 
-        // Create a new notification to inform the requester about acceptance
         await _firestore.collection('notifications').add({
           'type': 'connection_result',
           'status': 'accepted',
@@ -195,19 +214,14 @@ class ConnectionStateModel with ChangeNotifier {
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
         });
-        print('📩 Created acceptance notification');
 
-        // Delete the original notification
         await _firestore
             .collection('notifications')
             .doc(notificationId)
             .delete();
-        print('🗑️ Original notification deleted after acceptance');
       } else if (action == 'declined') {
-        print('❌ Connection declined');
         message = 'Your connection request was declined';
 
-        // Create a new notification to inform the requester about rejection
         await _firestore.collection('notifications').add({
           'type': 'connection_result',
           'status': 'declined',
@@ -218,30 +232,56 @@ class ConnectionStateModel with ChangeNotifier {
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
         });
-        print('📩 Created rejection notification');
 
-        // Delete the original notification
         await _firestore
             .collection('notifications')
             .doc(notificationId)
             .delete();
-        print('🗑️ Original notification deleted after decline');
       }
 
-      // Send push notification to the requester
       await NotificationService.instance.triggerNotificationViaApi(
         title: title,
         message: message,
         userId: requesterId,
       );
 
-      // Update local state to reflect the deletion
       _notifications
           .removeWhere((notification) => notification.id == notificationId);
-
-      notifyListeners();
     } catch (e) {
       print('❌ Error handling connection action: $e');
+    } finally {
+      _loadingStates[notificationId] = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> notifyProviderOfEmergency({
+    required String providerId,
+    required String requesterId,
+    required String requesterName,
+    required String assessmentId,
+  }) async {
+    await _firestore.collection('notifications').add({
+      'type': 'emergency_warning', // <- updated
+      'senderId': requesterId,
+      'recipientId': providerId,
+      'patientId': requesterId, // <- added for clarity in navigation
+      'patientName': requesterName,
+      'assessmentId': assessmentId,
+      'message': '$requesterName sent an emergency warning!',
+      'timestamp': FieldValue.serverTimestamp(),
+      'read': false,
+    });
+
+    try {
+      await NotificationService.instance.triggerNotificationViaApi(
+        title: '🚨 Emergency Warning',
+        message: '$requesterName sent an emergency warning!',
+        userId: providerId,
+      );
+      debugPrint('🔔 Push notification sent to provider $providerId');
+    } catch (e) {
+      debugPrint('⚠️ Could not send push: $e');
     }
   }
 }

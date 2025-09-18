@@ -39,21 +39,15 @@ class _MidwiveResgisteratioScreenState
   bool _isImageSelected = false;
 
   selectImageFromGallery() async {
-    final Uint8List? im = await _controller.pickMidwifeImage(ImageSource.gallery);
-
-    if (im != null) {
-      setState(() {
-        image = im;
-        _isImageSelected = true;
-      });
-    } else {
-      // Optional: handle if user cancelled the image picker
-      print("No image selected.");
-    }
+    Uint8List im = await _controller.pickMidwifeImage(ImageSource.gallery);
+    setState(() {
+      image = im;
+      _isImageSelected = true; // Set to true when image is selected
+    });
   }
 
   _saveMidwifeData() async {
-    EasyLoading.show(status: autoI8lnGen.translate("LOADING_TEXT"),);
+    EasyLoading.show(status: autoI8lnGen.translate("LOADING_TEXT"));
     if (_formKey.currentState!.validate()) {
       if (!_isImageSelected) {
         EasyLoading.dismiss();

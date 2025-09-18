@@ -1,17 +1,22 @@
 import 'package:auto_i8ln/auto_i8ln.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ExpectedDeliveryScreen extends StatefulWidget {
-  const ExpectedDeliveryScreen({super.key});
+class EditExpectedDeliveryScreen extends StatefulWidget {
+  const EditExpectedDeliveryScreen({super.key});
 
   @override
-  _ExpectedDeliveryScreenState createState() => _ExpectedDeliveryScreenState();
+  _EditExpectedDeliveryScreenState createState() =>
+      _EditExpectedDeliveryScreenState();
 }
 
-class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
+class _EditExpectedDeliveryScreenState
+    extends State<EditExpectedDeliveryScreen> {
   final TextEditingController _lmpController = TextEditingController();
   final DateFormat _dateFormat = DateFormat('dd-MM-yyyy');
+  User? user = FirebaseAuth.instance.currentUser;
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
@@ -22,11 +27,6 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
       lastDate: DateTime(2100),
     );
 
-    // setState(() {
-    //   _lmpController.text = _dateFormat.format(selectedDate!);
-
-    // });
-
     if (selectedDate != null) {
       setState(() {
         _lmpController.text = _dateFormat.format(selectedDate);
@@ -34,7 +34,7 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
     }
   }
 
-  void _saveAndReturnEDD() {
+  Future<void> _saveAndUpdateEDD() async {
     if (_lmpController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -46,7 +46,6 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
     try {
       DateTime lmp = _dateFormat.parse(_lmpController.text);
 
-      // Validate that LMP is not in the future
       if (lmp.isAfter(DateTime.now())) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -57,7 +56,19 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
 
       DateTime expectedDeliveryDate = lmp.add(const Duration(days: 280));
       String edd = _dateFormat.format(expectedDeliveryDate);
-      Navigator.pop(context, edd);
+
+      // ✅ Save to Firestore
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .update({
+          'lmp': _lmpController.text,
+          'edd': edd,
+        });
+      }
+
+      Navigator.pop(context, edd); // return the new EDD
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: AutoText('ERROR_18')),
@@ -69,33 +80,22 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const AutoText('DUE_DATE_CALC'),
+        title: const AutoText('EDIT_DUE_DATE'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Newborn baby image
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  'assets/images/newborn.jpg',
-                  fit: BoxFit.cover,
-                  height: 200,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
             GestureDetector(
               onTap: () => _selectDate(context),
               child: AbsorbPointer(
                 child: TextField(
                   controller: _lmpController,
-                  decoration:  InputDecoration(
-                    labelText: autoI8lnGen.translate('SELECT_LAST_MENSTRUAL_PERIOD_FLOW'),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: autoI8lnGen
+                        .translate('SELECT_LAST_MENSTRUAL_PERIOD_FLOW'),
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.none,
                 ),
@@ -103,8 +103,8 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveAndReturnEDD,
-              child: const AutoText('SAVE_CONTINUE'),
+              onPressed: _saveAndUpdateEDD,
+              child: const AutoText('SAVE_CHANGES'),
             ),
           ],
         ),

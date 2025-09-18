@@ -5,9 +5,10 @@ import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/providers/notification_model.dart';
 
 class ConnectionScreen extends StatelessWidget {
+  const ConnectionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // Obtain the provider ID from the model or authentication
     final connectionStateModel = Provider.of<ConnectionStateModel>(context);
 
     return Scaffold(
@@ -18,11 +19,13 @@ class ConnectionScreen extends StatelessWidget {
         future: connectionStateModel.fetchNotifications(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(child: AutoText('ERROR: ${snapshot.error}'));
+            return Center(
+              child: AutoText('ERROR: ${snapshot.error}'),
+            );
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -45,30 +48,39 @@ class ConnectionScreen extends StatelessWidget {
 
   Widget buildNotificationItem(
       NotificationModel notification, BuildContext context) {
-    final connectionStateModel =
-        Provider.of<ConnectionStateModel>(context, listen: false);
+    return Consumer<ConnectionStateModel>(
+      builder: (context, model, _) {
+        bool isLoading = model.isLoading(notification.id);
 
-    return ListTile(
-      title: Text(
-        '${notification.requesterName}',
-        style: TextStyle(fontWeight: FontWeight.w600),
-      ),
-      subtitle: AutoText('REQUEST_1'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
-            onPressed: () => connectionStateModel.handleConnectionAction(
-                notification.id, 'accepted'),
-            child: AutoText('ACCEPT'),
+        return ListTile(
+          title: Text(
+            notification.requesterName ?? '',
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          TextButton(
-            onPressed: () => connectionStateModel.handleConnectionAction(
-                notification.id, 'declined'),
-            child: AutoText('DECLINE'),
-          ),
-        ],
-      ),
+          subtitle: AutoText('REQUEST_1'),
+          trailing: isLoading
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: () => model.handleConnectionAction(
+                          notification.id, 'accepted'),
+                      child: AutoText('ACCEPT'),
+                    ),
+                    TextButton(
+                      onPressed: () => model.handleConnectionAction(
+                          notification.id, 'declined'),
+                      child: AutoText('DECLINE'),
+                    ),
+                  ],
+                ),
+        );
+      },
     );
   }
 }

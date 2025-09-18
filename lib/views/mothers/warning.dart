@@ -1,7 +1,9 @@
 import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jambomama_nigeria/providers/connection_provider.dart';
 
 class JamboMamaEmergencyScreen extends StatefulWidget {
   @override
@@ -33,6 +35,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
   String? contractionType;
   bool? babyStoppedMoving;
   String? otherConcerns;
+
+  // Loading state
+  bool _isSubmitting = false;
 
   final TextEditingController _otherConcernsController =
       TextEditingController();
@@ -106,7 +111,8 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
             title: AutoText('YES_MESSAGE'),
             value: true,
             groupValue: value,
-            onChanged: onChanged,
+            onChanged:
+                _isSubmitting ? null : onChanged, // Disable during submission
             contentPadding: EdgeInsets.zero,
           ),
         ),
@@ -115,7 +121,8 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
             title: AutoText('NO_MESSAGE'),
             value: false,
             groupValue: value,
-            onChanged: onChanged,
+            onChanged:
+                _isSubmitting ? null : onChanged, // Disable during submission
             contentPadding: EdgeInsets.zero,
           ),
         ),
@@ -134,7 +141,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 title: AutoText(option),
                 value: option,
                 groupValue: value,
-                onChanged: onChanged,
+                onChanged: _isSubmitting
+                    ? null
+                    : onChanged, // Disable during submission
                 contentPadding: EdgeInsets.zero,
               ))
           .toList(),
@@ -170,27 +179,25 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
     if (hasVaginalBleeding == true) {
       if (bleedingAmount == autoI8lnGen.translate("A_CUP_FULL") ||
           bleedingAmount == autoI8lnGen.translate("MORE_THAN_A_CUP_FULL")) {
-        _showEmergencyAlert(
-            'VAGINAL_BLEEDING');
+        _showEmergencyAlert('VAGINAL_BLEEDING');
         return;
       }
     }
 
-    if (hasFluidLoss == true && fluidAmount == autoI8lnGen.translate("A_S_PU")) {
-      _showEmergencyAlert(
-          'BABY_COMING');
+    if (hasFluidLoss == true &&
+        fluidAmount == autoI8lnGen.translate("A_S_PU")) {
+      _showEmergencyAlert('BABY_COMING');
       return;
     }
 
-    if (hasContractions == true && contractionType == autoI8lnGen.translate("V_PAINFUL")) {
-      _showEmergencyAlert(
-          'CONTRACTION_DETECTED');
+    if (hasContractions == true &&
+        contractionType == autoI8lnGen.translate("V_PAINFUL")) {
+      _showEmergencyAlert('CONTRACTION_DETECTED');
       return;
     }
 
     if (babyStoppedMoving == true) {
-      _showEmergencyAlert(
-          'BABY_MOVEMENT');
+      _showEmergencyAlert('BABY_MOVEMENT');
       return;
     }
   }
@@ -205,46 +212,47 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Header warning
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(16),
-            color: Colors.red[800],
+          // Main content
+          SingleChildScrollView(
             child: Column(
               children: [
-                Icon(Icons.warning, color: Colors.white, size: 32),
-                SizedBox(height: 8),
-                AutoText(
-                  'IMPORTANT_1',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                // Header warning
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  color: Colors.red[800],
+                  child: Column(
+                    children: [
+                      Icon(Icons.warning, color: Colors.white, size: 32),
+                      SizedBox(height: 8),
+                      Text(
+                        'IMPORTANT: Your life and your baby\'s life may depend on acting quickly!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'If you are bleeding heavily from your vagina, don\'t wait - call for an ambulance first!',
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 8),
-                AutoText(
-                  'BLEEDING_1',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
 
-          Expanded(
-            child: ListView(
-              children: [
                 SizedBox(height: 16),
 
                 // Vaginal Bleeding
                 _buildQuestionCard(
-                  title: 'BLEEDING_3',
+                  title: 'Bleeding from vagina?',
                   description:
-                      'BLEEDING_DESCRIPTION_1',
+                      'In early weeks, light bleeding might be normal, but heavy bleeding is always an emergency.',
                   icon: Icons.water_drop,
                   iconColor: Colors.red[800],
                   content: Column(
@@ -260,14 +268,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                       ),
                       if (hasVaginalBleeding == true) ...[
                         SizedBox(height: 8),
-                        AutoText('HOW_MUCH',
+                        Text('How much?',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: bleedingAmount,
                           options: [
-                            autoI8lnGen.translate("A_FEW_DROPS"),
-                            autoI8lnGen.translate("CUP_FULL"),
-                            autoI8lnGen.translate("MORE_THAN_A_CUP_FULL"),
+                            'A few drops',
+                            'A cup full',
+                            'More than a cup full'
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -283,9 +291,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Vaginal Discharge
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_1',
+                  title: 'Smelly, colored vaginal discharge?',
                   description:
-                      'VAGINA_DESCRIPTION_1',
+                      'Smelly, yellowish discharge indicates infection that must be treated.',
                   icon: Icons.warning_amber,
                   iconColor: Colors.yellow[700],
                   content: Column(
@@ -301,11 +309,11 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                       ),
                       if (hasVaginalDischarge == true) ...[
                         SizedBox(height: 8),
-                        AutoText('HOW_LONG_1',
+                        Text('For how long?',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: dischargeDuration,
-                          options: [autoI8lnGen.translate("LESS_THAN_A_WEEK"), autoI8lnGen.translate("MORE_THAN_A_WEEK")],
+                          options: ['Less than a week', 'More than a week'],
                           onChanged: (value) =>
                               setState(() => dischargeDuration = value),
                         ),
@@ -316,9 +324,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Loss of fluid
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_2',
+                  title: 'Loss of water-like fluid from vagina?',
                   description:
-                      'VAGINA_DESCRIPTION_2',
+                      'This comes from the amniotic sac in which the baby lives.',
                   icon: Icons.opacity,
                   iconColor: Colors.blue[300],
                   content: Column(
@@ -334,14 +342,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                       ),
                       if (hasFluidLoss == true) ...[
                         SizedBox(height: 8),
-                        AutoText('HOW_MUCH',
+                        Text('How much?',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: fluidAmount,
                           options: [
-                            autoI8lnGen.translate("A_FEW_DROPS"),
-                            autoI8lnGen.translate("REGULAR_FLOW"),
-                            autoI8lnGen.translate("SUDDEN_PUDDLE")
+                            'A few drops',
+                            'Regular flow',
+                            'A sudden puddle'
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -357,9 +365,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Burning urination
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_3',
+                  title: 'It burns when urinating?',
                   description:
-                      'VAGINA_DESCRIPTION_3',
+                      'Burning sensation during urination needs to be tested and treated.',
                   icon: Icons.local_fire_department,
                   iconColor: Colors.orange,
                   content: _buildYesNoQuestion(
@@ -371,9 +379,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Diarrhea
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_4',
+                  title: 'Diarrhea?',
                   description:
-                      'VAGINA_DESCRIPTION_4',
+                      'Try to remember if you ate something that started it or were in contact with someone ill.',
                   icon: Icons.sick,
                   iconColor: Colors.brown,
                   content: Column(
@@ -400,7 +408,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                               child: TextField(
                                 controller: _diarrheaDaysController,
                                 decoration: InputDecoration(
-                                  labelText:  autoI8lnGen.translate("HOW_LONG_2"),
+                                  labelText: 'Since how many days?',
                                   border: OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
@@ -414,7 +422,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                               child: TextField(
                                 controller: _diarrheaFrequencyController,
                                 decoration: InputDecoration(
-                                  labelText:  autoI8lnGen.translate("TIMES_PER_DAY"),
+                                  labelText: 'Times per day?',
                                   border: OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
@@ -432,9 +440,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Fever
                 _buildQuestionCard(
-                  title: 'HEALTH_QUESTION_1',
+                  title: 'Fever?',
                   description:
-                      'HEALTH_DESCRIPTION_1',
+                      'When pregnant, any fever must be checked to ensure it won\'t harm your baby.',
                   icon: Icons.thermostat,
                   iconColor: Colors.red,
                   content: _buildYesNoQuestion(
@@ -445,9 +453,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Cough
                 _buildQuestionCard(
-                  title: 'HEALTH_QUESTION_2',
+                  title: 'Cough?',
                   description:
-                      'HEALTH_DESCRIPTION_2',
+                      'Avoid dust and smoke. Cover mouth and nose with scarf outside.',
                   icon: Icons.coronavirus,
                   iconColor: Colors.grey[600],
                   content: Column(
@@ -467,14 +475,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                       ),
                       if (hasCough == true) ...[
                         SizedBox(height: 8),
-                        AutoText('WHEN',
+                        Text('When?',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: coughTiming,
                           options: [
-                            autoI8lnGen.translate("AT_NIGHT"),
-                            autoI8lnGen.translate("DURING_DAY"),
-                            autoI8lnGen.translate("W_D_S_S"),
+                            'At night',
+                            'During day',
+                            'When doing something strenuous'
                           ],
                           onChanged: (value) =>
                               setState(() => coughTiming = value),
@@ -482,7 +490,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                         TextField(
                           controller: _coughDaysController,
                           decoration: InputDecoration(
-                            labelText: autoI8lnGen.translate("HOW_LONG_3"),
+                            labelText: 'How many days?',
                             border: OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
@@ -497,14 +505,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Swollen legs/hands, Numbness, Headache (grouped for pre-eclampsia screening)
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_6',
+                  title: 'Pre-eclampsia Warning Signs',
                   description:
-                      'VAGINA_DESCRIPTION_5',
+                      'These symptoms together may indicate a serious condition.',
                   icon: Icons.warning,
                   iconColor: Colors.red,
                   content: Column(
                     children: [
-                      AutoText('HEALTH_QUESTION_3',
+                      Text('Swollen legs or hands?',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       _buildYesNoQuestion(
                         value: hasSwollenLegs,
@@ -512,7 +520,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                             setState(() => hasSwollenLegs = value),
                       ),
                       SizedBox(height: 12),
-                      AutoText('HEALTH_QUESTION_4',
+                      Text('Numbness in hands and feet?',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       _buildYesNoQuestion(
                         value: hasNumbness,
@@ -520,7 +528,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                             setState(() => hasNumbness = value),
                       ),
                       SizedBox(height: 12),
-                      AutoText('HEALTH_QUESTION_5',
+                      Text('Headache?',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       _buildYesNoQuestion(
                         value: hasHeadache,
@@ -532,14 +540,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                         },
                       ),
                       if (hasHeadache == true) ...[
-                        AutoText('HEALTH_QUESTION_6',
+                        Text('How does it hurt?',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: headacheSeverity,
                           options: [
-                            autoI8lnGen.translate("A_LITTlE"),
-                            autoI8lnGen.translate("ON_OFF"),
-                            autoI8lnGen.translate("V_M_W_T")
+                            'A little',
+                            'On and off',
+                            'Very much or the whole time'
                           ],
                           onChanged: (value) =>
                               setState(() => headacheSeverity = value),
@@ -551,9 +559,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Contractions
                 _buildQuestionCard(
-                  title: 'D_Y_H_C',
+                  title: 'Do you have contractions?',
                   description:
-                      'L_C_C',
+                      'Light contractions before week 37 may stop by themselves. Strong contractions may indicate labor or complications.',
                   icon: Icons.pregnant_woman,
                   iconColor: Colors.purple,
                   content: Column(
@@ -569,14 +577,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                       ),
                       if (hasContractions == true) ...[
                         SizedBox(height: 8),
-                        AutoText('WHAT_TYPE',
+                        Text('What type?',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: contractionType,
                           options: [
-                            autoI8lnGen.translate("L_F_A"),
-                            autoI8lnGen.translate("S_A_REG"),
-                            autoI8lnGen.translate("V_PAINFUL")
+                            'Light and far apart',
+                            'Strong and regular',
+                            'Very painful'
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -592,9 +600,9 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Baby movement
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_7',
+                  title: 'Has baby stopped moving?',
                   description:
-                      'VAGINA_DESCRIPTION_6',
+                      'After 24 weeks, take a moment each day to feel if baby moves. After week 32, sudden quietness needs checking.',
                   icon: Icons.child_care,
                   iconColor: Colors.pink,
                   content: _buildYesNoQuestion(
@@ -610,97 +618,180 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
 
                 // Other concerns
                 _buildQuestionCard(
-                  title: 'VAGINA_QUESTION_8',
+                  title: 'Any other question or worry?',
                   description:
-                      'VAGINA_DESCRIPTION_7',
+                      'Tell a trusted person who can help enter the message if needed.',
                   icon: Icons.message,
                   iconColor: Colors.blue,
                   content: TextField(
                     controller: _otherConcernsController,
                     maxLines: 3,
                     decoration: InputDecoration(
-                      hintText: autoI8lnGen.translate('ANY_OTHER_QUESTION_1'),
+                      hintText: 'Describe any other concerns you have...',
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) => otherConcerns = value,
                   ),
                 ),
 
+                // Submit button moved here - inside the scrollable area
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  child: ElevatedButton(
+                    onPressed: _isSubmitting
+                        ? null
+                        : () async {
+                            try {
+                              setState(() {
+                                _isSubmitting = true;
+                              });
+
+                              _checkForEmergencies();
+                              // Save to Firestore
+                              await saveCurrentAssessment(context);
+
+                              // Clear the form after successful submission
+                              clearForm();
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Assessment Complete'),
+                                    content: Text(
+                                        'Thank you Mom! Your RHP will read this and contact you if necessary. If symptoms worsen, call your health provider or the nearest health facility. The form has been cleared for your next use'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } catch (e) {
+                              // Handle errors - don't clear form if save failed
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Row(
+                                      children: [
+                                        Icon(Icons.error,
+                                            color: Colors.red, size: 24),
+                                        SizedBox(width: 8),
+                                        Text('Error'),
+                                      ],
+                                    ),
+                                    content: Text(
+                                      'Failed to save assessment. Please check your connection and try again. '
+                                      'Your answers have been preserved.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } finally {
+                              setState(() {
+                                _isSubmitting = false;
+                              });
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          _isSubmitting ? Colors.grey : Colors.red[800],
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: _isSubmitting
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                'SUBMITTING...',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            'SUBMIT ASSESSMENT',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                  ),
+                ),
+
+                // Bottom padding for better scrolling
                 SizedBox(height: 20),
               ],
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16),
-        child: ElevatedButton(
-          onPressed: () async {
-            try {
-              _checkForEmergencies();
-              // Save to Firestore
-              await saveCurrentAssessment();
 
-              // Clear the form after successful submission
-              clearForm();
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: AutoText('ASSESSMENT_COMPLETE'),
-                    content: AutoText(
-                        'THANK_YOU_1'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: AutoText('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            } catch (e) {
-              // Handle errors - don't clear form if save failed
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Row(
+          // Loading overlay - simplified and moved to proper position
+          if (_isSubmitting)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: Center(
+                child: Card(
+                  margin: EdgeInsets.all(40),
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.error, color: Colors.red, size: 24),
-                        SizedBox(width: 8),
-                        AutoText('ERROR'),
+                        CircularProgressIndicator(
+                          color: Colors.red[800],
+                          strokeWidth: 3,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'Submitting Emergency Assessment...',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red[800],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Please wait while we save your information',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
-                    content: AutoText(
-                      'ASSESSMENT_FAILED',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: AutoText('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red[800],
-            foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: AutoText(
-            'SUBMIT_ASSESSMENT',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
 
   Future<void> saveEmergencyAssessmentToFirestore({
+    required BuildContext context,
     required String userId,
     bool? hasVaginalBleeding,
     String? bleedingAmount,
@@ -726,7 +817,16 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
     String? otherConcerns,
   }) async {
     try {
-      // STEP 1: Look up connected provider
+      // STEP 1: Get user's name from Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('New Mothers') // or 'patients'
+          .doc(userId)
+          .get();
+
+      final patientName = userDoc.data()?['full name'] ?? 'Unknown Patient';
+      print('✅ Patient name retrieved: $patientName');
+
+      // STEP 2: Look up connected provider
       final query = await FirebaseFirestore.instance
           .collection('allowed_to_chat')
           .where('requesterId', isEqualTo: userId)
@@ -741,57 +841,34 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
       final providerId = query.docs.first['recipientId'];
       print('✅ Connected provider ID: $providerId');
 
-      // STEP 2: Prepare assessment data with ALL fields
+      // STEP 3: Prepare assessment data with patient name included
       final assessmentData = {
         'userId': userId,
+        'patientName': patientName, // Added patient name to assessment data
         'providerId': providerId,
         'timestamp': FieldValue.serverTimestamp(),
-
-        // Vaginal bleeding
         'hasVaginalBleeding': hasVaginalBleeding,
         'bleedingAmount': bleedingAmount,
-
-        // Vaginal discharge
         'hasVaginalDischarge': hasVaginalDischarge,
         'dischargeDuration': dischargeDuration,
-
-        // Fluid loss
         'hasFluidLoss': hasFluidLoss,
         'fluidAmount': fluidAmount,
-
-        // Urination
         'hasBurningUrination': hasBurningUrination,
-
-        // Diarrhea
         'hasDiarrhea': hasDiarrhea,
         'diarrheadays': diarrheadays,
         'diarrheaFrequency': diarrheaFrequency,
-
-        // Fever
         'hasFever': hasFever,
-
-        // Cough
         'hasCough': hasCough,
         'coughTiming': coughTiming,
         'coughDays': coughDays,
-
-        // Pre-eclampsia signs
         'hasSwollenLegs': hasSwollenLegs,
         'hasNumbness': hasNumbness,
         'hasHeadache': hasHeadache,
         'headacheSeverity': headacheSeverity,
-
-        // Contractions
         'hasContractions': hasContractions,
         'contractionType': contractionType,
-
-        // Baby movement
         'babyStoppedMoving': babyStoppedMoving,
-
-        // Other concerns
         'otherConcerns': otherConcerns,
-
-        // Emergency status
         'isEmergency': _determineEmergencyStatus(
           hasVaginalBleeding,
           bleedingAmount,
@@ -804,14 +881,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
         'status': 'pending_review',
       };
 
-      // STEP 3: Save globally
+      // STEP 4: Save globally
       final globalRef = await FirebaseFirestore.instance
           .collection('emergency_assessments')
           .add(assessmentData);
 
       print('✅ Saved to global collection: ${globalRef.id}');
 
-      // STEP 4: Save under provider's view
+      // STEP 5: Save under provider's emergency_cases
       await FirebaseFirestore.instance
           .collection('health_provider_data')
           .doc(providerId)
@@ -822,6 +899,27 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
       });
 
       print('✅ Also saved to provider emergency_cases');
+
+      // STEP 6: Send notification via helper method from ConnectionStateModel
+      final connectionStateModel =
+          Provider.of<ConnectionStateModel>(context, listen: false);
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final currentUserId = currentUser?.uid;
+
+      if (currentUserId == null) {
+        throw Exception('User not logged in');
+      }
+
+      await connectionStateModel.notifyProviderOfEmergency(
+        providerId: providerId,
+        requesterId: currentUserId,
+        requesterName: patientName, // Using the already fetched name
+        assessmentId: globalRef.id,
+      );
+
+      print('📢 Notification sent successfully!');
+      print('Patient: $patientName');
     } catch (e) {
       print('❌ Emergency save failed: $e');
       throw Exception('Failed to save emergency report: $e');
@@ -845,12 +943,14 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
     }
 
     // Water broke (sudden puddle)
-    if (hasFluidLoss == true && fluidAmount == autoI8lnGen.translate("A_S_PU")) {
+    if (hasFluidLoss == true &&
+        fluidAmount == autoI8lnGen.translate("A_S_PU")) {
       return true;
     }
 
     // Very painful contractions
-    if (hasContractions == true && contractionType == autoI8lnGen.translate("V_PAINFUL")) {
+    if (hasContractions == true &&
+        contractionType == autoI8lnGen.translate("V_PAINFUL")) {
       return true;
     }
 
@@ -863,10 +963,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
   }
 
 // Alternative method to call from your screen
-  Future<void> saveCurrentAssessment() async {
-    // Call this method from your _JamboMamaEmergencyScreenState
-    // You'll need to get the current user's ID from your authentication system
-
+  Future<void> saveCurrentAssessment(BuildContext context) async {
     String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown';
 
     await saveEmergencyAssessmentToFirestore(
@@ -893,6 +990,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
       contractionType: contractionType,
       babyStoppedMoving: babyStoppedMoving,
       otherConcerns: otherConcerns,
+      context: context,
     );
   }
 

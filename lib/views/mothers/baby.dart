@@ -1,170 +1,200 @@
 import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jambomama_nigeria/components/fyp_component.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 
-class Baby extends StatelessWidget {
+class Baby extends StatefulWidget {
   const Baby({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    void navToYouPage() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const You()),
-      );
+  State<Baby> createState() => _BabyState();
+}
+
+class _BabyState extends State<Baby> {
+  List<Map<String, dynamic>> babyDevelopmentContent = [];
+  bool isLoading = true;
+  String errorMessage = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    print('Baby widget initState called');
+    _loadBabyDevelopmentContent();
+  }
+
+  Future<List<Map<String, dynamic>>> getBabyDevelopmentContent() async {
+    try {
+      print('Fetching baby development content...');
+
+      // First, try to get ANY document from the content collection
+      QuerySnapshot testSnapshot =
+          await _firestore.collection('content').limit(5).get();
+      print(
+          'Test query - Found ${testSnapshot.docs.length} total documents in content collection');
+
+      for (var doc in testSnapshot.docs) {
+        print('Document ${doc.id}: ${doc.data()}');
+      }
+
+      // Try the query without orderBy first to see if we get data
+      QuerySnapshot snapshot = await _firestore
+          .collection('content')
+          .where('type', isEqualTo: 'educative')
+          .where('subType', isEqualTo: 'baby_development')
+          .where('module', isEqualTo: 'mothers')
+          .where('isActive', isEqualTo: true)
+          .get();
+
+      print('Query without orderBy - Found ${snapshot.docs.length} documents');
+
+      List<Map<String, dynamic>> result = snapshot.docs.map((doc) {
+        Map<String, dynamic> data = {
+          'id': doc.id,
+          ...doc.data() as Map<String, dynamic>
+        };
+        print('Document data: $data');
+        return data;
+      }).toList();
+
+      // Sort manually by displayOrder
+      result.sort((a, b) {
+        int orderA = a['displayOrder'] ?? 0;
+        int orderB = b['displayOrder'] ?? 0;
+        return orderA.compareTo(orderB);
+      });
+
+      print('Sorted ${result.length} documents by displayOrder');
+      return result;
+    } catch (e) {
+      print('Error fetching baby development content: $e');
+      throw e; // Re-throw to be caught by the calling method
     }
+  }
+
+  Future<void> _loadBabyDevelopmentContent() async {
+    print('_loadBabyDevelopmentContent called');
+    try {
+      setState(() {
+        isLoading = true;
+        errorMessage = '';
+      });
+
+      print('About to call getBabyDevelopmentContent');
+      final content = await getBabyDevelopmentContent();
+      print('getBabyDevelopmentContent returned ${content.length} items');
+
+      setState(() {
+        babyDevelopmentContent = content;
+        isLoading = false;
+      });
+
+      print(
+          'State updated - isLoading: $isLoading, content length: ${babyDevelopmentContent.length}');
+    } catch (e) {
+      print('Error in _loadBabyDevelopmentContent: $e');
+      setState(() {
+        errorMessage = autoI8lnGen.translate('FAILED_L_C ${e.toString()}');
+        isLoading = false;
+      });
+    }
+  }
+
+  void navToYouPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const You()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(
+        'Baby widget build called - isLoading: $isLoading, errorMessage: $errorMessage, content length: ${babyDevelopmentContent.length}');
 
     return Scaffold(
       appBar: AppBar(
-        title:  AutoText(
+        title: AutoText(
           "FOLLOW_PREGNANCY",
           style: TextStyle(fontSize: 16),
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(),
-        children: [
-          Fypcomponent(
-            timetext: 'HOW_IT_STARTS',
-            imagePath: 'assets/images/2 weeks.jpg',
-            firstparagraph:
-                'F_P_1',
-            secparagraph:
-                'F_P_2',
-            thirdparagraph: '',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_4',
-            imagePath: 'assets/images/week-5.jpg',
-            firstparagraph:
-                'F_P_3',
-            secparagraph:
-                'F_P_4',
-            thirdparagraph:
-                'F_P_5',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'TIME_TEXT_1',
-            imagePath: 'assets/images/week 12.jpg',
-            firstparagraph:
-                'F_P_6',
-            secparagraph:
-                'F_P_7',
-            thirdparagraph: '',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'TIME_TEXT_2',
-            imagePath: 'assets/images/week 16.jpg',
-            firstparagraph:
-                'F_P_8',
-            secparagraph:
-                'F_P_9',
-            thirdparagraph:
-                'F_P_10',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_3',
-            imagePath: 'assets/images/week 21.jpg',
-            firstparagraph:
-                'F_P_11',
-            secparagraph:
-                'F_P_12',
-            thirdparagraph:
-                'F_P_13',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_24',
-            imagePath: 'assets/images/24 week.jpg',
-            firstparagraph:
-                'F_P_15',
-            secparagraph:
-                'F_P_16',
-            thirdparagraph: '',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_28',
-            imagePath: 'assets/images/week 27.jpg',
-            firstparagraph:
-                'F_P_17',
-            secparagraph:
-                'F_P_18',
-            thirdparagraph:
-                'F_P_19',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_35',
-            imagePath: 'assets/images/30 week.jpg',
-            firstparagraph:
-                'F_P_20',
-            secparagraph:
-                'F_P_21',
-            thirdparagraph: '',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_39',
-            imagePath: 'assets/images/37 week.jpg',
-            firstparagraph:
-                'F_P_22',
-            secparagraph:
-                'F_P_23',
-            thirdparagraph:
-                'F_P_24',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-          Fypcomponent(
-            timetext: 'WEEK_40',
-            imagePath: 'assets/images/delivered baby.jpg',
-            firstparagraph:
-                'F_P_25',
-            secparagraph:
-                'F_P_26',
-            thirdparagraph:
-                'F_P_27',
-            baby: 'BABY',
-            you: 'YOU',
-            onTap: () {},
-            onClick: navToYouPage,
-          ),
-        ],
-      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : errorMessage.isNotEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        errorMessage,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.red[600],
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadBabyDevelopmentContent,
+                        child: const AutoText('RETRY'),
+                      ),
+                    ],
+                  ),
+                )
+              : babyDevelopmentContent.isEmpty
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.baby_changing_station,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          AutoText(
+                            'N_B_D_A',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const PageScrollPhysics(),
+                      itemCount: babyDevelopmentContent.length,
+                      itemBuilder: (context, index) {
+                        final content = babyDevelopmentContent[index];
+
+                        return Fypcomponent(
+                          timetext: content['timeText'] ?? '',
+                          imagePath: content['imageUrl'] ?? '',
+                          firstparagraph: content['firstParagraph'] ?? '',
+                          secparagraph: content['secParagraph'] ?? '',
+                          thirdparagraph: content['thirdParagraph'] ?? '',
+                          baby: 'BABY',
+                          you: 'YOU',
+                          onTap: () {
+                            // Handle baby tab tap if needed
+                          },
+                          onClick: navToYouPage,
+                        );
+                      },
+                    ),
     );
   }
 }
