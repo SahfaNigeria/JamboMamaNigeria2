@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -146,7 +147,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
     } catch (e) {
       print('ERROR: Loading user location failed → $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading user location: $e')),
+        SnackBar(content: AutoText('E_L_U_S $e')),
       );
     }
     setState(() {
@@ -199,7 +200,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
     } catch (e) {
       print('ERROR: Loading facilities failed → $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading facilities: $e')),
+        SnackBar(content: AutoText('E_L_F $e')),
       );
     }
   }
@@ -216,7 +217,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error opening Google Maps: $e')),
+        SnackBar(content: AutoText('E_O_G_P $e')),
       );
     }
   }
@@ -231,8 +232,8 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
         onFacilityAdded: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                  'Facility submitted for approval. Thank you for contributing!'),
+              content: AutoText(
+                  'FACILITY_SUBMITTED_APPROV'),
               backgroundColor: Colors.green,
             ),
           );
@@ -247,7 +248,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
         'DEBUG: Building UI. isLoading=$isLoading, facilities.length=${facilities.length}');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Health Facilities'),
+        title: const AutoText('HEALTH_FACILITIES'),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -272,8 +273,8 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
                   children: [
                     Icon(Icons.location_on, color: Colors.teal, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      'Your Location',
+                    AutoText(
+                      'YL',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.teal.shade700,
@@ -283,18 +284,18 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(
+                AutoText(
                   userFullLocation.isNotEmpty
                       ? userFullLocation
-                      : 'Location not set',
+                      : 'LNS',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '${facilities.length} facilities found',
+                AutoText(
+                  '${facilities.length} FF',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -319,18 +320,18 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
                               color: Colors.grey.shade400,
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              'No health facilities found',
+                            AutoText(
+                              'N_O_FF',
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.grey.shade600,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
+                            AutoText(
                               userLocation.isEmpty
-                                  ? 'Please update your location in settings'
-                                  : 'Be the first to add a facility in your area!',
+                                  ? 'PULS'
+                                  : 'B_T_F',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey.shade500,
@@ -361,8 +362,8 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
         onPressed: _showAddFacilityDialog,
         backgroundColor: Colors.teal,
         icon: const Icon(Icons.add_location_alt, color: Colors.white),
-        label: const Text(
-          'Add Facility',
+        label: const AutoText(
+          'A_FCI',
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -510,7 +511,7 @@ class HealthFacilityCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onGetDirections,
                     icon: const Icon(Icons.directions),
-                    label: const Text('Get Directions'),
+                    label: const AutoText('G_D'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.teal,
                       side: const BorderSide(color: Colors.teal),
@@ -565,15 +566,15 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
 
-  String _selectedType = 'Hospital';
+  String _selectedType = autoI8lnGen.translate("HOSPITAL");
   bool _isSubmitting = false;
 
   final List<String> _facilityTypes = [
-    'Hospital',
-    'Health Center',
-    'Dispensary',
-    'Clinic',
-    'Medical Center',
+    autoI8lnGen.translate("HEALTH_FACILITIES_HOSPITAL"), // "Hospital"
+    autoI8lnGen.translate("HEALTH_FACILITIES_HEALTH_CENTER"), // "Health Center"
+    autoI8lnGen.translate("HEALTH_FACILITIES_DISPENSARY"), // "Dispensary"
+    autoI8lnGen.translate("HEALTH_FACILITIES_CLINIC"), // "Clinic"
+    autoI8lnGen.translate("HEALTH_FACILITIES_MEDICAL_CENTER"), // "Medical Center"
   ];
 
   Future<void> _submitFacility() async {
@@ -585,7 +586,7 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
 
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw 'User not authenticated';
+      if (user == null) throw autoI8lnGen.translate("U_N_A");
 
       await FirebaseFirestore.instance.collection('health_facilities').add({
         'name': _nameController.text.trim(),
@@ -605,7 +606,7 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error submitting facility: $e')),
+        SnackBar(content: AutoText('E_S_F $e')),
       );
     }
 
@@ -639,8 +640,8 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                   Row(
                     children: [
                       const Expanded(
-                        child: Text(
-                          'Add Health Facility',
+                        child: AutoText(
+                          'A_H_F',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -654,9 +655,9 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Help others by adding a health facility. '
-                    'Your submission will be reviewed and verified by an admin before being published.',
+                  AutoText(
+                    'H_O_H_F '
+                    'Y_R_V',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 14,
@@ -677,8 +678,8 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                               color: Colors.blue.shade700, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(
-                              'Submitting facility for: ${widget.userFullLocation}',
+                            child: AutoText(
+                              'S_F_F ${widget.userFullLocation}',
                               style: TextStyle(
                                 color: Colors.blue.shade700,
                                 fontSize: 12,
@@ -692,20 +693,20 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Facility Name *',
+                    decoration:  InputDecoration(
+                      labelText: autoI8lnGen.translate("F_NAME"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.local_hospital),
                     ),
                     validator: (value) => value?.isEmpty ?? true
-                        ? 'Please enter facility name'
+                        ? autoI8lnGen.translate("P_E_F_N")
                         : null,
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedType,
-                    decoration: const InputDecoration(
-                      labelText: 'Facility Type *',
+                    decoration:  InputDecoration(
+                      labelText: autoI8lnGen.translate("F_TYPE"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.category),
                     ),
@@ -721,20 +722,20 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _addressController,
-                    decoration: const InputDecoration(
-                      labelText: 'Address *',
+                    decoration:  InputDecoration(
+                      labelText: autoI8lnGen.translate("ADDRESS_2"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.location_on),
                     ),
                     maxLines: 2,
                     validator: (value) =>
-                        value?.isEmpty ?? true ? 'Please enter address' : null,
+                        value?.isEmpty ?? true ? autoI8lnGen.translate("VALIDATION_Q_16") : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
+                    decoration:  InputDecoration(
+                      labelText: autoI8lnGen.translate("PHONE_NUMBER"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.phone),
                     ),
@@ -754,8 +755,8 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                       ),
                       child: _isSubmitting
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              'Submit for Review',
+                          : const AutoText(
+                              'S_O_F',
                               style: TextStyle(fontSize: 16),
                             ),
                     ),

@@ -48,7 +48,7 @@ class Fypcomponent extends StatelessWidget {
                 children: [
                   // Week text
                   Center(
-                    child: Text(
+                    child: AutoText(
                       timetext,
                       // style: GoogleFonts.nunito(
                       //   fontSize: 20,
@@ -80,7 +80,7 @@ class Fypcomponent extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // First paragraph
-                  Text(
+                  AutoText(
                     firstparagraph,
                     // // style: GoogleFonts.nunito(
                     // //   fontSize: 15,
@@ -91,7 +91,7 @@ class Fypcomponent extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Second paragraph
-                  Text(
+                  AutoText(
                     secparagraph,
                     // // style: GoogleFonts.nunito(
                     // //   fontSize: 15,
@@ -102,7 +102,7 @@ class Fypcomponent extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Third paragraph
-                  Text(
+                  AutoText(
                     thirdparagraph,
                     // style: GoogleFonts.nunito(
                     //   fontSize: 15,
@@ -119,7 +119,7 @@ class Fypcomponent extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: onClick,
                         icon: const Icon(Icons.favorite, size: 18),
-                        label: Text(you),
+                        label: AutoText(you),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink.shade400,
                           foregroundColor: Colors.white,
@@ -133,7 +133,7 @@ class Fypcomponent extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: onTap,
                         icon: const Icon(Icons.child_friendly, size: 18),
-                        label: Text(baby),
+                        label: AutoText(baby),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink.shade400,
                           foregroundColor: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -68,7 +69,7 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load content: ${e.toString()}';
+        errorMessage = autoI8lnGen.translate('F_L_C ${e.toString()}');
         isLoading = false;
       });
     }
@@ -78,7 +79,7 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Learn"),
+        title: const AutoText("LEARN_2"),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -98,7 +99,7 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _loadHealthProviderContent,
-                        child: const Text('Retry'),
+                        child: const AutoText('RETRY'),
                       ),
                     ],
                   ),
@@ -111,8 +112,8 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                           Icon(Icons.medical_services,
                               size: 64, color: Colors.grey),
                           SizedBox(height: 16),
-                          Text(
-                            'No health provider content available',
+                          AutoText(
+                            'N_P_CONTENT',
                             style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
                         ],
@@ -123,8 +124,8 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                       itemCount: healthProviderContent.length,
                       itemBuilder: (context, index) {
                         final data = healthProviderContent[index];
-                        final title = data['title'] ?? "Untitled";
-                        final description = data['firstParagraph'] ?? "No description";
+                        final title = data['title'] ?? autoI8lnGen.translate("UNTITLED");
+                        final description = data['firstParagraph'] ?? autoI8lnGen.translate("N_D_E");
                         final secDescription = data['secParagraph'] ?? "";
                         final thirdDescription = data['thirdParagraph'] ?? "";
                         final imageUrl = data['imageUrl']; // uploaded image if available
@@ -223,8 +224,8 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                                       ),
                                       const SizedBox(height: 6),
                                       if (createdAt != null)
-                                        Text(
-                                          "Posted on: ${createdAt.day}-${createdAt.month}-${createdAt.year}",
+                                        AutoText(
+                                          "P_ON ${createdAt.day}-${createdAt.month}-${createdAt.year}",
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey.shade600,
@@ -319,8 +320,8 @@ class PractitionerDetailScreen extends StatelessWidget {
           Text(thirdDescription, style: const TextStyle(fontSize: 16)),
           if (createdAt != null) ...[
             const SizedBox(height: 12),
-            Text(
-              "Published on: ${createdAt!.day}-${createdAt!.month}-${createdAt!.year}",
+            AutoText(
+              "P_ON_2 ${createdAt!.day}-${createdAt!.month}-${createdAt!.year}",
               style: TextStyle(color: Colors.grey.shade600),
             ),
           ]

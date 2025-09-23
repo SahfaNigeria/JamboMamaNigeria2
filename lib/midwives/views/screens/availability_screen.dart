@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,14 +13,14 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  final List<String> _days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
+  final _days = [
+    autoI8lnGen.translate("MONDAY"),
+    autoI8lnGen.translate("TUESDAY"),
+    autoI8lnGen.translate("WEDNESDAY"),
+    autoI8lnGen.translate("THURSDAY"),
+    autoI8lnGen.translate("FRIDAY"),
+    autoI8lnGen.translate("SATURDAY"),
+    autoI8lnGen.translate("SUNDAY"),
   ];
 
   Map<String, Map<String, String>> _availability = {};
@@ -52,7 +53,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
     } catch (e) {
       setState(() => _isLoadingPatients = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error loading patients: $e")),
+        SnackBar(content: AutoText("E_P_A $e")),
       );
     }
   }
@@ -99,7 +100,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
         _isLoadingAvailability = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error loading availability: $e")),
+        SnackBar(content: AutoText("E_L_A $e")),
       );
     }
   }
@@ -159,16 +160,16 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Clear $day Schedule'),
-        content: Text('Are you sure you want to clear the schedule for $day?'),
+        title: AutoText('CLR $day SCH'),
+        content: AutoText('AYSF $day?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
+            child: AutoText('CANCEL'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Clear', style: TextStyle(color: Colors.red)),
+            child: AutoText('CLR', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -185,7 +186,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
   Future<void> _saveSchedule() async {
     if (!_hasChanges) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No changes to save")),
+        const SnackBar(content: AutoText("N_C_S")),
       );
       return;
     }
@@ -216,7 +217,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Availability saved successfully"),
+          content: AutoText("A_S_S"),
           backgroundColor: Colors.green,
         ),
       );
@@ -226,7 +227,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Error saving: $e"),
+          content: AutoText("E_S_A $e"),
           backgroundColor: Colors.red,
         ),
       );
@@ -273,7 +274,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                   IconButton(
                     icon: const Icon(Icons.clear, color: Colors.red),
                     onPressed: () => _clearDaySchedule(day),
-                    tooltip: 'Clear schedule',
+                    tooltip: autoI8lnGen.translate("C_SCHE"),
                   ),
               ],
             ),
@@ -315,8 +316,8 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                   children: [
                     Icon(Icons.schedule, color: Colors.grey.shade500, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      "Not scheduled",
+                    AutoText(
+                      "N_SCHE",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade600,
@@ -333,10 +334,10 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                   child: OutlinedButton.icon(
                     onPressed: () => _pickTime(day, true),
                     icon: const Icon(Icons.access_time),
-                    label: Text(
+                    label: AutoText(
                       schedule != null && schedule['start']!.isNotEmpty
-                          ? 'Start: ${schedule['start']}'
-                          : 'Set Start Time',
+                          ? 'START ${schedule['start']}'
+                          : 'S_S_T',
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.blue,
@@ -348,10 +349,10 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                   child: OutlinedButton.icon(
                     onPressed: () => _pickTime(day, false),
                     icon: const Icon(Icons.schedule),
-                    label: Text(
+                    label: AutoText(
                       schedule != null && schedule['end']!.isNotEmpty
-                          ? 'End: ${schedule['end']}'
-                          : 'Set End Time',
+                          ? 'END ${schedule['end']}'
+                          : 'S_E_T_2',
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.orange,
@@ -370,12 +371,12 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Availability Schedule"),
+        title: const AutoText("AV_SCHE"),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refreshData,
-            tooltip: 'Refresh',
+            tooltip: autoI8lnGen.translate("REFRESH"),
           ),
         ],
       ),
@@ -386,7 +387,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 16),
-                  Text('Loading availability...'),
+                  AutoText('L_A_V_I'),
                 ],
               ),
             )
@@ -413,15 +414,15 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "Connected Patients: $_connectedPatients",
+                                      AutoText(
+                                        "CONNECTED_PATIENTS $_connectedPatients",
                                         style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
                                       if (_connectedPatients > 0)
-                                        Text(
-                                          "Your schedule will be visible to these patients",
+                                        AutoText(
+                                          "Y_S_W_V",
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey.shade600,
@@ -455,7 +456,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                       child: ElevatedButton.icon(
                         onPressed: _saveSchedule,
                         icon: const Icon(Icons.save),
-                        label: const Text('Save Changes'),
+                        label: const AutoText('SAVE_CHANGES'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
@@ -470,7 +471,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
           ? null
           : FloatingActionButton.extended(
               onPressed: _saveSchedule,
-              label: const Text("Save"),
+              label: const AutoText("SAVE"),
               icon: const Icon(Icons.save),
               backgroundColor: Colors.green,
             ),

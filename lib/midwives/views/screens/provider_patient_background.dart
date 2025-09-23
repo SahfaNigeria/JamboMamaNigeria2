@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -53,13 +54,13 @@ class _ProviderPatientBackgroundScreenState
         });
       } else {
         setState(() {
-          _errorMessage = 'No background data found for this patient';
+          _errorMessage = autoI8lnGen.translate("N_O_D_F");
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Error loading patient data: $e';
+        _errorMessage = autoI8lnGen.translate("'E_L_P_D $e'");
         _isLoading = false;
       });
     }
@@ -107,7 +108,7 @@ class _ProviderPatientBackgroundScreenState
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadPatientBackground,
-            child: const Text('Retry'),
+            child: const AutoText('RETRY'),
           ),
         ],
       ),
@@ -125,13 +126,13 @@ class _ProviderPatientBackgroundScreenState
             color: Colors.grey[400],
           ),
           const SizedBox(height: 16),
-          const Text(
-            'No background data available',
+          const AutoText(
+            'N_B_D_A_2',
             style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Patient has not completed their background form yet',
+          AutoText(
+            'P_H_B_F',
             style: TextStyle(color: Colors.grey[600]),
           ),
         ],
@@ -151,23 +152,23 @@ class _ProviderPatientBackgroundScreenState
             _buildAlertsSection(),
 
           // Demographics Section
-          _buildSection('Demographics', _buildDemographicsCards()),
+          _buildSection('DEMOGRAPHICS', _buildDemographicsCards()),
 
           // Vital Signs Section
-          _buildSection('Vital Signs', _buildVitalSignsCards()),
+          _buildSection('V_S_N', _buildVitalSignsCards()),
 
           // Lab Results Section
-          _buildSection('Lab Results', _buildLabResultsCards()),
+          _buildSection('L_RE', _buildLabResultsCards()),
 
           // Lifestyle Section
-          _buildSection('Lifestyle', _buildLifestyleCards()),
+          _buildSection('LIFESTYLE', _buildLifestyleCards()),
 
           // Medical History Section
-          _buildSection('Medical History', _buildMedicalHistoryCards()),
+          _buildSection('M_H', _buildMedicalHistoryCards()),
 
           // Pregnancy History Section
           if (_hasPregnancyData())
-            _buildSection('Pregnancy History', _buildPregnancyHistoryCards()),
+            _buildSection('P_H', _buildPregnancyHistoryCards()),
 
           // Last Updated
           _buildLastUpdatedSection(),
@@ -191,8 +192,8 @@ class _ProviderPatientBackgroundScreenState
                 children: [
                   Icon(Icons.warning, color: Colors.red[700]),
                   const SizedBox(width: 8),
-                  Text(
-                    'Alerts',
+                  AutoText(
+                    'ALERTS',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -210,7 +211,7 @@ class _ProviderPatientBackgroundScreenState
                         Icon(Icons.circle, size: 8, color: Colors.red[700]),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
+                          child: AutoText(
                             alert.toString(),
                             style: TextStyle(color: Colors.red[700]),
                           ),
@@ -231,7 +232,7 @@ class _ProviderPatientBackgroundScreenState
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
+          child: AutoText(
             title,
             style: const TextStyle(
               fontSize: 20,
@@ -249,17 +250,17 @@ class _ProviderPatientBackgroundScreenState
   Widget _buildDemographicsCards() {
     return Column(
       children: [
-        _buildInfoCard('Basic Information', [
-          _buildInfoRow('Age', _patientData!['age']?.toString(), 'years'),
+        _buildInfoCard('B_I', [
+          _buildInfoRow('AGE', _patientData!['age']?.toString(), 'years'),
           _buildInfoRow(
-              'Schooling', _patientData!['schooling']?.toString(), 'years'),
-          _buildInfoRow('Height', _patientData!['height']?.toString(), 'cm'),
-          _buildInfoRow('Weight', _patientData!['weight']?.toString(), 'kg'),
+              'SCHOOLING', _patientData!['schooling']?.toString(), 'years'),
+          _buildInfoRow('H', _patientData!['height']?.toString(), 'cm'),
+          _buildInfoRow('W', _patientData!['weight']?.toString(), 'kg'),
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('BMI', [
-          _buildInfoRow('BMI', _patientData!['bmi']?.toStringAsFixed(1), ''),
-          _buildInfoRow('Status', _patientData!['bmi_message'], ''),
+        _buildInfoCard('BMI_2', [
+          _buildInfoRow('BMI_2', _patientData!['bmi']?.toStringAsFixed(1), ''),
+          _buildInfoRow('STATUS', _patientData!['bmi_message'], ''),
         ]),
       ],
     );
@@ -268,12 +269,12 @@ class _ProviderPatientBackgroundScreenState
   Widget _buildVitalSignsCards() {
     return Column(
       children: [
-        _buildInfoCard('Blood Pressure', [
+        _buildInfoCard('BLOOD_PRESSURE', [
           _buildInfoRow(
-              'Systolic', _patientData!['systolic_bp']?.toString(), 'mmHg'),
+              'SYSTOLIC', _patientData!['systolic_bp']?.toString(), 'mmHg'),
           _buildInfoRow(
-              'Diastolic', _patientData!['diastolic_bp']?.toString(), 'mmHg'),
-          _buildInfoRow('Status', _patientData!['bp_message'], ''),
+              'DIASTOLIC', _patientData!['diastolic_bp']?.toString(), 'mmHg'),
+          _buildInfoRow('STATUS', _patientData!['bp_message'], ''),
         ]),
       ],
     );
@@ -282,20 +283,20 @@ class _ProviderPatientBackgroundScreenState
   Widget _buildLabResultsCards() {
     return Column(
       children: [
-        _buildInfoCard('Blood Tests', [
+        _buildInfoCard('B_T_E', [
           _buildInfoRow(
-              'Haemoglobin', _patientData!['haemoglobin']?.toString(), 'g/dL'),
-          _buildInfoRow('Status', _patientData!['haemoglobin_message'], ''),
+              'HEAMOGOBLIN_T', _patientData!['haemoglobin']?.toString(), 'g/dL'),
+          _buildInfoRow('STATUS', _patientData!['haemoglobin_message'], ''),
           _buildInfoRow(
-              'Albumin', _patientData!['albumin']?.toString(), 'g/dL'),
-          _buildInfoRow('Status', _patientData!['albumin_message'], ''),
+              'ALBUMIN', _patientData!['albumin']?.toString(), 'g/dL'),
+          _buildInfoRow('STATUS', _patientData!['albumin_message'], ''),
           _buildInfoRow(
-              'Glucose', _patientData!['glucose']?.toString(), 'mg/dL'),
-          _buildInfoRow('Status', _patientData!['glucose_message'], ''),
+              'GLUCOSE', _patientData!['glucose']?.toString(), 'mg/dL'),
+          _buildInfoRow('STATUS', _patientData!['glucose_message'], ''),
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Urinalysis', [
-          _buildInfoRow('Result', _patientData!['urinalysis'], ''),
+        _buildInfoCard('URINEANALYSIS', [
+          _buildInfoRow('RESULTS', _patientData!['urinalysis'], ''),
         ]),
       ],
     );
@@ -304,36 +305,36 @@ class _ProviderPatientBackgroundScreenState
   Widget _buildLifestyleCards() {
     return Column(
       children: [
-        _buildInfoCard('Tobacco Use', [
-          _buildInfoRow('Smokes Tobacco',
+        _buildInfoCard('T_USE', [
+          _buildInfoRow('S_T',
               _getBooleanText(_patientData!['smokes_tobacco']), ''),
           if (_isTrue(_patientData!['smokes_tobacco'])) ...[
-            _buildInfoRow('Details', _patientData!['smoking_details'], ''),
-            _buildInfoRow('Frequency', _patientData!['smoking_frequency'], ''),
+            _buildInfoRow('DETAILS', _patientData!['smoking_details'], ''),
+            _buildInfoRow('FREQ', _patientData!['smoking_frequency'], ''),
           ],
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Alcohol Use', [
-          _buildInfoRow('Drinks Alcohol',
+        _buildInfoCard('AL_USE', [
+          _buildInfoRow('D_Al',
               _getBooleanText(_patientData!['drinks_alcohol']), ''),
           if (_isTrue(_patientData!['drinks_alcohol'])) ...[
-            _buildInfoRow('Type', _patientData!['alcohol_type'], ''),
-            _buildInfoRow('Frequency', _patientData!['alcohol_frequency'], ''),
+            _buildInfoRow('TYPE_2', _patientData!['alcohol_type'], ''),
+            _buildInfoRow('FREQ', _patientData!['alcohol_frequency'], ''),
           ],
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Medications', [
-          _buildInfoRow('Uses Herbal Medicine',
+        _buildInfoCard('M_D', [
+          _buildInfoRow('UHM',
               _getBooleanText(_patientData!['uses_herbal_medicine']), ''),
           if (_isTrue(_patientData!['uses_herbal_medicine'])) ...[
             _buildInfoRow(
-                'Details', _patientData!['herbal_medicine_details'], ''),
-            _buildInfoRow('Frequency', _patientData!['herbal_frequency'], ''),
+                'DETAILS', _patientData!['herbal_medicine_details'], ''),
+            _buildInfoRow('FREQ', _patientData!['herbal_frequency'], ''),
           ],
-          _buildInfoRow('Uses Modern Medicine',
+          _buildInfoRow('UMM',
               _getBooleanText(_patientData!['uses_modern_medicine']), ''),
           if (_isTrue(_patientData!['uses_modern_medicine']))
-            _buildInfoRow('Type', _patientData!['modern_medicine_type'], ''),
+            _buildInfoRow('TYPE_2', _patientData!['modern_medicine_type'], ''),
         ]),
       ],
     );
@@ -342,32 +343,32 @@ class _ProviderPatientBackgroundScreenState
   Widget _buildMedicalHistoryCards() {
     return Column(
       children: [
-        _buildInfoCard('HIV Status', [
-          _buildInfoRow('Self Test', _patientData!['hiv_test_self'], ''),
-          _buildInfoRow('Partner Test', _patientData!['hiv_test_partner'], ''),
-          _buildInfoRow('On ART', _getBooleanText(_patientData!['on_art']), ''),
+        _buildInfoCard('HIV_S', [
+          _buildInfoRow('S_TEt', _patientData!['hiv_test_self'], ''),
+          _buildInfoRow('P_TE', _patientData!['hiv_test_partner'], ''),
+          _buildInfoRow('O_A', _getBooleanText(_patientData!['on_art']), ''),
           if (_isTrue(_patientData!['on_art']))
             _buildInfoRow(
-                'ART Start Date', _patientData!['art_start_date'], ''),
+                'A_S_D', _patientData!['art_start_date'], ''),
           _buildInfoRow(
-              'Partner ART Status', _patientData!['partner_art_status'], ''),
+              'P_A_S', _patientData!['partner_art_status'], ''),
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Other Tests', [
-          _buildInfoRow('Syphilis Test', _patientData!['syphilis_test'], ''),
+        _buildInfoCard('O_T_E', [
+          _buildInfoRow('S_T_E', _patientData!['syphilis_test'], ''),
           _buildInfoRow(
-              'Syphilis Treatment', _patientData!['syphilis_treatment'], ''),
-          _buildInfoRow('TB Test', _patientData!['tb_test'], ''),
-          _buildInfoRow('TB Vaccination',
+              'S_TRE', _patientData!['syphilis_treatment'], ''),
+          _buildInfoRow('TB_TEST', _patientData!['tb_test'], ''),
+          _buildInfoRow('TB_VA',
               _getBooleanText(_patientData!['tb_vaccination']), ''),
-          _buildInfoRow('Malaria Test', _patientData!['malaria_test'], ''),
-          _buildInfoRow('Worm Test', _patientData!['worm_test'], ''),
+          _buildInfoRow('M_T_E', _patientData!['malaria_test'], ''),
+          _buildInfoRow('W_T_E', _patientData!['worm_test'], ''),
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Vaccinations', [
-          _buildInfoRow('Tetanus Vaccinations',
+        _buildInfoCard('VACC', [
+          _buildInfoRow('T_V_A',
               _patientData!['tetanus_vaccinations']?.toString(), ''),
-          _buildInfoRow('Recent Tetanus',
+          _buildInfoRow('R_T_E',
               _getBooleanText(_patientData!['tetanus_recent']), ''),
         ]),
       ],
@@ -377,40 +378,40 @@ class _ProviderPatientBackgroundScreenState
   Widget _buildPregnancyHistoryCards() {
     return Column(
       children: [
-        _buildInfoCard('Current Pregnancy', [
-          _buildInfoRow('Last Menstrual Period',
+        _buildInfoCard('C_PE', [
+          _buildInfoRow('L_M_P',
               _patientData!['last_menstrual_period'], ''),
-          _buildInfoRow('Expected Delivery',
+          _buildInfoRow('E_D_E',
               _formatDate(_patientData!['expected_delivery_date']), ''),
-          _buildInfoRow('First Pregnancy',
+          _buildInfoRow('F_P_E',
               _getBooleanText(_patientData!['is_first_pregnancy']), ''),
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Pregnancy History', [
+        _buildInfoCard('P_H_I', [
           _buildInfoRow('Previous Pregnancies',
               _patientData!['previous_pregnancies']?.toString(), ''),
           _buildInfoRow(
-              'Live Births', _patientData!['live_births']?.toString(), ''),
+              'L_BI', _patientData!['live_births']?.toString(), ''),
           _buildInfoRow(
-              'Miscarriages', _patientData!['miscarriages']?.toString(), ''),
+              'MISCARRIAGES', _patientData!['miscarriages']?.toString(), ''),
           _buildInfoRow(
-              'Stillborn', _patientData!['stillborn']?.toString(), ''),
-          _buildInfoRow('Had Cesarean',
+              'S_B', _patientData!['stillborn']?.toString(), ''),
+          _buildInfoRow('H_CE',
               _getBooleanText(_patientData!['had_cesarean']), ''),
           if (_isTrue(_patientData!['had_cesarean']))
-            _buildInfoRow('Cesarean Count',
+            _buildInfoRow('CEC',
                 _patientData!['cesarean_count']?.toString(), ''),
         ]),
         const SizedBox(height: 16),
-        _buildInfoCard('Delivery History', [
-          _buildInfoRow('Had Forceps/Vacuum',
+        _buildInfoCard('D_HI', [
+          _buildInfoRow('H_F_V',
               _getBooleanText(_patientData!['had_forceps_vacuum']), ''),
-          _buildInfoRow('Had Heavy Bleeding',
+          _buildInfoRow('H_H_B',
               _getBooleanText(_patientData!['had_heavy_bleeding']), ''),
           _buildInfoRow(
-              'Had Tears', _getBooleanText(_patientData!['had_tears']), ''),
+              'H_T_E', _getBooleanText(_patientData!['had_tears']), ''),
           _buildInfoRow(
-              'Delivery Remarks', _patientData!['delivery_remarks'], ''),
+              'D_RE', _patientData!['delivery_remarks'], ''),
         ]),
       ],
     );
@@ -424,7 +425,7 @@ class _ProviderPatientBackgroundScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            AutoText(
               title,
               style: const TextStyle(
                 fontSize: 16,
@@ -452,7 +453,7 @@ class _ProviderPatientBackgroundScreenState
         children: [
           SizedBox(
             width: 120,
-            child: Text(
+            child: AutoText(
               label,
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
@@ -461,7 +462,7 @@ class _ProviderPatientBackgroundScreenState
             ),
           ),
           Expanded(
-            child: Text(
+            child: AutoText(
               '$value${unit.isNotEmpty ? ' $unit' : ''}',
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
@@ -473,7 +474,7 @@ class _ProviderPatientBackgroundScreenState
 
   Widget _buildLastUpdatedSection() {
     final updatedAt = _patientData!['updated_at'];
-    String lastUpdatedText = 'Unknown';
+    String lastUpdatedText = autoI8lnGen.translate("ERROR_8");
 
     if (updatedAt != null) {
       if (updatedAt is Timestamp) {
@@ -490,8 +491,8 @@ class _ProviderPatientBackgroundScreenState
           children: [
             Icon(Icons.update, color: Colors.grey[600]),
             const SizedBox(width: 8),
-            Text(
-              'Last Updated: $lastUpdatedText',
+            AutoText(
+              'L_U_D $lastUpdatedText',
               style: TextStyle(
                 color: Colors.grey[600],
                 fontStyle: FontStyle.italic,
@@ -511,32 +512,32 @@ class _ProviderPatientBackgroundScreenState
   }
 
   String _getBooleanText(dynamic value) {
-    if (value == null) return 'Not specified';
+    if (value == null) return autoI8lnGen.translate("NOT_SPECIFIED");
 
     // Handle boolean values
     if (value is bool) {
-      return value ? 'Yes' : 'No';
+      return value ? autoI8lnGen.translate("YES_MESSAGE") : autoI8lnGen.translate("NO_2");
     }
 
     // Handle string values that might represent booleans
     if (value is String) {
       final lowerValue = value.toLowerCase().trim();
-      if (lowerValue == 'true' || lowerValue == 'yes' || lowerValue == '1') {
-        return 'Yes';
-      } else if (lowerValue == 'false' ||
-          lowerValue == 'no' ||
+      if (lowerValue == autoI8lnGen.translate("TRUE") || lowerValue == autoI8lnGen.translate("YES_MESSAGE") || lowerValue == '1') {
+        return autoI8lnGen.translate("YES_MESSAGE");
+      } else if (lowerValue == autoI8lnGen.translate("FALSE") ||
+          lowerValue == autoI8lnGen.translate("NO_2").toLowerCase() ||
           lowerValue == '0') {
-        return 'No';
+        return autoI8lnGen.translate("NO_2");
       }
       // If it's a descriptive string, return as-is
       return value;
     }
 
-    return 'Not specified';
+    return autoI8lnGen.translate("NOT_SPECIFIED");
   }
 
   String _formatDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'Not specified';
+    if (dateString == null || dateString.isEmpty) return autoI8lnGen.translate("NOT_SPECIFIED");
     try {
       final date = DateTime.parse(dateString);
       return DateFormat('MMM dd, yyyy').format(date);
@@ -553,7 +554,7 @@ class _ProviderPatientBackgroundScreenState
 
     if (value is String) {
       final lowerValue = value.toLowerCase().trim();
-      return lowerValue == 'true' || lowerValue == 'yes' || lowerValue == '1';
+      return lowerValue == autoI8lnGen.translate("TRUE") || lowerValue == autoI8lnGen.translate("YES_MESSAGE") || lowerValue == '1';
     }
 
     return false;
