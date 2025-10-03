@@ -1122,7 +1122,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AutoText(
-                  '$title: $value',
+                  '$title $value',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 if (message.isNotEmpty)
@@ -1189,7 +1189,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                           ),
                         if (_bpMessage.isNotEmpty)
                           _buildHealthIndicator(
-                            'B_P',
+                            'BLOOD_PRESSURE_2',
                             '${_systolicController.text}/${_diastolicController.text}',
                             _bpMessage,
                             Icons.favorite,
@@ -1199,7 +1199,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                           ),
                         if (_haemoglobinMessage.isNotEmpty)
                           _buildHealthIndicator(
-                            'HAEMOGLO',
+                            'HAEMOGLO_2',
                             '${_haemoglobinController.text} g/dl',
                             _haemoglobinMessage,
                             Icons.water_drop,
@@ -1209,7 +1209,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                           ),
                         if (_expectedDeliveryDate != null)
                           _buildHealthIndicator(
-                            'E_D_E',
+                            'E_D_E_2',
                             '${_expectedDeliveryDate!.day}/${_expectedDeliveryDate!.month}/${_expectedDeliveryDate!.year}',
                             '',
                             Icons.baby_changing_station,
@@ -1347,7 +1347,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                               : null,
                         ),
                         _buildSummaryItem(
-                          label: 'B_P',
+                          label: 'BLOOD_PRESSURE',
                           value: _systolicController.text.isNotEmpty &&
                                   _diastolicController.text.isNotEmpty
                               ? '${_systolicController.text}/${_diastolicController.text}'

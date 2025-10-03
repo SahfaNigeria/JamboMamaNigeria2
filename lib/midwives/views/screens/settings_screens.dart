@@ -77,7 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       // Update data in Firestore
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('Health Professionals')
           .doc(user!.uid)
           .update({
         'userName': fullNameController.text,

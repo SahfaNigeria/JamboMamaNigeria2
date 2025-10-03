@@ -1002,6 +1002,7 @@
   "AVAILABILITY_NOT_SET": "Availability not set",
   "AVAILABLE_NOW": "Available now",
   "NEXT": "Next:",
+  "E_D_E": "Expected Delivery",
   "S_N_A": "Schedule not available",
   "NASS": "No availability schedule set",
   "CHPD": "Contact the health provider directly",
@@ -1091,7 +1092,7 @@
   "DETAILS": "Details",
   "FREQ": "Frequency",
   "AL_USE": "Alcohol Use:",
-  "D_A": "Drinks Alcoho",
+  "D_A": "Drinks Alcohol",
   "TYPE_2": "Type",
   "UHM": "Uses Herbal Medicine",
   "UMM": "Uses Modern Medicine",
@@ -1113,7 +1114,6 @@
   "R_T_E": "Recent Tetanus",
   "C_PE": "Current Pregnancy",
   "L_M_P": "Last Menstrual Period:",
-  "E_D_E": "Expected Delivery",
   "F_P_E": "First Pregnancy",
   "P_H_I": "Pregnancy History",
   "L_BI": "Live Births",
@@ -1208,10 +1208,28 @@
   "E_I_F": "Edit Information",
   "F_L_C": "Failed to load content:",
   "L_B": "IMPORTANT: Your life and your baby\\'s life may depend on acting quickly!",
-  "IBEV": "If you are bleeding heavily from your vagina, don\\'t wait - call for an ambulance first!"
+  "IBEV": "If you are bleeding heavily from your vagina, don\\'t wait - call for an ambulance first!",
+
+  "F_HEIGHT_2": "Fundal Height",
+  "HEMOGLOBIN": "Hemoglobin",
+  "NEW_CONNECTION_REQUEST": "New Connection Request",
+  "S_N_R": "sent you a connection request",
+  "C_R_U": "Connection Request Update",
+  "Y_R_A": "Your connection request was accepted",
+  "Y_R_D": "Your connection request was declined",
+  "E_WARN": "Emergency Warning",
+  "SAEW": "sent an emergency warning!",
+  "NEW_CONNECTION_REQUEST": "New Connection Request",
+  "NEW_CONNECTION_REQUEST": "New Connection Request",
+  "NEW_CONNECTION_REQUEST": "New Connection Request",
+  "BLOOD_PRESSURE": "Blood Pressure",
+  "ALBUMIN": "Albumin",
 
 
-
-
-
+  "EMERGENCY": "Emergency",
+  "E_D_E_2": "Expected Delivery:",
+  "HAEMOGLO_2": "Haemoglobin:",
+  "BLOOD_PRESSURE_2": "Bloood pressure:",
+  "BMI_3": "BMI:",
+  "WEEK_10": "(Week"
 }

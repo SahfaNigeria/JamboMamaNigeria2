@@ -1136,5 +1136,24 @@
   "Y_H_P_I": "• O seu prestador de saúde pode ver toda a informação",
   "E_I_F": "Editar Informação",
   "L_B": "IMPORTANTE: A sua vida e a do seu bebé podem depender de agir rapidamente!",
-  "IBEV": "Se estiver a sangrar abundantemente pela vagina, não espere - ligue primeiro para uma ambulância!"
+  "IBEV": "Se estiver a sangrar abundantemente pela vagina, não espere - ligue primeiro para uma ambulância!",
+
+  "F_HEIGHT_2": "Altura Uterina",
+  "HEMOGLOBIN": "Hemoglobina",
+  "NEW_CONNECTION_REQUEST": "Novo Pedido de Conexão",
+  "S_N_R": "enviou-lhe um pedido de conexão",
+  "C_R_U": "Atualização do Pedido de Conexão",
+  "Y_R_A": "O seu pedido de conexão foi aceite",
+  "Y_R_D": "O seu pedido de conexão foi recusado",
+  "E_WARN": "Alerta de Emergência",
+  "SAEW": "enviou um alerta de emergência!",
+  "BLOOD_PRESSURE": "Pressão Arterial",
+  "ALBUMIN": "Albumina",
+
+  "EMERGENCY": "Emergência",
+  "E_D_E_2": "Parto Previsto :",
+  "HAEMOGLO_2": "Hemoglobina :",
+  "BLOOD_PRESSURE_2": "Pressão arterial :",
+  "BMI_3": "IMC :",
+  "WEEK_10": "(Semana"
 }

@@ -46,7 +46,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(patientData?['name'] ?? 'PATIENT_VITAL_INFORMATION'),
+        title: AutoText(patientData?['name'] ?? 'PATIENT_VITAL_INFORMATION'),
         backgroundColor: Colors.blue[700],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -148,7 +148,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        AutoText(
                           dateStr,
                           style: TextStyle(
                             fontSize: 16,
@@ -205,7 +205,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                   _buildVitalRow('WEIGHT', '${data['weight']} kg',
                       Icons.monitor_weight, Colors.blue),
                 if (data['fundalHeight'] != null)
-                  _buildVitalRow('Fundal Height', '${data['fundalHeight']} cm',
+                  _buildVitalRow('F_HEIGHT_2', '${data['fundalHeight']} cm',
                       Icons.straighten, Colors.purple),
               ]),
 
@@ -230,13 +230,13 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
 
               _buildVitalSection('LABORATORY_RESULTS', [
                 if (data['haemoglobin'] != null)
-                  _buildVitalRow('Hemoglobin', '${data['haemoglobin']} g/dL',
+                  _buildVitalRow('HEMOGLOBIN', '${data['haemoglobin']} g/dL',
                       Icons.bloodtype, Colors.red),
                 if (data['glucose'] != null)
-                  _buildVitalRow('Glucose', '${data['glucose']} mg/dL',
+                  _buildVitalRow('GLUCOSE', '${data['glucose']} mg/dL',
                       Icons.water_drop, Colors.amber),
                 if (data['albumin'] != null)
-                  _buildVitalRow('Albumin', '${data['albumin']} g/dL',
+                  _buildVitalRow('ALBUMIN', '${data['albumin']} g/dL',
                       Icons.science, Colors.teal),
               ]),
 
@@ -293,7 +293,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        AutoText(
           title,
           style: TextStyle(
             fontSize: 16,

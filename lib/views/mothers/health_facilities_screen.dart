@@ -349,18 +349,18 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
                               color: Colors.grey.shade400,
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              'No health facilities found',
+                            AutoText(
+                              'N_O_FF',
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.grey.shade600,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
+                            AutoText(
                               userLocation.isEmpty
-                                  ? 'Please update your location in settings'
-                                  : 'Be the first to add a facility in your area!',
+                                  ? 'PULS'
+                                  : 'B_T_F',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey.shade500,
@@ -391,8 +391,8 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
         onPressed: _showAddFacilityDialog,
         backgroundColor: Colors.teal,
         icon: const Icon(Icons.add_location_alt, color: Colors.white),
-        label: const Text(
-          'Add Facility',
+        label: const AutoText(
+          'A_FCI',
           style: TextStyle(color: Colors.white),
         ),
       ),

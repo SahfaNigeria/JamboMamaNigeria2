@@ -315,7 +315,7 @@ class _ProviderPatientBackgroundScreenState
         ]),
         const SizedBox(height: 16),
         _buildInfoCard('AL_USE', [
-          _buildInfoRow('D_Al',
+          _buildInfoRow('D_A',
               _getBooleanText(_patientData!['drinks_alcohol']), ''),
           if (_isTrue(_patientData!['drinks_alcohol'])) ...[
             _buildInfoRow('TYPE_2', _patientData!['alcohol_type'], ''),
@@ -344,7 +344,8 @@ class _ProviderPatientBackgroundScreenState
     return Column(
       children: [
         _buildInfoCard('HIV_S', [
-          _buildInfoRow('S_TEt', _patientData!['hiv_test_self'], ''),
+          _buildInfoRow(
+              'S_TE', _patientData!['hiv_test_self'], ''),
           _buildInfoRow('P_TE', _patientData!['hiv_test_partner'], ''),
           _buildInfoRow('O_A', _getBooleanText(_patientData!['on_art']), ''),
           if (_isTrue(_patientData!['on_art']))

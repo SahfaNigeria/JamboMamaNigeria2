@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -53,8 +54,8 @@ class ConnectionStateModel with ChangeNotifier {
 
         if (professionalToken != null) {
           await NotificationService.instance.triggerNotificationViaApi(
-            title: 'New Connection Request',
-            message: '$requesterName sent you a connection request',
+            title: autoI8lnGen.translate("NEW_CONNECTION_REQUEST"),
+            message: autoI8lnGen.translate('$requesterName S_N_R'),
             userId: professionalId,
           );
           print(
@@ -191,7 +192,7 @@ class ConnectionStateModel with ChangeNotifier {
       final requesterId = notificationData['senderId'];
       final recipientId = notificationData['recipientId'];
       final requesterName = notificationData['requesterName'] ?? 'Unknown';
-      String title = 'Connection Request Update';
+      String title = autoI8lnGen.translate("C_R_U");
       String message = '';
 
       if (action == 'accepted') {
@@ -202,7 +203,7 @@ class ConnectionStateModel with ChangeNotifier {
 
         _connectedProfessionalIds.add(recipientId);
 
-        message = 'Your connection request was accepted';
+        message = autoI8lnGen.translate("Y_R_A");
 
         await _firestore.collection('notifications').add({
           'type': 'connection_result',
@@ -210,7 +211,7 @@ class ConnectionStateModel with ChangeNotifier {
           'action': 'accepted',
           'senderId': recipientId,
           'recipientId': requesterId,
-          'message': 'Your connection request to  was accepted',
+          'message':  autoI8lnGen.translate("Y_R_A"),
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
         });
@@ -220,7 +221,7 @@ class ConnectionStateModel with ChangeNotifier {
             .doc(notificationId)
             .delete();
       } else if (action == 'declined') {
-        message = 'Your connection request was declined';
+        message = autoI8lnGen.translate("Y_R_D");
 
         await _firestore.collection('notifications').add({
           'type': 'connection_result',
@@ -228,7 +229,7 @@ class ConnectionStateModel with ChangeNotifier {
           'action': 'declined',
           'senderId': recipientId,
           'recipientId': requesterId,
-          'message': 'Your connection request to  was declined',
+          'message': autoI8lnGen.translate("Y_R_D"),
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
         });
@@ -275,8 +276,8 @@ class ConnectionStateModel with ChangeNotifier {
 
     try {
       await NotificationService.instance.triggerNotificationViaApi(
-        title: '🚨 Emergency Warning',
-        message: '$requesterName sent an emergency warning!',
+        title: autoI8lnGen.translate('🚨 E_WARN'),
+        message: autoI8lnGen.translate('$requesterName SAEW'),
         userId: providerId,
       );
       debugPrint('🔔 Push notification sent to provider $providerId');

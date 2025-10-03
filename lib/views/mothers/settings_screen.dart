@@ -76,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       // Update data in Firestore
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('New Mothers')
           .doc(user!.uid)
           .update({
         'userName': fullNameController.text,
@@ -86,6 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'villageTown': townController.text,
         'address': addressController.text,
       });
+
 
       setState(() {
         // Update UI with new values
@@ -193,7 +194,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
-                    await _saveProfileChanges();
+                    _saveProfileChanges();
                     Navigator.pop(context); // Close the modal
                   },
                   child: AutoText('SAVE_CHANGES'),

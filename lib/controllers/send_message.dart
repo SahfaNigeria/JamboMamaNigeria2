@@ -1,3 +1,4 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
@@ -71,7 +72,7 @@ Future<void> sendMessage(String chatId, String text) async {
         // Send push notification
         await NotificationService.instance.triggerNotificationViaApi(
           userId: recipientId,
-          title: 'New Message',
+          title: autoI8lnGen.translate("NEW_MESSAGE"),
           message: text.length > 30 ? '${text.substring(0, 30)}...' : text,
         );
         print('✅ Push notification sent');

@@ -360,8 +360,8 @@ class _HomePageState extends State<HomePage> {
                 // Show current week if available
                 if (currentWeek != null)
                   Expanded(
-                    child: Text(
-                      ' (Week $currentWeek)',
+                    child: AutoText(
+                      'WEEK_10 $currentWeek)',
                       style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,

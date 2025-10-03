@@ -501,7 +501,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                 guidance: _hbGuidance,
               ),
               _buildCard(
-                title: 'B_P',
+                title: 'BLOOD_PRESSURE',
                 icon: Icons.bloodtype,
                 child: Row(
                   children: [
