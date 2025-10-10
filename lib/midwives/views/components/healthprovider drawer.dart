@@ -137,7 +137,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                   builder: (context) => SettingsScreen(
                     email: widget.email,
                     address: widget.address,
-                    userName: widget.userName,
+                    fullName: widget.userName,
                     cityValue: widget.cityValue,
                     stateValue: widget.stateValue,
                     villageTown: widget.villageTown,

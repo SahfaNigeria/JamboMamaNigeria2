@@ -362,7 +362,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
                         selectedValue: responses[0],
                         onSelected: (value) {
                           setState(() {
-                            responses[0] = '';
+                            responses[0] = value;
                             isAnswered[0] = true;
                             medicalResponses[0] = _generateResponse(0, value);
                           });

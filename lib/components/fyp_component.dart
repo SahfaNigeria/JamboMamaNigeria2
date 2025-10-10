@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class Fypcomponent extends StatelessWidget {
   final String timetext;
+  final String title;
   final String imagePath;
   final String firstparagraph;
   final String secparagraph;
@@ -15,6 +16,7 @@ class Fypcomponent extends StatelessWidget {
   const Fypcomponent({
     Key? key,
     required this.timetext,
+    required this.title,
     required this.imagePath,
     required this.firstparagraph,
     required this.secparagraph,
@@ -58,6 +60,19 @@ class Fypcomponent extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
+
+                  Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        // color: Colors.pink.shade700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
 
                   // Image
                   ClipRRect(

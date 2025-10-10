@@ -21,7 +21,8 @@ class HomeDrawer extends StatefulWidget {
   final String stateValue;
   final String villageTown;
   final String hospital;
-  HomeDrawer({
+
+  const HomeDrawer({
     Key? key,
     required this.userName,
     required this.email,
@@ -75,146 +76,344 @@ class _HomeDrawerState extends State<HomeDrawer> {
             (route) => false));
   }
 
-  Widget build(
-    BuildContext context,
-  ) {
+  @override
+  Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-            width: 50,
-          ),
+      backgroundColor: Colors.white,
+      child: SafeArea(
+        child: SingleChildScrollView(
+          // 🔑 this makes drawer scrollable
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
 
-          //logo
-          SizedBox(
-            height: 100,
-            width: 100,
-            child: Image.asset(
-              'assets/images/logo.png',
-            ),
-          ),
+              // Logo
+              SizedBox(
+                height: 100,
+                width: 100,
+                child: Image.asset('assets/images/logo.png'),
+              ),
 
-          // divides
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Divider(),
+              ),
 
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Divider(),
+              DrawerTiles(
+                icon: Icons.home,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(
+                        isHealthProvider: false,
+                      ),
+                    ),
+                  );
+                },
+                text: "HOME_2",
+              ),
+              DrawerTiles(
+                icon: Icons.local_hospital,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HealthFacilitiesScreen(),
+                    ),
+                  );
+                },
+                text: "HEALTH_FACILITIES",
+                subtitle: "N_D_HC_H",
+              ),
+              DrawerTiles(
+                icon: Icons.search,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProfessionalsList(location: userLocation ?? ''),
+                    ),
+                  );
+                },
+                text: "H_P",
+              ),
+              DrawerTiles(
+                icon: Icons.medical_services_outlined,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AllowedToChatScreen(),
+                    ),
+                  );
+                },
+                text: "CONNECTIONS",
+              ),
+              DrawerTiles(
+                icon: Icons.app_registration,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BirthPlanScreen(),
+                    ),
+                  );
+                },
+                text: "BIRTHDAY_PLAN",
+              ),
+              DrawerTiles(
+                icon: Icons.assignment,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PatientBackgroundScreen(
+                        patientId: _auth.currentUser?.uid ?? '',
+                      ),
+                    ),
+                  );
+                },
+                text: "P_T_B",
+              ),
+              DrawerTiles(
+                icon: Icons.settings,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsScreen(
+                        email: widget.email,
+                        address: widget.address,
+                        userName: widget.userName,
+                        cityValue: widget.cityValue,
+                        stateValue: widget.stateValue,
+                        villageTown: widget.villageTown,
+                        hospital: widget.hospital,
+                      ),
+                    ),
+                  );
+                },
+                text: "SETTINGS",
+              ),
+              DrawerTiles(
+                icon: Icons.logout,
+                onTap: () {
+                  logout();
+                },
+                text: "LOGOUT",
+              ),
+            ],
           ),
-
-          // Home {Tiles}
-
-          DrawerTiles(
-            icon: Icons.home,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(
-                    isHealthProvider: false,
-                  ),
-                ),
-              );
-            },
-            text: "HOME_2",
-          ),
-          DrawerTiles(
-            icon: Icons.local_hospital,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HealthFacilitiesScreen(),
-                ),
-              );
-            },
-            text: "HEALTH_FACILITIES",
-            subtitle: "N_D_HC_H",
-          ),
-
-          DrawerTiles(
-            icon: Icons.search,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ProfessionalsList(location: userLocation ?? '')),
-              );
-            },
-            text: "H_P",
-          ),
-          DrawerTiles(
-            icon: Icons.medical_services_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AllowedToChatScreen(),
-                ),
-              );
-            },
-            text: "CONNECTIONS",
-          ),
-
-          DrawerTiles(
-            icon: Icons.app_registration,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BirthPlanScreen(),
-                ),
-              );
-            },
-            text: "BIRTHDAY_PLAN",
-          ),
-          DrawerTiles(
-            icon: Icons.assignment,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PatientBackgroundScreen(
-                    patientId: _auth.currentUser?.uid ?? '',
-                  ),
-                ),
-              );
-            },
-            text: "P_T_B",
-          ),
-
-          DrawerTiles(
-            icon: Icons.settings,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsScreen(
-                    email: widget.email,
-                    address: widget.address,
-                    userName: widget.userName,
-                    cityValue: widget.cityValue,
-                    stateValue: widget.stateValue,
-                    villageTown: widget.villageTown,
-                    hospital: widget.hospital,
-                  ),
-                ),
-              );
-            },
-            text: "SETTINGS",
-          ),
-
-          DrawerTiles(
-            icon: Icons.logout,
-            onTap: () {
-              logout();
-            },
-            text: "LOGOUT",
-          ),
-        ],
+        ),
       ),
     );
   }
 }
+
+// class HomeDrawer extends StatefulWidget {
+//   final String userName;
+//   final String email;
+//   final String address;
+//   final String cityValue;
+//   final String stateValue;
+//   final String villageTown;
+//   final String hospital;
+//   HomeDrawer({
+//     Key? key,
+//     required this.userName,
+//     required this.email,
+//     required this.address,
+//     required this.cityValue,
+//     required this.stateValue,
+//     required this.villageTown,
+//     required this.hospital,
+//   }) : super(key: key);
+
+//   @override
+//   State<HomeDrawer> createState() => _HomeDrawerState();
+// }
+
+// class _HomeDrawerState extends State<HomeDrawer> {
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
+//   String? userLocation;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchUserLocation();
+//   }
+
+//   Future<void> _fetchUserLocation() async {
+//     try {
+//       User? user = _auth.currentUser;
+//       if (user != null) {
+//         DocumentSnapshot doc = await FirebaseFirestore.instance
+//             .collection('New Mothers')
+//             .doc(user.uid)
+//             .get();
+
+//         if (doc.exists) {
+//           setState(() {
+//             userLocation = doc['cityValue'] ?? 'Unknown Location';
+//           });
+//         }
+//       }
+//     } catch (e) {
+//       print("Error fetching user location: $e");
+//     }
+//   }
+
+//   Future logout() async {
+//     final SharedPreferences prefs = await SharedPreferences.getInstance();
+//     prefs.clear();
+//     await _auth.signOut().then((value) => Navigator.of(context)
+//         .pushAndRemoveUntil(
+//             MaterialPageRoute(builder: (context) => LoginOrRegister()),
+//             (route) => false));
+//   }
+
+//   Widget build(
+//     BuildContext context,
+//   ) {
+//     return Drawer(
+//       backgroundColor: Color.fromARGB(255, 255, 255, 255),
+//       child: Column(
+//         children: [
+//           const SizedBox(
+//             height: 50,
+//             width: 50,
+//           ),
+
+//           //logo
+//           SizedBox(
+//             height: 100,
+//             width: 100,
+//             child: Image.asset(
+//               'assets/images/logo.png',
+//             ),
+//           ),
+
+//           // divides
+
+//           const Padding(
+//             padding: EdgeInsets.all(10.0),
+//             child: Divider(),
+//           ),
+
+//           // Home {Tiles}
+
+//           DrawerTiles(
+//             icon: Icons.home,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => HomePage(
+//                     isHealthProvider: false,
+//                   ),
+//                 ),
+//               );
+//             },
+//             text: "HOME_2",
+//           ),
+//           DrawerTiles(
+//             icon: Icons.local_hospital,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => HealthFacilitiesScreen(),
+//                 ),
+//               );
+//             },
+//             text: "HEALTH_FACILITIES",
+//             subtitle: "N_D_HC_H",
+//           ),
+
+//           DrawerTiles(
+//             icon: Icons.search,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                     builder: (context) =>
+//                         ProfessionalsList(location: userLocation ?? '')),
+//               );
+//             },
+//             text: "H_P",
+//           ),
+//           DrawerTiles(
+//             icon: Icons.medical_services_outlined,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => AllowedToChatScreen(),
+//                 ),
+//               );
+//             },
+//             text: "CONNECTIONS",
+//           ),
+
+//           DrawerTiles(
+//             icon: Icons.app_registration,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => BirthPlanScreen(),
+//                 ),
+//               );
+//             },
+//             text: "BIRTHDAY_PLAN",
+//           ),
+//           DrawerTiles(
+//             icon: Icons.assignment,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => PatientBackgroundScreen(
+//                     patientId: _auth.currentUser?.uid ?? '',
+//                   ),
+//                 ),
+//               );
+//             },
+//             text: "P_T_B",
+//           ),
+
+//           DrawerTiles(
+//             icon: Icons.settings,
+//             onTap: () {
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => SettingsScreen(
+//                     email: widget.email,
+//                     address: widget.address,
+//                     userName: widget.userName,
+//                     cityValue: widget.cityValue,
+//                     stateValue: widget.stateValue,
+//                     villageTown: widget.villageTown,
+//                     hospital: widget.hospital,
+//                   ),
+//                 ),
+//               );
+//             },
+//             text: "SETTINGS",
+//           ),
+
+//           DrawerTiles(
+//             icon: Icons.logout,
+//             onTap: () {
+//               logout();
+//             },
+//             text: "LOGOUT",
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
