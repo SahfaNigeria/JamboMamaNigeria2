@@ -22,7 +22,7 @@ class VitalInfoUpdateScreen extends StatefulWidget {
   _VitalInfoUpdateScreenState createState() => _VitalInfoUpdateScreenState();
 }
 
-class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
+class  _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
