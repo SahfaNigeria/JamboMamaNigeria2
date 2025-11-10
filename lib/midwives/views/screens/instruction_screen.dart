@@ -1,18 +1,21 @@
+import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jambomama_nigeria/utils/language_helper.dart';
 
 class PractitionerContentScreen extends StatefulWidget {
   const PractitionerContentScreen({super.key});
 
   @override
-  State<PractitionerContentScreen> createState() => _PractitionerContentScreenState();
+  State<PractitionerContentScreen> createState() =>
+      _PractitionerContentScreenState();
 }
 
 class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
   List<Map<String, dynamic>> healthProviderContent = [];
   bool isLoading = true;
   String errorMessage = '';
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance; 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -22,6 +25,9 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
 
   Future<List<Map<String, dynamic>>> getHealthProviderContent() async {
     try {
+      // Get user's selected language
+      String userLanguage = await LanguageHelper.getCurrentLanguage();
+
       QuerySnapshot snapshot = await _firestore
           .collection('content')
           .where('type', isEqualTo: 'educative')
@@ -30,8 +36,27 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
           .where('isActive', isEqualTo: true)
           .get();
 
+      // Process each document to extract correct language
       List<Map<String, dynamic>> result = snapshot.docs.map((doc) {
-        return {'id': doc.id, ...doc.data() as Map<String, dynamic>};
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        return {
+          'id': doc.id,
+          'imageUrl': data['imageUrl'] ?? '',
+          'displayOrder': data['displayOrder'] ?? 0,
+          'createdAt': data['createdAt'],
+          // Extract text in user's language
+          'title':
+              LanguageHelper.getTranslatedText(data['title'], userLanguage),
+          'timeText':
+              LanguageHelper.getTranslatedText(data['timeText'], userLanguage),
+          'firstParagraph': LanguageHelper.getTranslatedText(
+              data['firstParagraph'], userLanguage),
+          'secParagraph': LanguageHelper.getTranslatedText(
+              data['secParagraph'], userLanguage),
+          'thirdParagraph': LanguageHelper.getTranslatedText(
+              data['thirdParagraph'], userLanguage),
+        };
       }).toList();
 
       // Sort by createdAt if available, otherwise by displayOrder
@@ -39,9 +64,9 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
         if (a['createdAt'] != null && b['createdAt'] != null) {
           Timestamp timestampA = a['createdAt'] as Timestamp;
           Timestamp timestampB = b['createdAt'] as Timestamp;
-          return timestampB.compareTo(timestampA); // descending order (newest first)
+          return timestampB.compareTo(timestampA); // descending (newest first)
         }
-        // Fallback to displayOrder if createdAt is not available
+        // Fallback to displayOrder
         int orderA = a['displayOrder'] ?? 0;
         int orderB = b['displayOrder'] ?? 0;
         return orderA.compareTo(orderB);
@@ -78,7 +103,7 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Learn"),
+        title: AutoText('LEARN'),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -104,16 +129,23 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                   ),
                 )
               : healthProviderContent.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.medical_services,
+                          const Icon(Icons.medical_services,
                               size: 64, color: Colors.grey),
-                          SizedBox(height: 16),
-                          Text(
-                            'No health provider content available',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          AutoText(
+                            'NO_CONTENT_AVAILABLE',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: _loadHealthProviderContent,
+                            icon: const Icon(Icons.refresh),
+                            label: AutoText('RETRY'),
                           ),
                         ],
                       ),
@@ -124,11 +156,13 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                       itemBuilder: (context, index) {
                         final data = healthProviderContent[index];
                         final title = data['title'] ?? "Untitled";
-                        final description = data['firstParagraph'] ?? "No description";
+                        final description =
+                            data['firstParagraph'] ?? "No description";
                         final secDescription = data['secParagraph'] ?? "";
                         final thirdDescription = data['thirdParagraph'] ?? "";
-                        final imageUrl = data['imageUrl']; // uploaded image if available
-                        final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
+                        final imageUrl = data['imageUrl'];
+                        final createdAt =
+                            (data['createdAt'] as Timestamp?)?.toDate();
 
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 10),
@@ -156,7 +190,7 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // show uploaded image if exists, otherwise placeholder
+                                // Image
                                 if (imageUrl != null && imageUrl.isNotEmpty)
                                   ClipRRect(
                                     borderRadius: const BorderRadius.vertical(
@@ -167,13 +201,15 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                                       height: 180,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
                                         return Container(
                                           height: 180,
                                           width: double.infinity,
                                           decoration: BoxDecoration(
                                             color: Colors.grey.shade200,
-                                            borderRadius: const BorderRadius.vertical(
+                                            borderRadius:
+                                                const BorderRadius.vertical(
                                               top: Radius.circular(12),
                                             ),
                                           ),
@@ -206,7 +242,8 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         title,
@@ -268,6 +305,7 @@ class PractitionerDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // Image
           if (imageUrl != null && imageUrl!.isNotEmpty)
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
@@ -304,6 +342,8 @@ class PractitionerDetailScreen extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 16),
+
+          // Title
           Text(
             title,
             style: const TextStyle(
@@ -312,18 +352,34 @@ class PractitionerDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Text(description, style: const TextStyle(fontSize: 16)),
-          const SizedBox(height: 12),
-          Text(secDescription, style: const TextStyle(fontSize: 16)),
-          const SizedBox(height: 12),
-          Text(thirdDescription, style: const TextStyle(fontSize: 16)),
-          if (createdAt != null) ...[
+
+          // First paragraph
+          if (description.isNotEmpty) ...[
+            Text(description,
+                style: const TextStyle(fontSize: 16, height: 1.5)),
             const SizedBox(height: 12),
+          ],
+
+          // Second paragraph
+          if (secDescription.isNotEmpty) ...[
+            Text(secDescription,
+                style: const TextStyle(fontSize: 16, height: 1.5)),
+            const SizedBox(height: 12),
+          ],
+
+          // Third paragraph
+          if (thirdDescription.isNotEmpty) ...[
+            Text(thirdDescription,
+                style: const TextStyle(fontSize: 16, height: 1.5)),
+            const SizedBox(height: 12),
+          ],
+
+          // Published date
+          if (createdAt != null)
             Text(
               "Published on: ${createdAt!.day}-${createdAt!.month}-${createdAt!.year}",
               style: TextStyle(color: Colors.grey.shade600),
             ),
-          ]
         ],
       ),
     );
@@ -333,7 +389,6 @@ class PractitionerDetailScreen extends StatelessWidget {
 
 
 
-// import 'package:auto_i8ln/auto_i8ln.dart';
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -404,7 +459,7 @@ class PractitionerDetailScreen extends StatelessWidget {
 //       });
 //     } catch (e) {
 //       setState(() {
-//         errorMessage = autoI8lnGen.translate('F_L_C ${e.toString()}');
+//         errorMessage = 'Failed to load content: ${e.toString()}';
 //         isLoading = false;
 //       });
 //     }
@@ -414,7 +469,7 @@ class PractitionerDetailScreen extends StatelessWidget {
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: const AutoText("LEARN_2"),
+//         title: const Text("Learn"),
 //       ),
 //       body: isLoading
 //           ? const Center(child: CircularProgressIndicator())
@@ -434,7 +489,7 @@ class PractitionerDetailScreen extends StatelessWidget {
 //                       const SizedBox(height: 16),
 //                       ElevatedButton(
 //                         onPressed: _loadHealthProviderContent,
-//                         child: const AutoText('RETRY'),
+//                         child: const Text('Retry'),
 //                       ),
 //                     ],
 //                   ),
@@ -447,8 +502,8 @@ class PractitionerDetailScreen extends StatelessWidget {
 //                           Icon(Icons.medical_services,
 //                               size: 64, color: Colors.grey),
 //                           SizedBox(height: 16),
-//                           AutoText(
-//                             'N_P_CONTENT',
+//                           Text(
+//                             'No health provider content available',
 //                             style: TextStyle(fontSize: 16, color: Colors.grey),
 //                           ),
 //                         ],
@@ -459,8 +514,8 @@ class PractitionerDetailScreen extends StatelessWidget {
 //                       itemCount: healthProviderContent.length,
 //                       itemBuilder: (context, index) {
 //                         final data = healthProviderContent[index];
-//                         final title = data['title'] ?? autoI8lnGen.translate("UNTITLED");
-//                         final description = data['firstParagraph'] ?? autoI8lnGen.translate("N_D_E");
+//                         final title = data['title'] ?? "Untitled";
+//                         final description = data['firstParagraph'] ?? "No description";
 //                         final secDescription = data['secParagraph'] ?? "";
 //                         final thirdDescription = data['thirdParagraph'] ?? "";
 //                         final imageUrl = data['imageUrl']; // uploaded image if available
@@ -559,8 +614,8 @@ class PractitionerDetailScreen extends StatelessWidget {
 //                                       ),
 //                                       const SizedBox(height: 6),
 //                                       if (createdAt != null)
-//                                         AutoText(
-//                                           "P_ON ${createdAt.day}-${createdAt.month}-${createdAt.year}",
+//                                         Text(
+//                                           "Posted on: ${createdAt.day}-${createdAt.month}-${createdAt.year}",
 //                                           style: TextStyle(
 //                                             fontSize: 12,
 //                                             color: Colors.grey.shade600,
@@ -655,8 +710,8 @@ class PractitionerDetailScreen extends StatelessWidget {
 //           Text(thirdDescription, style: const TextStyle(fontSize: 16)),
 //           if (createdAt != null) ...[
 //             const SizedBox(height: 12),
-//             AutoText(
-//               "P_ON_2 ${createdAt!.day}-${createdAt!.month}-${createdAt!.year}",
+//             Text(
+//               "Published on: ${createdAt!.day}-${createdAt!.month}-${createdAt!.year}",
 //               style: TextStyle(color: Colors.grey.shade600),
 //             ),
 //           ]
@@ -665,5 +720,7 @@ class PractitionerDetailScreen extends StatelessWidget {
 //     );
 //   }
 // }
+
+
 
 
