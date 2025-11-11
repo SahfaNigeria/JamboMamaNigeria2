@@ -205,34 +205,6 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
     }
   }
 
-  // Future<void> _openGoogleMaps(HealthFacility facility) async {
-  //   try {
-  //     // Option 1: Let Google Maps handle current location automatically
-  //     final String directionsUrl =
-  //         'https://www.google.com/maps/dir/?api=1&destination=${facility.latitude},${facility.longitude}';
-
-  //     if (await canLaunchUrl(Uri.parse(directionsUrl))) {
-  //       await launchUrl(Uri.parse(directionsUrl),
-  //           mode: LaunchMode.externalApplication);
-  //     } else {
-  //       // Fallback: Open facility location directly
-  //       final String fallbackUrl =
-  //           'https://www.google.com/maps/search/?api=1&query=${facility.latitude},${facility.longitude}';
-
-  //       if (await canLaunchUrl(Uri.parse(fallbackUrl))) {
-  //         await launchUrl(Uri.parse(fallbackUrl),
-  //             mode: LaunchMode.externalApplication);
-
-  //       } else {
-  //         throw 'Could not open maps';
-  //       }
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error opening maps: $e')),
-  //     );
-  //   }
-  // }
 
   Future<void> _openGoogleMaps(HealthFacility facility) async {
     final Uri directionsUrl = Uri.parse(
