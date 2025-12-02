@@ -892,30 +892,59 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     );
   }
 
+  // Widget _buildDropdownFormField({
+  //   required String label,
+  //   required String? value,
+  //   required List<String> items,
+  //   required void Function(String?) onChanged,
+  // }) {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(vertical: 8),
+  //     child: DropdownButtonFormField<String>(
+  //       decoration: InputDecoration(
+  //         labelText: autoI8lnGen.translate(label),
+  //         border: OutlineInputBorder(),
+  //       ),
+  //       value: value,
+  //       items: items.map((String item) {
+  //         return DropdownMenuItem<String>(
+  //           value: item,
+  //           child: Text(item),
+  //         );
+  //       }).toList(),
+  //       onChanged: _isEditMode ? onChanged : null,
+  //     ),
+  //   );
+  // }
+
+
   Widget _buildDropdownFormField({
-    required String label,
-    required String? value,
-    required List<String> items,
-    required void Function(String?) onChanged,
-  }) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: autoI8lnGen.translate(label),
-          border: OutlineInputBorder(),
-        ),
-        value: value,
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: _isEditMode ? onChanged : null,
+  required String label,
+  required String? value,
+  required List<String> items,
+  required void Function(String?) onChanged,
+}) {
+  // FIX: If value doesn't exist in items, set it to null
+  String? safeValue = (value != null && items.contains(value)) ? value : null;
+  
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 8),
+    child: DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        labelText: autoI8lnGen.translate(label),
+        border: OutlineInputBorder(),
       ),
-    );
-  }
+      value: safeValue,  // Use safeValue instead of value
+      items: items.map((String item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      }).toList(),
+      onChanged: _isEditMode ? onChanged : null,
+    ),
+  );
+}
 
   Widget _buildButtonGroup({
     required String title,
@@ -1315,15 +1344,15 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                           keyboardType: TextInputType.number,
                           onChanged: (_) => _checkGlucose(),
                         ),
-                        _buildDropdownFormField(
-                          label: 'URINEANALYSIS',
-                          value: _urinalysisResult,
-                          items: [ autoI8lnGen.translate("NORMAL"),
-                            autoI8lnGen.translate("SO_SO"),
-                            autoI8lnGen.translate("DANGER")],
-                          onChanged: (value) =>
-                              setState(() => _urinalysisResult = value),
-                        ),
+                        // _buildDropdownFormField(
+                        //   label: 'URINEANALYSIS',
+                        //   value: _urinalysisResult,
+                        //   items: [ autoI8lnGen.translate("NORMAL"),
+                        //     autoI8lnGen.translate("SO_SO"),
+                        //     autoI8lnGen.translate("DANGER")],
+                        //   onChanged: (value) =>
+                        //       setState(() => _urinalysisResult = value),
+                        // ),
                       ]
                     : [
                         _buildSummaryItem(

@@ -281,13 +281,13 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
               children: [
                 AutoText(
                   'BIRTHDAY_PLAN',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                
                 ),
-                IconButton(
-                  onPressed: () => setState(() => _isEditMode = !_isEditMode),
-                  icon: Icon(_isEditMode ? Icons.visibility : Icons.edit),
-                  tooltip: _isEditMode ? autoI8lnGen.translate("V_MODE") : autoI8lnGen.translate("E_MODE"),
-                ),
+                // IconButton(
+                //   onPressed: () => setState(() => _isEditMode = !_isEditMode),
+                //   icon: Icon(_isEditMode ? Icons.visibility : Icons.edit),
+                //   tooltip: _isEditMode ? autoI8lnGen.translate("V_MODE") : autoI8lnGen.translate("E_MODE"),
+                // ),
               ],
             ),
             SizedBox(height: 16),
@@ -495,40 +495,75 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
     );
   }
 
-  Widget _buildSummaryItem({
-    required String label,
-    required String value,
-    Widget? trailing,
-  }) {
-    final isEmpty = value.isEmpty || value == autoI8lnGen.translate("NOT_SPECIFIED");
+  // Widget _buildSummaryItem({
+  //   required String label,
+  //   required String value,
+  //   Widget? trailing,
+  // }) {
+  //   final isEmpty = value.isEmpty || value == autoI8lnGen.translate("NOT_SPECIFIED");
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: isEmpty ? Colors.red[200]! : Colors.grey[300]!,
-        ),
-        borderRadius: BorderRadius.circular(8),
-        color: isEmpty ? Colors.red[50] : Colors.grey[50],
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(vertical: 4),
+  //     decoration: BoxDecoration(
+  //       border: Border.all(
+  //         color: isEmpty ? Colors.red[200]! : Colors.grey[300]!,
+  //       ),
+  //       borderRadius: BorderRadius.circular(8),
+  //       color: isEmpty ? Colors.red[50] : Colors.grey[50],
+  //     ),
+  //     child: ListTile(
+  //       dense: true,
+  //       title: AutoText(
+  //         label,
+  //         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+  //       ),
+  //       subtitle: AutoText(
+  //         isEmpty ? 'T_A_P_ADD' : value,
+  //         style: TextStyle(
+  //           fontSize: 13,
+  //           color: isEmpty ? Colors.red[600] : Colors.black87,
+  //           fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+  //         ),
+  //       ),
+  //       trailing: trailing ?? (isEmpty ? Icon(Icons.add, color: Colors.red[600]) : null),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildSummaryItem({
+  required String label,
+  required String value,
+  Widget? trailing,
+}) {
+  final isEmpty = value.isEmpty || value == autoI8lnGen.translate("NOT_SPECIFIED");
+
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 4),
+    decoration: BoxDecoration(
+      border: Border.all(
+        color: isEmpty ? Colors.red[200]! : Colors.grey[300]!,
       ),
-      child: ListTile(
-        dense: true,
-        title: AutoText(
-          label,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        ),
-        subtitle: AutoText(
-          isEmpty ? 'T_A_P_ADD' : value,
-          style: TextStyle(
-            fontSize: 13,
-            color: isEmpty ? Colors.red[600] : Colors.black87,
-            fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
-          ),
-        ),
-        trailing: trailing ?? (isEmpty ? Icon(Icons.add, color: Colors.red[600]) : null),
+      borderRadius: BorderRadius.circular(8),
+      color: isEmpty ? Colors.red[50] : Colors.grey[50],
+    ),
+    child: ListTile(
+      dense: true,
+      title: AutoText(
+        label,
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       ),
-    );
-  }
+      // subtitle: AutoText(
+      //   isEmpty ? 'T_A_P_ADD' : value,
+      //   style: TextStyle(
+      //     fontSize: 13,
+      //     color: isEmpty ? Colors.red[600] : Colors.black87,
+      //     fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
+      //   ),
+      // ),
+      trailing: trailing,
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -541,15 +576,12 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: AutoText('BIRTHDAY_PLAN'),
+        title: AutoText('BIRTHDAY_PLAN', 
+        style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.purple[700],
-        actions: [
-          IconButton(
-            onPressed: () => setState(() => _isEditMode = !_isEditMode),
-            icon: Icon(_isEditMode ? Icons.visibility : Icons.edit),
-            tooltip: _isEditMode ? autoI8lnGen.translate("V_MODE") : autoI8lnGen.translate("E_MODE"),
-          ),
-        ],
+        foregroundColor: Colors.white,
+        
+      
       ),
       body: Form(
         key: _formKey,

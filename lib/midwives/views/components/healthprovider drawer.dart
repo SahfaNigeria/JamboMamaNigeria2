@@ -136,12 +136,12 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
                 MaterialPageRoute(
                   builder: (context) => SettingsScreen(
                     email: widget.email,
-                    address: widget.address,
-                    fullName: widget.userName,
-                    cityValue: widget.cityValue,
-                    stateValue: widget.stateValue,
-                    villageTown: widget.villageTown,
-                    hospital: widget.hospital,
+                    // address: widget.address,
+                    // fullName: widget.userName,
+                    // cityValue: widget.cityValue,
+                    // stateValue: widget.stateValue,
+                    // villageTown: widget.villageTown,
+                    // hospital: widget.hospital,
                   ),
                 ),
               );
@@ -161,7 +161,6 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
     );
   }
 }
-
 
 // import 'package:auto_i8ln/auto_i8ln.dart';
 // import 'package:firebase_auth/firebase_auth.dart';

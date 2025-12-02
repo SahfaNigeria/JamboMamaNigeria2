@@ -1,4 +1,3 @@
-// Updated Feelings Form with JamboMama theme UI
 import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,7 +56,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
 
   final List<String> responses = List.filled(12, '');
   final List<String> medicalResponses = List.filled(12, '');
-  final List<bool> isAnswered = List.filled(12, true);
+  final List<bool> isAnswered = List.filled(12, false);
 
   final TextEditingController worryController = TextEditingController();
 
@@ -362,7 +361,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
                         selectedValue: responses[0],
                         onSelected: (value) {
                           setState(() {
-                            responses[0] = '';
+                            responses[0] = value;
                             isAnswered[0] = true;
                             medicalResponses[0] = _generateResponse(0, value);
                           });

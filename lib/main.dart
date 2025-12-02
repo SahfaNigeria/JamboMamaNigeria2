@@ -10,6 +10,7 @@ import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/splash_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/home.dart';
+import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -64,13 +65,17 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/login_register': (context) => LoginOrRegister(),
         '/MidWifeHomePage': (context) => MidWifeHomePage(),
+       
         '/mid_wife_reg_screen': (context) => MidwiveAuthScreen(),
         '/mid_wife_sign_in_screen': (context) => MidWiveSignInPage(),
         '/midwive_sign_up_page': (context) => MidWiveSignUpPage(),
         '/midwive_password_reset_page': (context) =>
             MidWiveForgottenPasswordPage(),
-        // '/register': (context) => RegisterScreen(),
-        // '/forgot-password': (context) => ForgotPasswordScreen(),
+
+
+
+       
+
         '/HomePage': (context) => HomePage(isHealthProvider: false),
         '/ChatScreen': (context) {
           final args = ModalRoute.of(context)!.settings.arguments

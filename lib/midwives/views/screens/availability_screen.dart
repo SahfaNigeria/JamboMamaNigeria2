@@ -466,14 +466,14 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                   ),
               ],
             ),
-      floatingActionButton: !_hasChanges
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: _saveSchedule,
-              label: const AutoText("SAVE"),
-              icon: const Icon(Icons.save),
-              backgroundColor: Colors.green,
-            ),
+      // floatingActionButton: !_hasChanges
+      //     ? null
+      //     : FloatingActionButton.extended(
+      //         onPressed: _saveSchedule,
+      //         label: const AutoText("SAVE"),
+      //         icon: const Icon(Icons.save),
+      //         backgroundColor: Colors.green,
+      //       ),
     );
   }
 }
