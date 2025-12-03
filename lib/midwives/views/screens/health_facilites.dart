@@ -58,7 +58,13 @@ import 'package:flutter/material.dart'
         Widget,
         showModalBottomSheet,
         TextAlign,
-        Border;
+        Border,
+        showDialog, 
+        AlertDialog, 
+        TextButton, 
+        MainAxisSize, 
+        Dialog; 
+        
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -205,6 +211,93 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
     }
   }
 
+  void _showChangeLocationDialog() {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) => Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: AutoText(
+                  'CHANGE LOCATION',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          /// ⭐ Updated explanation here:
+          const AutoText(
+            'Your location is based on the information you entered in your profile. '
+            'To change your location, please open the Edit Profile in settings and update it manually.',
+            style: TextStyle(fontSize: 14),
+          ),
+
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.blue.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: AutoText(
+                        'CURRENT LOCATION',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  userFullLocation.isNotEmpty ? userFullLocation : 'Location not set',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+     
+        ],
+      ),
+    ),
+  );
+}
+
+  
+
   Future<void> _openGoogleMaps(HealthFacility facility) async {
     final Uri directionsUrl = Uri.parse(
       'https://www.google.com/maps/dir/?api=1&destination=${facility.latitude},${facility.longitude}',
@@ -256,54 +349,117 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
       body: Column(
         children: [
           // Location Header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.teal.shade50,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+          // Container(
+          //   width: double.infinity,
+          //   padding: const EdgeInsets.all(16),
+          //   decoration: BoxDecoration(
+          //     color: Colors.teal.shade50,
+          //     borderRadius: const BorderRadius.only(
+          //       bottomLeft: Radius.circular(20),
+          //       bottomRight: Radius.circular(20),
+          //     ),
+          //   ),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       Row(
+          //         children: [
+          //           Icon(Icons.location_on, color: Colors.teal, size: 20),
+          //           const SizedBox(width: 8),
+          //           AutoText(
+          //             'YL',
+          //             style: TextStyle(
+          //               fontSize: 14,
+          //               color: Colors.teal.shade700,
+          //               fontWeight: FontWeight.w500,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       const SizedBox(height: 4),
+          //       AutoText(
+          //         userFullLocation.isNotEmpty
+          //             ? userFullLocation
+          //             : 'LNS',
+          //         style: const TextStyle(
+          //           fontSize: 18,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //       const SizedBox(height: 8),
+          //       AutoText(
+          //         '${facilities.length} FF',
+          //         style: TextStyle(
+          //           fontSize: 14,
+          //           color: Colors.grey.shade600,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+
+                    Container(
+  width: double.infinity,
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.teal.shade50,
+    borderRadius: const BorderRadius.only(
+      bottomLeft: Radius.circular(20),
+      bottomRight: Radius.circular(20),
+    ),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.location_on, color: Colors.teal, size: 20),
+              const SizedBox(width: 8),
+              AutoText(
+                'YL',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.teal.shade700,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.teal, size: 20),
-                    const SizedBox(width: 8),
-                    AutoText(
-                      'YL',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.teal.shade700,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                AutoText(
-                  userFullLocation.isNotEmpty
-                      ? userFullLocation
-                      : 'LNS',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                AutoText(
-                  '${facilities.length} FF',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
+            ],
+          ),
+          // Add change location button
+          TextButton.icon(
+            onPressed: _showChangeLocationDialog,
+            icon: const Icon(Icons.edit_location_alt, size: 18),
+            label: const AutoText('CHANGE'),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.teal.shade700,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
           ),
+        ],
+      ),
+      const SizedBox(height: 4),
+      AutoText(
+        userFullLocation.isNotEmpty ? userFullLocation : 'LNS',
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const SizedBox(height: 8),
+      AutoText(
+        '${facilities.length} FF',
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade600,
+        ),
+      ),
+    ],
+  ),
+), 
+
 
           // Facilities List
           Expanded(

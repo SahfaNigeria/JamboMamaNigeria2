@@ -262,43 +262,94 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: AutoText('HOME_2'),
         centerTitle: true,
-        actions: [
-          StreamBuilder<int>(
-            stream: getUnreadNotificationCount(),
-            builder: (context, snapshot) {
-              int unreadCount = snapshot.data ?? 0;
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_active),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const NotificationsPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  if (unreadCount > 0)
-                    Positioned(
-                      right: 5,
-                      top: 5,
-                      child: Container(
-                        width: 13,
-                        height: 13,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                ],
+
+
+actions: [
+  StreamBuilder<int>(
+    stream: getUnreadNotificationCount(),
+    builder: (context, snapshot) {
+      int unreadCount = snapshot.data ?? 0;
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.notifications_active),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const NotificationsPage(),
+                ),
               );
             },
-          )
+          ),
+          if (unreadCount > 0)
+            Positioned(
+              right: 8,
+              top: 8,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                constraints: const BoxConstraints(
+                  minWidth: 20,
+                  minHeight: 20,
+                ),
+                child: Text(
+                  unreadCount > 99 ? '99+' : '$unreadCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
         ],
+      );
+    },
+  )
+]
+        // actions: [
+        //   StreamBuilder<int>(
+        //     stream: getUnreadNotificationCount(),
+        //     builder: (context, snapshot) {
+        //       int unreadCount = snapshot.data ?? 0;
+        //       return Stack(
+        //         clipBehavior: Clip.none,
+        //         children: [
+        //           IconButton(
+        //             icon: const Icon(Icons.notifications_active),
+        //             onPressed: () {
+        //               Navigator.push(
+        //                 context,
+        //                 MaterialPageRoute(
+        //                   builder: (_) => const NotificationsPage(),
+        //                 ),
+        //               );
+        //             },
+        //           ),
+        //           if (unreadCount > 0)
+        //             Positioned(
+        //               right: 5,
+        //               top: 5,
+        //               child: Container(
+        //                 width: 13,
+        //                 height: 13,
+        //                 decoration: const BoxDecoration(
+        //                   color: Colors.red,
+        //                   shape: BoxShape.circle,
+        //                 ),
+        //               ),
+        //             ),
+        //         ],
+        //       );
+        //     },
+        //   )
+        // ],
       ),
       drawer: widget.isHealthProvider
           ? HealthProviderHomeDrawer(
