@@ -73,7 +73,7 @@ class _LearnPageState extends State<LearnPage> {
                     ),
                     const SizedBox(width: 12),
                     AutoText(
-                      'Calculate Due Date',
+                      'C_D_D',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -152,7 +152,7 @@ class _LearnPageState extends State<LearnPage> {
                       onTap: () {
                          ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Create an account with us to enjoy the full app  '),
+                    content: AutoText('CREATE_ENJOY_APP'),
                     duration: Duration(seconds: 4),
                   ),
                 );
@@ -174,7 +174,7 @@ class _LearnPageState extends State<LearnPage> {
                       onTap: () {
                          ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Create an account with us to enjoy the full app'),
+                    content: AutoText('CREATE_ENJOY_APP'),
                     duration: Duration(seconds: 4),
                   ),
                 );

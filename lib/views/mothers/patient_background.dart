@@ -640,7 +640,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                         Icon(Icons.info_outline, color: Colors.orange[600]),
                         SizedBox(width: 8),
                         AutoText(
-                          'STN (${missingFields.length} ITEMS):',
+                          'STN (${missingFields.length}) ITEMS:',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],

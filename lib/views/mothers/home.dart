@@ -421,8 +421,8 @@ actions: [
                         ],
                       ),
                       if (currentWeek != null)
-                        Text(
-                          'Week $currentWeek',
+                        AutoText(
+                          'WEEK_2 $currentWeek',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.w500,
