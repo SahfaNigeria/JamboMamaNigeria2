@@ -41,9 +41,8 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
       final uid = _auth.currentUser!.uid;
 
       final query = await _firestore
-          .collection("connections")
-          .where("professionalId", isEqualTo: uid)
-          .where("status", isEqualTo: "connected")
+          .collection("allowed_to_chat")
+          .where("recipientId", isEqualTo: uid)
           .get();
 
       setState(() {
@@ -467,181 +466,14 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                   ),
               ],
             ),
-      floatingActionButton: !_hasChanges
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: _saveSchedule,
-              label: const AutoText("SAVE"),
-              icon: const Icon(Icons.save),
-              backgroundColor: Colors.green,
-            ),
+      // floatingActionButton: !_hasChanges
+      //     ? null
+      //     : FloatingActionButton.extended(
+      //         onPressed: _saveSchedule,
+      //         label: const AutoText("SAVE"),
+      //         icon: const Icon(Icons.save),
+      //         backgroundColor: Colors.green,
+      //       ),
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-
-// class AvailabilitySchedulePage extends StatefulWidget {
-//   @override
-//   _AvailabilitySchedulePageState createState() =>
-//       _AvailabilitySchedulePageState();
-// }
-
-// class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
-//   final _auth = FirebaseAuth.instance;
-//   final _firestore = FirebaseFirestore.instance;
-
-//   final List<String> _days = [
-//     "Monday",
-//     "Tuesday",
-//     "Wednesday",
-//     "Thursday",
-//     "Friday",
-//     "Saturday",
-//     "Sunday"
-//   ];
-
-//   Map<String, Map<String, String>> _availability = {};
-//   int _connectedPatients = 0;
-//   bool _isLoadingPatients = true;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _fetchConnectedPatients();
-//   }
-
-//   Future<void> _fetchConnectedPatients() async {
-//     try {
-//       final uid = _auth.currentUser!.uid;
-
-//       final query = await _firestore
-//           .collection("connections")
-//           .where("professionalId", isEqualTo: uid)
-//           .where("status", isEqualTo: "connected")
-//           .get();
-
-//       setState(() {
-//         _connectedPatients = query.docs.length;
-//         _isLoadingPatients = false;
-//       });
-//     } catch (e) {
-//       setState(() => _isLoadingPatients = false);
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text("Error loading patients: $e")),
-//       );
-//     }
-//   }
-
-//   Future<void> _pickTime(String day, bool isStart) async {
-//     final picked = await showTimePicker(
-//       context: context,
-//       initialTime: TimeOfDay.now(),
-//     );
-
-//     if (picked != null) {
-//       setState(() {
-//         if (!_availability.containsKey(day)) {
-//           _availability[day] = {"start": "", "end": ""};
-//         }
-//         _availability[day]![isStart ? "start" : "end"] =
-//             picked.format(context);
-//       });
-//     }
-//   }
-
-//   Future<void> _saveSchedule() async {
-//     try {
-//       final uid = _auth.currentUser!.uid;
-//       await _firestore
-//           .collection('medical_professionals')
-//           .doc(uid)
-//           .set({"availability": _availability}, SetOptions(merge: true));
-
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("Availability saved successfully")),
-//       );
-//     } catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text("Error: $e")),
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Availability Schedule")),
-//       body: Column(
-//         children: [
-//           // Connected Patients Info
-//           Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: _isLoadingPatients
-//                 ? const CircularProgressIndicator()
-//                 : Card(
-//                     color: Colors.blue.shade50,
-//                     shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(12)),
-//                     child: Padding(
-//                       padding: const EdgeInsets.all(16.0),
-//                       child: Row(
-//                         children: [
-//                           const Icon(Icons.people, color: Colors.blue, size: 32),
-//                           const SizedBox(width: 12),
-//                           Text(
-//                             "Connected Patients: $_connectedPatients",
-//                             style: const TextStyle(
-//                                 fontSize: 18, fontWeight: FontWeight.w600),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//           ),
-
-//           // Availability List
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: _days.length,
-//               itemBuilder: (context, index) {
-//                 String day = _days[index];
-//                 return Card(
-//                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-//                   child: ListTile(
-//                     title: Text(day),
-//                     subtitle: Text(
-//                       _availability[day] != null
-//                           ? "Start: ${_availability[day]!['start']} - End: ${_availability[day]!['end']}"
-//                           : "Not Set",
-//                     ),
-//                     trailing: Row(
-//                       mainAxisSize: MainAxisSize.min,
-//                       children: [
-//                         IconButton(
-//                           icon: const Icon(Icons.access_time),
-//                           onPressed: () => _pickTime(day, true),
-//                         ),
-//                         IconButton(
-//                           icon: const Icon(Icons.schedule),
-//                           onPressed: () => _pickTime(day, false),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//       floatingActionButton: FloatingActionButton.extended(
-//         onPressed: _saveSchedule,
-//         label: const Text("Save"),
-//         icon: const Icon(Icons.save),
-//       ),
-//     );
-//   }
-// }

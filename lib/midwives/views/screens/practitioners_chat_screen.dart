@@ -3,38 +3,58 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfessionalChatScreen extends StatelessWidget {
+class ProfessionalChatScreen extends StatefulWidget {
   final String chatId;
   final String recipientName;
 
   ProfessionalChatScreen({required this.chatId, required this.recipientName});
 
+  @override
+  _ProfessionalChatScreenState createState() => _ProfessionalChatScreenState();
+}
+
+class _ProfessionalChatScreenState extends State<ProfessionalChatScreen> {
   final TextEditingController _messageController = TextEditingController();
 
-  void sendMessage(String text) {
+  void sendMessage() {
+    // Get the text and trim whitespace
+    final text = _messageController.text.trim();
+
+    // Don't send if empty
+    if (text.isEmpty) {
+      return;
+    }
+
     FirebaseFirestore.instance
         .collection('health_practitioners_chat')
-        .doc(chatId)
+        .doc(widget.chatId)
         .collection('messages')
         .add({
       'senderId': FirebaseAuth.instance.currentUser!.uid,
       'text': text,
       'timestamp': FieldValue.serverTimestamp(),
     });
+
     _messageController.clear();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: AutoText('CHAT_WITH $recipientName')),
+      appBar: AppBar(title: AutoText('CHAT_WITH ${widget.recipientName}')),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('health_practitioners_chat')
-                  .doc(chatId)
+                  .doc(widget.chatId)
                   .collection('messages')
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
@@ -86,11 +106,12 @@ class ProfessionalChatScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
+                    onSubmitted: (_) => sendMessage(),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.send, color: Colors.blue),
-                  onPressed: () => sendMessage(_messageController.text),
+                  onPressed: sendMessage,
                 ),
               ],
             ),
@@ -100,3 +121,106 @@ class ProfessionalChatScreen extends StatelessWidget {
     );
   }
 }
+
+// import 'package:auto_i8ln/auto_i8ln.dart';
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+
+// class ProfessionalChatScreen extends StatelessWidget {
+//   final String chatId;
+//   final String recipientName;
+
+//   ProfessionalChatScreen({required this.chatId, required this.recipientName});
+
+//   final TextEditingController _messageController = TextEditingController();
+
+//   void sendMessage(String text) {
+//     FirebaseFirestore.instance
+//         .collection('health_practitioners_chat')
+//         .doc(chatId)
+//         .collection('messages')
+//         .add({
+//       'senderId': FirebaseAuth.instance.currentUser!.uid,
+//       'text': text,
+//       'timestamp': FieldValue.serverTimestamp(),
+//     });
+//     _messageController.clear();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: AutoText('CHAT_WITH $recipientName')),
+//       body: Column(
+//         children: [
+//           Expanded(
+//             child: StreamBuilder<QuerySnapshot>(
+//               stream: FirebaseFirestore.instance
+//                   .collection('health_practitioners_chat')
+//                   .doc(chatId)
+//                   .collection('messages')
+//                   .orderBy('timestamp', descending: true)
+//                   .snapshots(),
+//               builder: (context, snapshot) {
+//                 if (!snapshot.hasData) {
+//                   return Center(child: CircularProgressIndicator());
+//                 }
+//                 var messages = snapshot.data!.docs;
+//                 return ListView.builder(
+//                   reverse: true,
+//                   itemCount: messages.length,
+//                   itemBuilder: (context, index) {
+//                     var message = messages[index];
+//                     bool isMe = message['senderId'] ==
+//                         FirebaseAuth.instance.currentUser!.uid;
+//                     return ListTile(
+//                       title: Align(
+//                         alignment:
+//                             isMe ? Alignment.centerRight : Alignment.centerLeft,
+//                         child: Container(
+//                           padding: EdgeInsets.all(10),
+//                           decoration: BoxDecoration(
+//                             color: isMe ? Colors.blue : Colors.grey[300],
+//                             borderRadius: BorderRadius.circular(10),
+//                           ),
+//                           child: Text(
+//                             message['text'],
+//                             style: TextStyle(
+//                                 color: isMe ? Colors.white : Colors.black),
+//                           ),
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                 );
+//               },
+//             ),
+//           ),
+//           Padding(
+//             padding: EdgeInsets.all(8.0),
+//             child: Row(
+//               children: [
+//                 Expanded(
+//                   child: TextField(
+//                     controller: _messageController,
+//                     decoration: InputDecoration(
+//                       hintText: autoI8lnGen.translate("TYPE_A_MESSAGE"),
+//                       border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(20),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//                 IconButton(
+//                   icon: Icon(Icons.send, color: Colors.blue),
+//                   onPressed: () => sendMessage(_messageController.text),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
