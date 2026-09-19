@@ -1082,7 +1082,6 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     Row(
                       children: [
                         Icon(Icons.info_outline, color: Colors.orange[600]),
-<<<<<<< HEAD
                         const SizedBox(width: 8),
                         Expanded(
                           child: AutoText(
@@ -1091,12 +1090,11 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),
-=======
+                        ),
                         SizedBox(width: 8),
                         AutoText(
                           'STN (${missingFields.length}) ITEMS:',
                           style: TextStyle(fontWeight: FontWeight.bold),
->>>>>>> 7c75b4fe485e98feaff852c3db9cb8d85bd2d975
                         ),
                       ],
                     ),
@@ -1744,7 +1742,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoText('P_T_B'),
+        title: AutoText('P_T_B', style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue[700],
       ),
       body: Form(
@@ -2731,8 +2729,6 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
     super.dispose();
   }
 }
-
-
 
 // import 'package:auto_i8ln/auto_i8ln.dart';
 // import 'package:flutter/material.dart';

@@ -38,11 +38,15 @@ class _MidwiveResgisteratioScreenState
   Uint8List? image;
   bool _isImageSelected = false;
 
-  selectImageFromGallery() async {
-    Uint8List im = await _controller.pickMidwifeImage(ImageSource.gallery);
+  Future<void> selectImageFromGallery() async {
+    final selectedImage =
+        await _controller.pickMidwifeImage(ImageSource.gallery);
+
+    if (selectedImage == null || !mounted) return;
+
     setState(() {
-      image = im;
-      _isImageSelected = true; // Set to true when image is selected
+      image = selectedImage;
+      _isImageSelected = true;
     });
   }
 
@@ -76,9 +80,7 @@ class _MidwiveResgisteratioScreenState
       _formKey.currentState?.reset();
       image = null;
       _isImageSelected = false;
-    
     } else {
-      
       EasyLoading.dismiss();
     }
   }
@@ -90,54 +92,54 @@ class _MidwiveResgisteratioScreenState
         slivers: [
           SliverAppBar(
             backgroundColor: Colors.red,
-            toolbarHeight: 200,
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraint) {
-                return FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.grey, Colors.red, Colors.grey],
-                      ),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 90,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: image != null
-                                ? Image.memory(
-                                    image!,
-                                    fit: BoxFit.cover,
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      selectImageFromGallery();
-                                    },
-                                    icon: Icon(Icons.photo),
-                                  ),
+            expandedHeight: 220,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.grey, Colors.red, Colors.grey],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 56),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 90,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          if (!_isImageSelected)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: AutoText(
-                                'PP_REQUIRED',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                              ),
+                          child: image != null
+                              ? Image.memory(
+                                  image!,
+                                  fit: BoxFit.cover,
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    selectImageFromGallery();
+                                  },
+                                  icon: Icon(Icons.photo),
+                                ),
+                        ),
+                        if (!_isImageSelected)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: AutoText(
+                              'PP_REQUIRED',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -291,12 +293,8 @@ class _MidwiveResgisteratioScreenState
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: InternationalPhoneNumberInput(
-                        onInputChanged: (PhoneNumber number) {
-                     
-                        },
-                        onInputValidated: (bool value) {
-                         
-                        },
+                        onInputChanged: (PhoneNumber number) {},
+                        onInputValidated: (bool value) {},
                         selectorConfig: SelectorConfig(
                           selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                         ),
@@ -309,9 +307,7 @@ class _MidwiveResgisteratioScreenState
                         keyboardType: TextInputType.numberWithOptions(
                             signed: true, decimal: true),
                         inputBorder: OutlineInputBorder(),
-                        onSaved: (PhoneNumber number) {
-                        
-                        },
+                        onSaved: (PhoneNumber number) {},
                       ),
                     ),
                     SizedBox(

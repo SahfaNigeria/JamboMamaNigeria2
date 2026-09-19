@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
 import 'package:jambomama_nigeria/controllers/notifications.dart';
+import 'package:jambomama_nigeria/midwives/contollers/controllers.dart';
 import 'package:jambomama_nigeria/midwives/views/components/drop_down_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +34,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String stateValue = "";
   String cityValue = "";
   String villageTown = "";
+  String _profileImageUrl = '';
+  Uint8List? _selectedProfileImage;
 
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -67,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         .doc(user!.uid)
         .get();
 
-    if (!doc.exists) return;
+    if (!doc.exists || !mounted) return;
 
     final data = doc.data()!;
 
@@ -77,7 +83,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       stateValue = data['stateValue'] ?? "";
       cityValue = data['cityValue'] ?? "";
       villageTown = data['villageTown'] ?? "";
+      _profileImageUrl = data['midWifeImage'] ?? "";
     });
+  }
+
+  Future<void> _pickProfileImage(
+      void Function(void Function()) setModalState) async {
+    final selectedImage =
+        await MidwifeController().pickMidwifeImage(ImageSource.gallery);
+
+    if (selectedImage == null || !mounted) return;
+
+    setState(() {
+      _selectedProfileImage = selectedImage;
+    });
+    setModalState(() {});
+  }
+
+  ImageProvider? _profileImageProvider(Uint8List? selectedImage) {
+    if (selectedImage != null) return MemoryImage(selectedImage);
+    if (_profileImageUrl.isEmpty) return null;
+    return NetworkImage(_profileImageUrl);
   }
 
   // -------------------------
@@ -91,6 +117,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     try {
+      String? uploadedImageUrl;
+      if (_selectedProfileImage != null) {
+        uploadedImageUrl = await MidwifeController()
+            .saveMidwifeImageToStorage(_selectedProfileImage!);
+      }
+
       await FirebaseFirestore.instance
           .collection('Health Professionals')
           .doc(user!.uid)
@@ -100,25 +132,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'stateValue': stateController.text,
         'cityValue': cityController.text,
         'villageTown': townController.text,
+        if (uploadedImageUrl != null) 'midWifeImage': uploadedImageUrl,
       });
 
-      // Update UI immediately
-      setState(() {
-        fullName = fullNameController.text;
-        hospital = hospitalController.text;
-        stateValue = stateController.text;
-        cityValue = cityController.text;
-        villageTown = townController.text;
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          fullName = fullNameController.text;
+          hospital = hospitalController.text;
+          stateValue = stateController.text;
+          cityValue = cityController.text;
+          villageTown = townController.text;
+          if (uploadedImageUrl != null) {
+            _profileImageUrl = uploadedImageUrl;
+            _selectedProfileImage = null;
+          }
+          isLoading = false;
+        });
+      }
 
       _showSuccessSnackBar("Profile updated successfully");
       return true;
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      _showErrorSnackBar("Error updating profile: $e");
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+        _showErrorSnackBar("Error updating profile: $e");
+      }
       return false;
     }
   }
@@ -206,55 +246,84 @@ class _SettingsScreenState extends State<SettingsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16,
-            right: 16,
-            top: 16,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AutoText('EDIT_PROFILE',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(height: 16),
-                _buildTextField(
-                    label: autoI8lnGen.translate("FULL_NAME"),
-                    controller: fullNameController),
-                _buildTextField(
-                    label: autoI8lnGen.translate("HOSPITAL"),
-                    controller: hospitalController),
-                _buildTextField(
-                    label: autoI8lnGen.translate("STATE"),
-                    controller: stateController),
-                _buildTextField(
-                    label: autoI8lnGen.translate("CITY"),
-                    controller: cityController),
-                _buildTextField(
-                    label: autoI8lnGen.translate("TOWN"),
-                    controller: townController),
-                SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: isLoading
-                        ? null
-                        : () async {
-                            final ok = await _saveProfileChanges();
-                            if (ok && mounted) Navigator.pop(context);
-                          },
-                    child: isLoading
-                        ? CircularProgressIndicator(strokeWidth: 2)
-                        : AutoText('SAVE_CHANGES'),
-                  ),
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AutoText('EDIT_PROFILE',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16),
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 48,
+                          backgroundImage:
+                              _profileImageProvider(_selectedProfileImage),
+                          child: _profileImageProvider(_selectedProfileImage) ==
+                                  null
+                              ? Icon(Icons.person, size: 48)
+                              : null,
+                        ),
+                        IconButton(
+                          onPressed: () => _pickProfileImage(setModalState),
+                          icon: Icon(Icons.camera_alt),
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    _buildTextField(
+                        label: autoI8lnGen.translate("FULL_NAME"),
+                        controller: fullNameController),
+                    _buildTextField(
+                        label: autoI8lnGen.translate("HOSPITAL"),
+                        controller: hospitalController),
+                    _buildTextField(
+                        label: autoI8lnGen.translate("STATE"),
+                        controller: stateController),
+                    _buildTextField(
+                        label: autoI8lnGen.translate("CITY"),
+                        controller: cityController),
+                    _buildTextField(
+                        label: autoI8lnGen.translate("TOWN"),
+                        controller: townController),
+                    SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                                final ok = await _saveProfileChanges();
+                                if (ok && mounted && Navigator.canPop(context))
+                                  Navigator.pop(context);
+                              },
+                        child: isLoading
+                            ? CircularProgressIndicator(strokeWidth: 2)
+                            : AutoText('SAVE_CHANGES'),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                  ],
                 ),
-                SizedBox(height: 16),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -301,6 +370,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildProfileSection() => Card(
         elevation: 2,
         child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: _profileImageProvider(null),
+            child:
+                _profileImageProvider(null) == null ? Icon(Icons.person) : null,
+          ),
           title: Text(fullName, style: TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(widget.email),
           trailing: TextButton(

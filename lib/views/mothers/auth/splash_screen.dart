@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jambomama_nigeria/midwives/views/auth/auth_screen.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -12,27 +13,40 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void _navigateTo() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("isHealthProffessional")) {
-      if (prefs.getBool("isHealthProffessional") == true) {
-        Navigator.pushReplacementNamed(context, '/MidWifeHomePage');
-      } else {
-        Navigator.pushReplacementNamed(context, '/HomePage');
-      }
-    } else {
+    final isLoggedIn = await SessionManager.isLoggedIn();
+    if (!mounted) return;
+
+    if (!isLoggedIn) {
       Navigator.pushReplacementNamed(context, '/login_register');
+      return;
+    }
+
+    final isHealthProfessional = await SessionManager.isHealthProfessional();
+    final profileComplete = await SessionManager.isProfileComplete();
+    if (!mounted) return;
+
+    if (!profileComplete && isHealthProfessional) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MidwiveAuthScreen()),
+      );
+    } else if (isHealthProfessional) {
+      Navigator.pushReplacementNamed(context, '/MidWifeHomePage');
+    } else {
+      Navigator.pushReplacementNamed(context, '/HomePage');
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Timer(
       const Duration(
         seconds: 2,
       ),
-      () => _navigateTo(),
+      () {
+        if (mounted) _navigateTo();
+      },
     );
   }
 

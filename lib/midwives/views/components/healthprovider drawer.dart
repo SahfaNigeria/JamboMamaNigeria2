@@ -8,7 +8,7 @@ import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/patients.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/settings_screens.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 class HealthProviderHomeDrawer extends StatefulWidget {
   final String email;
@@ -39,9 +39,7 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future logout() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    sharedPreferences.clear();
+    await SessionManager.clearSession();
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginOrRegister()),
@@ -161,4 +159,3 @@ class _HealthProviderHomeDrawerState extends State<HealthProviderHomeDrawer> {
     );
   }
 }
-

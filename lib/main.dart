@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 import 'locale/localization_service.dart';
+
 import 'midwives/views/auth/auth_screen.dart';
 import 'midwives/views/auth/mid_wive_forgotten_password_page.dart';
 import 'midwives/views/auth/mid_wive_sign_in_page.dart';

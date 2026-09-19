@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,7 +15,7 @@ class AuthController {
 
   // --- IMAGE HELPERS (Maintained logic) ---
 
-  uploadProfileImageToStorage(Uint8List image) async {
+  Future<String> uploadProfileImageToStorage(Uint8List image) async {
     Reference ref = _firebaseStorage
         .ref()
         .child('ProfilePictures')
@@ -27,13 +27,13 @@ class AuthController {
     return downloadUrl;
   }
 
-  pickProfileImage(ImageSource source) async {
+  Future<Uint8List?> pickProfileImage(ImageSource source) async {
     final ImagePicker _imagePicker = ImagePicker();
     XFile? _file = await _imagePicker.pickImage(source: source);
 
-    if (_file != null) {
-      return await _file.readAsBytes();
-    }
+    if (_file == null) return null;
+
+    return _file.readAsBytes();
   }
 
   // --- NOTIFICATION HELPERS ---
@@ -161,6 +161,11 @@ class AuthController {
         await saveFcmToken('New Mothers');
         await subscribeToRoleTopic('mother');
 
+        await SessionManager.saveSession(
+          isHealthProfessional: false,
+          profileComplete: true,
+        );
+
         res = 'success';
       } else {
         res = 'FIELDS_EMPTY';
@@ -213,14 +218,14 @@ class AuthController {
 
             DocumentSnapshot newMotherDoc = results[0];
             DocumentSnapshot healthProfessionalDoc = results[1];
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
-
             if (newMotherDoc.exists) {
               // FIX 1: Added await — token must finish saving before navigation
               await saveFcmToken('New Mothers');
               await subscribeToRoleTopic('mother');
-              prefs.setBool("isHealthProffessional", false);
+              await SessionManager.saveSession(
+                isHealthProfessional: false,
+                profileComplete: true,
+              );
               res = 'success';
               Navigator.pushReplacementNamed(context, '/HomePage');
             } else if (healthProfessionalDoc.exists) {
@@ -229,7 +234,10 @@ class AuthController {
                 // FIX 1: Added await here too
                 await saveFcmToken('Health Professionals');
                 await subscribeToRoleTopic('health_provider');
-                prefs.setBool("isHealthProffessional", true);
+                await SessionManager.saveSession(
+                  isHealthProfessional: true,
+                  profileComplete: true,
+                );
                 res = 'success';
                 Navigator.pushReplacementNamed(context, '/MidWifeHomePage');
               } else {
@@ -309,6 +317,7 @@ class AuthController {
   }
 
   Future<void> signOutUser() async {
+    await SessionManager.clearSession();
     await _auth.signOut();
   }
 

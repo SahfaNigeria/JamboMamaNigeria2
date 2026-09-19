@@ -1,5 +1,6 @@
 import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 class MAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -11,24 +12,36 @@ class MAuthService {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   // Sign in with email and password
-  Future<UserCredential> signInWithEmailAndPassword(String email, String password) async {
+  Future<UserCredential> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
-      return await _auth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      await SessionManager.saveSession(
+        isHealthProfessional: true,
+        profileComplete: true,
+      );
+      return credential;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     }
   }
 
   // Create user with email and password
-  Future<UserCredential> createUserWithEmailAndPassword(String email, String password) async {
+  Future<UserCredential> createUserWithEmailAndPassword(
+      String email, String password) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      await SessionManager.saveSession(
+        isHealthProfessional: true,
+        profileComplete: false,
+      );
+      return credential;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     }
@@ -45,6 +58,7 @@ class MAuthService {
 
   // Sign out
   Future<void> signOut() async {
+    await SessionManager.clearSession();
     await _auth.signOut();
   }
 
@@ -62,9 +76,11 @@ class MAuthService {
       case 'invalid-email':
         return autoI8lnGen.translate("THE_A_V");
       case 'user-disabled':
-        return autoI8lnGen.translate("D_ACCOUNT");;
+        return autoI8lnGen.translate("D_ACCOUNT");
+        ;
       case 'too-many-requests':
-        return autoI8lnGen.translate("TRTL");;
+        return autoI8lnGen.translate("TRTL");
+        ;
       default:
         return autoI8lnGen.translate("ERR_CCRD");
     }

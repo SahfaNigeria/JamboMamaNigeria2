@@ -1,17 +1,17 @@
 class MidWifeUserModels {
-  bool approved;
-  String midWifeId;
-  String fullName;
-  String email;
-  String phoneNumber;
-  String healthFacility;
-  String position;
-  String qualificationNumber;
-  String villageTown;
-  String countryValue;
-  String cityValue;
-  String stateValue;
-  String midWifeImage;
+  bool? approved;
+  String? midWifeId;
+  String? fullName;
+  String? email;
+  String? phoneNumber;
+  String? healthFacility;
+  String? position;
+  String? qualificationNumber;
+  String? villageTown;
+  String? countryValue;
+  String? cityValue;
+  String? stateValue;
+  String? midWifeImage;
 
   MidWifeUserModels(
       {required this.approved,
@@ -30,19 +30,19 @@ class MidWifeUserModels {
 
   MidWifeUserModels.fromJson(Map<String, Object?> json)
       : this(
-          approved: json['approved']! as bool,
-          midWifeId: json['midWifeId']! as String,
-          fullName: json['fullName']! as String,
-          email: json['email']! as String,
-          phoneNumber: json['phoneNumber']! as String,
-          healthFacility: json['healthFacility']! as String,
-          position: json['position']! as String,
-          qualificationNumber: json['qualificationNumber']! as String,
-          villageTown: json['villageTown']! as String,
-          countryValue: json['countryValue']! as String,
-          cityValue: json['cityValue']! as String,
-          stateValue: json['stateValue']! as String,
-          midWifeImage: json['midWifeImage']! as String,
+          approved: json['approved'] as bool?,
+          midWifeId: json['midWifeId'] as String?,
+          fullName: json['fullName'] as String?,
+          email: json['email'] as String?,
+          phoneNumber: json['phoneNumber'] as String?,
+          healthFacility: json['healthFacility'] as String?,
+          position: json['position'] as String?,
+          qualificationNumber: json['qualificationNumber'] as String?,
+          villageTown: json['villageTown'] as String?,
+          countryValue: json['countryValue'] as String?,
+          cityValue: json['cityValue'] as String?,
+          stateValue: json['stateValue'] as String?,
+          midWifeImage: json['midWifeImage'] as String?,
         );
 
   Map<String, Object?> toJson() {

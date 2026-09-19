@@ -9,7 +9,7 @@ import 'package:jambomama_nigeria/views/mothers/patient_background.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
 import 'package:jambomama_nigeria/views/mothers/match.dart';
 import 'package:jambomama_nigeria/views/mothers/settings_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 import '../views/mothers/home.dart';
 
@@ -65,8 +65,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    await SessionManager.clearSession();
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginOrRegister()),
@@ -228,7 +227,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 }
-
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';

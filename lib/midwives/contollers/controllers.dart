@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 class MidwifeController {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -12,19 +13,19 @@ class MidwifeController {
 
   //Function that picks images from device
 
-  pickMidwifeImage(ImageSource source) async {
+  Future<Uint8List?> pickMidwifeImage(ImageSource source) async {
     // This Function  picks images from device
     final ImagePicker _imagePicker = ImagePicker();
 
     XFile? _file = await _imagePicker.pickImage(source: source);
-    if (_file != null) {
-      return await _file.readAsBytes();
-    } else {}
+    if (_file == null) return null;
+
+    return _file.readAsBytes();
   }
 
   //Function that picks images from device ends
 
-  saveMidwifeImageToStorage(Uint8List image) async {
+  Future<String> saveMidwifeImageToStorage(Uint8List image) async {
     // This Function saves  the image to firestore STORAGE
 
     Reference ref = _storage

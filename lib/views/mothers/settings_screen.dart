@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/controllers/forgot_password.dart';
 import 'package:jambomama_nigeria/midwives/views/components/drop_down_button.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/edit_edd.dart';
@@ -41,6 +45,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late String cityValue;
   late String villageTown;
   late String address;
+  String _profileImageUrl = '';
+  Uint8List? _selectedProfileImage;
 
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController fullNameController = TextEditingController();
@@ -63,6 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     address = widget.address;
 
     _loadSettings();
+    _loadProfileImage();
 
     // Initialize controllers with current data
     fullNameController.text = userName;
@@ -84,6 +91,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
+  Future<void> _loadProfileImage() async {
+    if (user == null) return;
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('New Mothers')
+          .doc(user!.uid)
+          .get();
+
+      if (snapshot.exists && mounted) {
+        setState(() {
+          _profileImageUrl = snapshot.data()?['profileImage'] as String? ?? '';
+        });
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _pickProfileImage(
+      void Function(void Function()) setModalState) async {
+    final selectedImage =
+        await AuthController().pickProfileImage(ImageSource.gallery);
+
+    if (selectedImage == null || !mounted) return;
+
+    setState(() {
+      _selectedProfileImage = selectedImage;
+    });
+    setModalState(() {});
+  }
+
+  ImageProvider? _profileImageProvider(Uint8List? selectedImage) {
+    if (selectedImage != null) return MemoryImage(selectedImage);
+    if (_profileImageUrl.isEmpty) return null;
+    if (_profileImageUrl.startsWith('http://') ||
+        _profileImageUrl.startsWith('https://')) {
+      return NetworkImage(_profileImageUrl);
+    }
+    return AssetImage(_profileImageUrl);
+  }
+
   Future<bool> _saveProfileChanges() async {
     if (user == null) {
       _showErrorSnackBar(autoI8lnGen.translate("NO_USER_SIGNED_IN"));
@@ -95,6 +142,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     try {
+      String? uploadedImageUrl;
+      if (_selectedProfileImage != null) {
+        uploadedImageUrl = await AuthController()
+            .uploadProfileImageToStorage(_selectedProfileImage!);
+      }
+
       // Update data in Firestore
       await FirebaseFirestore.instance
           .collection('New Mothers')
@@ -106,6 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'cityValue': cityController.text,
         'villageTown': townController.text,
         'address': addressController.text,
+        if (uploadedImageUrl != null) 'profileImage': uploadedImageUrl,
       });
 
       // Only update local state after successful Firestore update
@@ -118,6 +172,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           cityValue = cityController.text;
           villageTown = townController.text;
           address = addressController.text;
+          if (uploadedImageUrl != null) {
+            _profileImageUrl = uploadedImageUrl;
+            _selectedProfileImage = null;
+          }
           isLoading = false;
         });
       }
@@ -238,6 +296,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 16),
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 48,
+                          backgroundImage:
+                              _profileImageProvider(_selectedProfileImage),
+                          child: _profileImageProvider(_selectedProfileImage) ==
+                                  null
+                              ? Icon(Icons.person, size: 48)
+                              : null,
+                        ),
+                        IconButton(
+                          onPressed: () => _pickProfileImage(setModalState),
+                          icon: Icon(Icons.camera_alt),
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
                     _buildTextField(
                       label: autoI8lnGen.translate("FULL_NAME"),
                       controller: fullNameController,
@@ -346,6 +428,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildProfileSection(BuildContext context) => Card(
         elevation: 2,
         child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: _profileImageProvider(null),
+            child:
+                _profileImageProvider(null) == null ? Icon(Icons.person) : null,
+          ),
           title: Text(userName, style: TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(widget.email),
           trailing: TextButton(

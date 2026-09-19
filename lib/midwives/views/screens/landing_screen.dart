@@ -6,6 +6,7 @@ import 'package:jambomama_nigeria/midwives/models/midwife_user_models.dart';
 import 'package:jambomama_nigeria/midwives/views/auth/midwive_registeration_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/home.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
+import 'package:jambomama_nigeria/utils/session_manager.dart';
 
 class LandingScreen extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class _LandingScreenState extends State<LandingScreen> {
       FirebaseFirestore.instance.collection('Health Professionals');
 
   Future logout() async {
+    await SessionManager.clearSession();
     await _auth.signOut().then((value) => Navigator.of(context)
         .pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginOrRegister()),

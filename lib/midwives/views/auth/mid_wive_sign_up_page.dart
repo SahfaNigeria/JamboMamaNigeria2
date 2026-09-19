@@ -11,8 +11,6 @@ class MidWiveSignUpPage extends StatefulWidget {
 }
 
 class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
-
-
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -31,30 +29,33 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
   }
 
   Future<void> _register() async {
-    if (mounted) {
-      if (!_formKey.currentState!.validate()) return;
-      
+    if (!mounted || !_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _authService.createUserWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: AutoText('R_M_S')),
+      );
+      // Navigator.pushReplacementNamed(context, '/signin');
+    } catch (e) {
+      if (!mounted) return;
+
       setState(() {
-        _isLoading = true;
-        _errorMessage = null;
+        _errorMessage = e.toString();
       });
-      
-      try {
-        await _authService.createUserWithEmailAndPassword(
-          _emailController.text.trim(),
-          _passwordController.text,
-        );
-      
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AutoText('R_M_S')),
-        );
-        //
-        // Navigator.pushReplacementNamed(context, '/signin');
-      } catch (e) {
-        setState(() {
-          _errorMessage = e.toString();
-        });
-      } finally {
+    } finally {
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });

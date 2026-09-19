@@ -480,10 +480,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-<<<<<<< HEAD
                       // ── Replaced hardcoded week text with smart badge ──
                       _buildWeekBadge(),
-=======
                       if (currentWeek != null)
                         AutoText(
                           'WEEK_2 $currentWeek',
@@ -493,7 +491,6 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 12,
                           ),
                         ),
->>>>>>> 7c75b4fe485e98feaff852c3db9cb8d85bd2d975
                     ],
                   ),
                 ),

@@ -40,7 +40,8 @@ class AllowedToChatScreen extends StatelessWidget {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-              child: AutoText('ERROR_17'),
+              child: Padding(
+                  padding: EdgeInsets.all(16.0), child: AutoText('ERROR_17')),
             );
           }
 
@@ -435,8 +436,7 @@ class AllowedToChatScreen extends StatelessWidget {
             final endTime = _parseTimeString(endTimeStr);
 
             if (endTime != null) {
-              final currentMinutes =
-                  currentTime.hour * 60 + currentTime.minute;
+              final currentMinutes = currentTime.hour * 60 + currentTime.minute;
               final endMinutes = endTime.hour * 60 + endTime.minute;
 
               if (currentMinutes < endMinutes) {
@@ -535,7 +535,6 @@ class AllowedToChatScreen extends StatelessWidget {
     );
   }
 }
-
 
 // import 'package:auto_i8ln/auto_i8ln.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
