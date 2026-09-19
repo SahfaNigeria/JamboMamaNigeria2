@@ -3,8 +3,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/controllers/chat_service_mothers.dart';
+import 'package:jambomama_nigeria/providers/connection_provider.dart';
+import 'package:provider/provider.dart';
 
 class AllowedToChatScreen extends StatelessWidget {
+  // IMPORTANT: These keys must match exactly what's stored in Firestore
+  // under medical_professionals/{id}/availability. They must NOT be
+  // translated, or lookups silently break whenever the app locale changes.
+  static const _dayKeys = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -126,6 +141,19 @@ class AllowedToChatScreen extends StatelessWidget {
                             ),
                           SizedBox(height: 4),
                           _buildAvailabilityStatus(availabilityData),
+
+                          const Divider(),
+
+                          // Delete Button:
+
+                          TextButton.icon(
+                            onPressed: () => _confirmDeletion(
+                                context, userId, requesterId, userName),
+                            icon: const Icon(Icons.person_remove,
+                                color: Colors.red),
+                            label: const AutoText("DISCONNECT_PROVIDER",
+                                style: TextStyle(color: Colors.red)),
+                          ),
                         ],
                       ),
                       trailing: IconButton(
@@ -265,18 +293,11 @@ class AllowedToChatScreen extends StatelessWidget {
   }
 
   List<Widget> _buildWeeklySchedule(Map<String, dynamic> availabilityData) {
-    final days = [
-      autoI8lnGen.translate("MONDAY"),
-      autoI8lnGen.translate("TUESDAY"),
-      autoI8lnGen.translate("WEDNESDAY"),
-      autoI8lnGen.translate("THURSDAY"),
-      autoI8lnGen.translate("FRIDAY"),
-      autoI8lnGen.translate("SATURDAY"),
-      autoI8lnGen.translate("SUNDAY"),
-    ];
-
-    return days.map((day) {
-      final dayData = availabilityData[day] as Map<String, dynamic>?;
+    return List.generate(7, (index) {
+      final weekday = index + 1; // 1 = Monday ... 7 = Sunday
+      final dayKey = _getDayKey(weekday);
+      final dayLabel = _getDayLabel(weekday);
+      final dayData = availabilityData[dayKey] as Map<String, dynamic>?;
 
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 4),
@@ -285,7 +306,7 @@ class AllowedToChatScreen extends StatelessWidget {
             SizedBox(
               width: 80,
               child: Text(
-                day,
+                dayLabel,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: Colors.grey.shade700,
@@ -296,7 +317,7 @@ class AllowedToChatScreen extends StatelessWidget {
           ],
         ),
       );
-    }).toList();
+    });
   }
 
   Widget _buildDaySchedule(Map<String, dynamic>? dayData) {
@@ -350,12 +371,17 @@ class AllowedToChatScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: AutoText('PROVIDER_NOT_AVAILABLE_TITLE'), // "PROVIDER_NOT_AVAILABLE_TITLE": "Provider Not Available"
-        content: AutoText( // "PROVIDER_NOT_AVAILABLE_MESSAGE": "This health provider is not available at the moment.\n\nPlease check their availability schedule or contact them during their working hours. In case of an emergency, go to the nearest health facility."
+        title: AutoText(
+            'PROVIDER_NOT_AVAILABLE_TITLE'), // "PROVIDER_NOT_AVAILABLE_TITLE": "Provider Not Available"
+        content: AutoText(
+          // "PROVIDER_NOT_AVAILABLE_MESSAGE": "This health provider is not available at the moment.\n\nPlease check their availability schedule or contact them during their working hours. In case of an emergency, go to the nearest health facility."
           'PROVIDER_NOT_AVAILABLE_MESSAGE',
-          style: TextStyle(height: 1.5), // It's good practice to provide styling if needed for better readability
+          style: TextStyle(
+              height:
+                  1.5), // It's good practice to provide styling if needed for better readability
         ),
-        actions: [ // "OK": "OK"
+        actions: [
+          // "OK": "OK"
           TextButton(
             child: AutoText('OK'),
             onPressed: () => Navigator.pop(context),
@@ -369,30 +395,26 @@ class AllowedToChatScreen extends StatelessWidget {
     if (availabilityData == null) return false;
 
     final now = DateTime.now();
-    final currentDay = _getDayName(now.weekday);
+    final currentDayKey = _getDayKey(now.weekday);
     final currentTime = TimeOfDay.now();
 
-    final dayData = availabilityData[currentDay] as Map<String, dynamic>?;
+    final dayData = availabilityData[currentDayKey] as Map<String, dynamic>?;
 
     if (dayData == null) return false;
 
     final startTimeStr = dayData['start'] as String?;
     final endTimeStr = dayData['end'] as String?;
 
-    if (startTimeStr == null || endTimeStr == null) return false;
+    final startTime = _parseTimeString(startTimeStr);
+    final endTime = _parseTimeString(endTimeStr);
 
-    try {
-      final startTime = _parseTimeString(startTimeStr);
-      final endTime = _parseTimeString(endTimeStr);
+    if (startTime == null || endTime == null) return false;
 
-      final currentMinutes = currentTime.hour * 60 + currentTime.minute;
-      final startMinutes = startTime.hour * 60 + startTime.minute;
-      final endMinutes = endTime.hour * 60 + endTime.minute;
+    final currentMinutes = currentTime.hour * 60 + currentTime.minute;
+    final startMinutes = startTime.hour * 60 + startTime.minute;
+    final endMinutes = endTime.hour * 60 + endTime.minute;
 
-      return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
-    } catch (_) {
-      return false;
-    }
+    return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
   }
 
   String? _getNextAvailability(Map<String, dynamic> availabilityData) {
@@ -401,8 +423,8 @@ class AllowedToChatScreen extends StatelessWidget {
 
     for (int i = 0; i < 7; i++) {
       final checkDay = (currentDay + i - 1) % 7 + 1;
-      final dayName = _getDayName(checkDay);
-      final dayData = availabilityData[dayName] as Map<String, dynamic>?;
+      final dayKey = _getDayKey(checkDay);
+      final dayData = availabilityData[dayKey] as Map<String, dynamic>?;
 
       if (dayData != null) {
         final startTimeStr = dayData['start'] as String?;
@@ -410,18 +432,23 @@ class AllowedToChatScreen extends StatelessWidget {
           if (i == 0) {
             final currentTime = TimeOfDay.now();
             final endTimeStr = dayData['end'] as String?;
-            if (endTimeStr != null) {
-              final endTime = _parseTimeString(endTimeStr);
-              final currentMinutes = currentTime.hour * 60 + currentTime.minute;
+            final endTime = _parseTimeString(endTimeStr);
+
+            if (endTime != null) {
+              final currentMinutes =
+                  currentTime.hour * 60 + currentTime.minute;
               final endMinutes = endTime.hour * 60 + endTime.minute;
 
               if (currentMinutes < endMinutes) {
-                return 'Today at $startTimeStr';
+                // Localized string interpolation
+                return '${autoI8lnGen.translate("TODAY_AT")} $startTimeStr';
               }
             }
           } else {
-            final dayLabel = i == 1 ? 'Tomorrow' : dayName;
-            return '$dayLabel at $startTimeStr';
+            final dayLabel = i == 1
+                ? autoI8lnGen.translate("TOMORROW")
+                : _getDayLabel(checkDay);
+            return '$dayLabel ${autoI8lnGen.translate("AT")} $startTimeStr';
           }
         }
       }
@@ -429,44 +456,94 @@ class AllowedToChatScreen extends StatelessWidget {
     return null;
   }
 
-  TimeOfDay _parseTimeString(String timeString) {
+  /// Parses a time string like "09:30", "9:30 PM", or "9" into a TimeOfDay.
+  /// Returns null instead of throwing if the value is missing, empty, or
+  /// malformed, so a single bad Firestore document can never crash the UI.
+  TimeOfDay? _parseTimeString(String? timeString) {
+    if (timeString == null || timeString.trim().isEmpty) return null;
+
     final parts = timeString.trim().split(' ');
     final timePart = parts[0];
     final amPm = parts.length > 1 ? parts[1].toUpperCase() : 'AM';
 
     final timeComponents = timePart.split(':');
-    int hour = int.parse(timeComponents[0]);
-    final minute = timeComponents.length > 1 ? int.parse(timeComponents[1]) : 0;
+    if (timeComponents.isEmpty) return null;
 
+    final hour = int.tryParse(timeComponents[0]);
+    final minute =
+        timeComponents.length > 1 ? int.tryParse(timeComponents[1]) : 0;
+
+    if (hour == null || minute == null) return null;
+
+    int adjustedHour = hour;
     if (amPm == 'PM' && hour != 12) {
-      hour += 12;
+      adjustedHour += 12;
     } else if (amPm == 'AM' && hour == 12) {
-      hour = 0;
+      adjustedHour = 0;
     }
 
-    return TimeOfDay(hour: hour, minute: minute);
+    return TimeOfDay(hour: adjustedHour, minute: minute);
   }
 
-  String _getDayName(int weekday) {
-    final days = [
-      autoI8lnGen.translate("MONDAY"),
-      autoI8lnGen.translate("TUESDAY"),
-      autoI8lnGen.translate("WEDNESDAY"),
-      autoI8lnGen.translate("THURSDAY"),
-      autoI8lnGen.translate("FRIDAY"),
-      autoI8lnGen.translate("SATURDAY"),
-      autoI8lnGen.translate("SUNDAY"),
-    ];
+  /// Locale-independent key used to read from Firestore.
+  /// This MUST match the keys written by whatever screen the medical
+  /// professional uses to set their availability (e.g. 'Monday', not
+  /// a translated string), or lookups break whenever the app locale changes.
+  String _getDayKey(int weekday) => _dayKeys[weekday - 1];
 
-    return days[weekday - 1];
+  /// Localized label used only for on-screen display.
+  String _getDayLabel(int weekday) {
+    const translationKeys = [
+      'MONDAY',
+      'TUESDAY',
+      'WEDNESDAY',
+      'THURSDAY',
+      'FRIDAY',
+      'SATURDAY',
+      'SUNDAY',
+    ];
+    return autoI8lnGen.translate(translationKeys[weekday - 1]);
+  }
+
+  void _confirmDeletion(BuildContext context, String currentUserId,
+      String otherUserId, String name) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Disconnect'),
+        content: Text(
+            'Are you sure you want to end the chat connection with $name?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              // This calls the logic in your ConnectionStateModel
+              await Provider.of<ConnectionStateModel>(context, listen: false)
+                  .endConnection(
+                      currentUserId: currentUserId, otherUserId: otherUserId);
+
+              if (context.mounted) Navigator.pop(context);
+            },
+            child:
+                const Text('Disconnect', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
   }
 }
+
 
 // import 'package:auto_i8ln/auto_i8ln.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
 // import 'package:jambomama_nigeria/controllers/chat_service_mothers.dart';
+// import 'package:jambomama_nigeria/providers/connection_provider.dart';
+// import 'package:provider/provider.dart';
 
 // class AllowedToChatScreen extends StatelessWidget {
 //   @override
@@ -544,7 +621,7 @@ class AllowedToChatScreen extends StatelessWidget {
 //                         userData['position'] ?? 'Health Provider';
 //                     final hospital = userData['hospital'] ?? '';
 
-//                     // Process availability data from medical_professionals collection
+//                     // Process availability data
 //                     Map<String, dynamic>? availabilityData;
 //                     if (medicalProfSnapshot.exists) {
 //                       final medicalData =
@@ -552,6 +629,8 @@ class AllowedToChatScreen extends StatelessWidget {
 //                       availabilityData =
 //                           medicalData['availability'] as Map<String, dynamic>?;
 //                     }
+
+//                     final isAvailable = _isCurrentlyAvailable(availabilityData);
 
 //                     return ExpansionTile(
 //                       leading: CircleAvatar(
@@ -588,15 +667,34 @@ class AllowedToChatScreen extends StatelessWidget {
 //                             ),
 //                           SizedBox(height: 4),
 //                           _buildAvailabilityStatus(availabilityData),
+
+//                           const Divider(),
+
+//                           // Delete Button:
+
+//                           TextButton.icon(
+//                             onPressed: () => _confirmDeletion(
+//                                 context, userId, requesterId, userName),
+//                             icon: const Icon(Icons.person_remove,
+//                                 color: Colors.red),
+//                             label: const AutoText("DISCONNECT_PROVIDER",
+//                                 style: TextStyle(color: Colors.red)),
+//                           ),
 //                         ],
 //                       ),
 //                       trailing: IconButton(
 //                         icon: Icon(
 //                           Icons.chat_bubble,
-//                           color: Colors.blue.shade600,
+//                           color: isAvailable
+//                               ? Colors.blue.shade600
+//                               : Colors.grey.shade400,
 //                         ),
 //                         onPressed: () {
-//                           startChat(context, requesterId);
+//                           if (isAvailable) {
+//                             startChat(context, requesterId);
+//                           } else {
+//                             _showNotAvailableDialog(context);
+//                           }
 //                         },
 //                       ),
 //                       children: [
@@ -624,8 +722,8 @@ class AllowedToChatScreen extends StatelessWidget {
 //           color: Colors.grey.shade200,
 //           borderRadius: BorderRadius.circular(12),
 //         ),
-//         child: Text(
-//           'Availability not set',
+//         child: AutoText(
+//           'AVAILABILITY_NOT_SET',
 //           style: TextStyle(
 //             color: Colors.grey.shade600,
 //             fontSize: 11,
@@ -646,12 +744,12 @@ class AllowedToChatScreen extends StatelessWidget {
 //             : Colors.orange.shade100,
 //         borderRadius: BorderRadius.circular(12),
 //       ),
-//       child: Text(
+//       child: AutoText(
 //         isCurrentlyAvailable
-//             ? 'Available now'
+//             ? 'AVAILABLE_NOW'
 //             : nextAvailability != null
-//                 ? 'Next: $nextAvailability'
-//                 : 'Schedule not available',
+//                 ? 'NEXT $nextAvailability'
+//                 : 'S_N_A',
 //         style: TextStyle(
 //           color: isCurrentlyAvailable
 //               ? Colors.green.shade700
@@ -674,7 +772,7 @@ class AllowedToChatScreen extends StatelessWidget {
 //           ),
 //           SizedBox(height: 8),
 //           AutoText(
-//             'No availability schedule set',
+//             'NASS',
 //             style: TextStyle(
 //               color: Colors.grey.shade600,
 //               fontWeight: FontWeight.w500,
@@ -682,7 +780,7 @@ class AllowedToChatScreen extends StatelessWidget {
 //           ),
 //           SizedBox(height: 4),
 //           AutoText(
-//             'Contact the health provider directly',
+//             'CHPD',
 //             style: TextStyle(
 //               color: Colors.grey.shade500,
 //               fontSize: 12,
@@ -703,8 +801,8 @@ class AllowedToChatScreen extends StatelessWidget {
 //               size: 20,
 //             ),
 //             SizedBox(width: 8),
-//             Text(
-//               'Weekly Schedule',
+//             AutoText(
+//               'W_SC',
 //               style: TextStyle(
 //                 fontWeight: FontWeight.bold,
 //                 fontSize: 16,
@@ -716,91 +814,55 @@ class AllowedToChatScreen extends StatelessWidget {
 //         SizedBox(height: 12),
 //         ..._buildWeeklySchedule(availabilityData),
 //         SizedBox(height: 16),
-//         _buildEmergencyContact(availabilityData),
 //       ],
 //     );
 //   }
 
 //   List<Widget> _buildWeeklySchedule(Map<String, dynamic> availabilityData) {
 //     final days = [
-//       'Monday',
-//       'Tuesday',
-//       'Wednesday',
-//       'Thursday',
-//       'Friday',
-//       'Saturday',
-//       'Sunday'
+//       autoI8lnGen.translate("MONDAY"),
+//       autoI8lnGen.translate("TUESDAY"),
+//       autoI8lnGen.translate("WEDNESDAY"),
+//       autoI8lnGen.translate("THURSDAY"),
+//       autoI8lnGen.translate("FRIDAY"),
+//       autoI8lnGen.translate("SATURDAY"),
+//       autoI8lnGen.translate("SUNDAY"),
 //     ];
 
-//     List<Widget> scheduleWidgets = [];
-
-//     for (String day in days) {
-//       // Use the exact case as stored in Firestore (capitalized)
+//     return days.map((day) {
 //       final dayData = availabilityData[day] as Map<String, dynamic>?;
 
-//       scheduleWidgets.add(
-//         Padding(
-//           padding: EdgeInsets.symmetric(vertical: 4),
-//           child: Row(
-//             children: [
-//               SizedBox(
-//                 width: 80,
-//                 child: Text(
-//                   day,
-//                   style: TextStyle(
-//                     fontWeight: FontWeight.w500,
-//                     color: Colors.grey.shade700,
-//                   ),
+//       return Padding(
+//         padding: EdgeInsets.symmetric(vertical: 4),
+//         child: Row(
+//           children: [
+//             SizedBox(
+//               width: 80,
+//               child: Text(
+//                 day,
+//                 style: TextStyle(
+//                   fontWeight: FontWeight.w500,
+//                   color: Colors.grey.shade700,
 //                 ),
 //               ),
-//               Expanded(
-//                 child: _buildDaySchedule(dayData),
-//               ),
-//             ],
-//           ),
+//             ),
+//             Expanded(child: _buildDaySchedule(dayData)),
+//           ],
 //         ),
 //       );
-//     }
-
-//     return scheduleWidgets;
+//     }).toList();
 //   }
 
 //   Widget _buildDaySchedule(Map<String, dynamic>? dayData) {
 //     if (dayData == null) {
-//       return Container(
-//         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//         decoration: BoxDecoration(
-//           color: Colors.grey.shade100,
-//           borderRadius: BorderRadius.circular(8),
-//         ),
-//         child: Text(
-//           'Not available',
-//           style: TextStyle(
-//             color: Colors.grey.shade600,
-//             fontSize: 13,
-//           ),
-//         ),
-//       );
+//       return _notAvailableBox();
 //     }
 
 //     final startTime = dayData['start'] ?? '';
 //     final endTime = dayData['end'] ?? '';
 
 //     if (startTime.toString().isEmpty || endTime.toString().isEmpty) {
-//       return Container(
-//         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//         decoration: BoxDecoration(
-//           color: Colors.grey.shade100,
-//           borderRadius: BorderRadius.circular(8),
-//         ),
-//         child: Text(
-//           'Not available',
-//           style: TextStyle(
-//             color: Colors.grey.shade600,
-//             fontSize: 13,
-//           ),
-//         ),
-//       );
+//       return _notAvailableBox();
 //     }
 
 //     return Container(
@@ -821,44 +883,73 @@ class AllowedToChatScreen extends StatelessWidget {
 //     );
 //   }
 
-//   Widget _buildEmergencyContact(Map<String, dynamic> availabilityData) {
-//     // Since your structure doesn't include emergency contact fields,
-//     // we'll skip this section or you can add these fields to your availability structure
-//     return SizedBox.shrink();
+//   Widget _notAvailableBox() {
+//     return Container(
+//       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+//       decoration: BoxDecoration(
+//         color: Colors.grey.shade100,
+//         borderRadius: BorderRadius.circular(8),
+//       ),
+//       child: AutoText(
+//         'NOT_AVAILABLE',
+//         style: TextStyle(
+//           color: Colors.grey.shade600,
+//           fontSize: 13,
+//         ),
+//       ),
+//     );
 //   }
 
-//   bool _isCurrentlyAvailable(Map<String, dynamic> availabilityData) {
+//   void _showNotAvailableDialog(BuildContext context) {
+//     showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
+//         title: AutoText(
+//             'PROVIDER_NOT_AVAILABLE_TITLE'), // "PROVIDER_NOT_AVAILABLE_TITLE": "Provider Not Available"
+//         content: AutoText(
+//           // "PROVIDER_NOT_AVAILABLE_MESSAGE": "This health provider is not available at the moment.\n\nPlease check their availability schedule or contact them during their working hours. In case of an emergency, go to the nearest health facility."
+//           'PROVIDER_NOT_AVAILABLE_MESSAGE',
+//           style: TextStyle(
+//               height:
+//                   1.5), // It's good practice to provide styling if needed for better readability
+//         ),
+//         actions: [
+//           // "OK": "OK"
+//           TextButton(
+//             child: AutoText('OK'),
+//             onPressed: () => Navigator.pop(context),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   bool _isCurrentlyAvailable(Map<String, dynamic>? availabilityData) {
+//     if (availabilityData == null) return false;
+
 //     final now = DateTime.now();
-//     final currentDay = _getDayName(now.weekday); // Use capitalized day name
+//     final currentDay = _getDayName(now.weekday);
 //     final currentTime = TimeOfDay.now();
 
 //     final dayData = availabilityData[currentDay] as Map<String, dynamic>?;
 
-//     if (dayData == null) {
-//       return false;
-//     }
+//     if (dayData == null) return false;
 
 //     final startTimeStr = dayData['start'] as String?;
 //     final endTimeStr = dayData['end'] as String?;
 
-//     if (startTimeStr == null ||
-//         endTimeStr == null ||
-//         startTimeStr.isEmpty ||
-//         endTimeStr.isEmpty) {
-//       return false;
-//     }
+//     if (startTimeStr == null || endTimeStr == null) return false;
 
 //     try {
 //       final startTime = _parseTimeString(startTimeStr);
 //       final endTime = _parseTimeString(endTimeStr);
 
-//       // Convert current time to minutes for comparison
 //       final currentMinutes = currentTime.hour * 60 + currentTime.minute;
 //       final startMinutes = startTime.hour * 60 + startTime.minute;
 //       final endMinutes = endTime.hour * 60 + endTime.minute;
 
 //       return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
-//     } catch (e) {
+//     } catch (_) {
 //       return false;
 //     }
 //   }
@@ -867,47 +958,39 @@ class AllowedToChatScreen extends StatelessWidget {
 //     final now = DateTime.now();
 //     final currentDay = now.weekday;
 
-//     // Check remaining days of current week and next week
 //     for (int i = 0; i < 7; i++) {
 //       final checkDay = (currentDay + i - 1) % 7 + 1;
-//       final dayName = _getDayName(checkDay); // Use capitalized day name
+//       final dayName = _getDayName(checkDay);
 //       final dayData = availabilityData[dayName] as Map<String, dynamic>?;
 
 //       if (dayData != null) {
 //         final startTimeStr = dayData['start'] as String?;
 //         if (startTimeStr != null && startTimeStr.isNotEmpty) {
 //           if (i == 0) {
-//             // Today - check if there's still time
 //             final currentTime = TimeOfDay.now();
 //             final endTimeStr = dayData['end'] as String?;
 //             if (endTimeStr != null) {
-//               try {
-//                 final endTime = _parseTimeString(endTimeStr);
-//                 final currentMinutes =
-//                     currentTime.hour * 60 + currentTime.minute;
-//                 final endMinutes = endTime.hour * 60 + endTime.minute;
+//               final endTime = _parseTimeString(endTimeStr);
+//               final currentMinutes = currentTime.hour * 60 + currentTime.minute;
+//               final endMinutes = endTime.hour * 60 + endTime.minute;
 
-//                 if (currentMinutes < endMinutes) {
-//                   return 'Today at $startTimeStr';
-//                 }
-//               } catch (e) {
-//                 // Continue to next day if parsing fails
+//               if (currentMinutes < endMinutes) {
+//                 // Localized string interpolation
+//                 return '${autoI8lnGen.translate("TODAY_AT")} $startTimeStr';
 //               }
 //             }
 //           } else {
-//             final dayLabel = i == 1 ? 'Tomorrow' : dayName;
-//             return '$dayLabel at $startTimeStr';
+//             final dayLabel =
+//                 i == 1 ? autoI8lnGen.translate("TOMORROW") : dayName;
+//             return '$dayLabel ${autoI8lnGen.translate("AT")} $startTimeStr';
 //           }
 //         }
 //       }
 //     }
-
 //     return null;
 //   }
 
-//   // Helper function to parse 12-hour time format to TimeOfDay
 //   TimeOfDay _parseTimeString(String timeString) {
-//     // Handle formats like "12:00 PM", "4:19 PM", etc.
 //     final parts = timeString.trim().split(' ');
 //     final timePart = parts[0];
 //     final amPm = parts.length > 1 ? parts[1].toUpperCase() : 'AM';
@@ -916,7 +999,6 @@ class AllowedToChatScreen extends StatelessWidget {
 //     int hour = int.parse(timeComponents[0]);
 //     final minute = timeComponents.length > 1 ? int.parse(timeComponents[1]) : 0;
 
-//     // Convert to 24-hour format
 //     if (amPm == 'PM' && hour != 12) {
 //       hour += 12;
 //     } else if (amPm == 'AM' && hour == 12) {
@@ -927,15 +1009,46 @@ class AllowedToChatScreen extends StatelessWidget {
 //   }
 
 //   String _getDayName(int weekday) {
-//     const days = [
-//       'Monday',
-//       'Tuesday',
-//       'Wednesday',
-//       'Thursday',
-//       'Friday',
-//       'Saturday',
-//       'Sunday'
+//     final days = [
+//       autoI8lnGen.translate("MONDAY"),
+//       autoI8lnGen.translate("TUESDAY"),
+//       autoI8lnGen.translate("WEDNESDAY"),
+//       autoI8lnGen.translate("THURSDAY"),
+//       autoI8lnGen.translate("FRIDAY"),
+//       autoI8lnGen.translate("SATURDAY"),
+//       autoI8lnGen.translate("SUNDAY"),
 //     ];
+
 //     return days[weekday - 1];
+//   }
+
+//   void _confirmDeletion(BuildContext context, String currentUserId,
+//       String otherUserId, String name) {
+//     showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
+//         title: const Text('Confirm Disconnect'),
+//         content: Text(
+//             'Are you sure you want to end the chat connection with $name?'),
+//         actions: [
+//           TextButton(
+//             onPressed: () => Navigator.pop(context),
+//             child: const Text('Cancel'),
+//           ),
+//           TextButton(
+//             onPressed: () async {
+//               // This calls the logic in your ConnectionStateModel
+//               await Provider.of<ConnectionStateModel>(context, listen: false)
+//                   .endConnection(
+//                       currentUserId: currentUserId, otherUserId: otherUserId);
+
+//               if (context.mounted) Navigator.pop(context);
+//             },
+//             child:
+//                 const Text('Disconnect', style: TextStyle(color: Colors.red)),
+//           ),
+//         ],
+//       ),
+//     );
 //   }
 // }

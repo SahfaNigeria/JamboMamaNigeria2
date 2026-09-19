@@ -1,10 +1,9 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
-import 'package:jambomama_nigeria/views/mothers/birth_plan_screen.dart';
+import 'package:jambomama_nigeria/views/mothers/birth_plan.dart';
 import 'package:jambomama_nigeria/views/mothers/health_facilities_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/patient_background.dart';
 import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
@@ -62,9 +61,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           });
         }
       }
-    } catch (e) {
-      print("Error fetching user location: $e");
-    }
+    } catch (e) {}
   }
 
   Future logout() async {
@@ -81,7 +78,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
   ) {
     return Drawer(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: [
           const SizedBox(
             height: 50,
@@ -164,7 +162,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             onTap: () {
               // Get current user ID from Firebase Auth
               final userId = _auth.currentUser?.uid ?? '';
-              
+
               if (userId.isEmpty) {
                 // Show error if user is not logged in
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -172,7 +170,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 );
                 return;
               }
-              
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -231,12 +229,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 }
 
+
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
 // import 'package:jambomama_nigeria/components/drawer_tiles.dart';
 // import 'package:jambomama_nigeria/views/mothers/allowed_to_chat.dart';
-// import 'package:jambomama_nigeria/views/mothers/birth_plan_screen.dart';
+// import 'package:jambomama_nigeria/views/mothers/birth_plan.dart';
 // import 'package:jambomama_nigeria/views/mothers/health_facilities_screen.dart';
 // import 'package:jambomama_nigeria/views/mothers/patient_background.dart';
 // import 'package:jambomama_nigeria/views/mothers/auth/login_or_register.dart';
@@ -294,9 +293,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
 //           });
 //         }
 //       }
-//     } catch (e) {
-//       print("Error fetching user location: $e");
-//     }
+//     } catch (e) {}
 //   }
 
 //   Future logout() async {
@@ -394,10 +391,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
 //           DrawerTiles(
 //             icon: Icons.app_registration,
 //             onTap: () {
+//               // Get current user ID from Firebase Auth
+//               final userId = _auth.currentUser?.uid ?? '';
+
+//               if (userId.isEmpty) {
+//                 // Show error if user is not logged in
+//                 ScaffoldMessenger.of(context).showSnackBar(
+//                   SnackBar(content: Text('Please log in to access Birth Plan')),
+//                 );
+//                 return;
+//               }
+
 //               Navigator.push(
 //                 context,
 //                 MaterialPageRoute(
-//                   builder: (context) => BirthPlanScreen(patientId: ""),
+//                   builder: (context) => BirthPlanScreen(patientId: userId),
 //                 ),
 //               );
 //             },

@@ -4,41 +4,63 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeComponents extends StatelessWidget {
   final String text;
-  // final IconData icon;
   final String icon;
   final void Function()? onTap;
 
-  const HomeComponents(
-      {super.key, required this.text, required this.icon, required this.onTap});
+  const HomeComponents({
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: onTap,
+    return InkWell( // Use InkWell for better touch feedback
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        // This horizontal padding ensures text NEVER touches the card edges
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // Centers icon and text vertically
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.only(top: 50),
+            // 1. Icon Section
+            // We use Flexible so the icon can shrink if the text needs more room
+            Flexible(
+              flex: 2,
               child: SvgPicture.asset(
                 icon,
-                width: 130,
-                height: 130,
-                color: Colors.white,
+                width: 60,  // Reduced width/height to leave room for long text
+                height: 60,
+                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
               ),
-            )),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.only(top: 20),
+            ),
+            
+            const SizedBox(height: 12), // Space between icon and text
+
+            // 2. Text Section
+            Flexible(
+              flex: 2,
               child: AutoText(
                 text,
-                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center, // Center the text horizontally
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13, // Slightly smaller base font for better fitting
+                ),
+                // Important for long languages:
+                softWrap: true, 
+                maxLines: 3, 
+                overflow: TextOverflow.ellipsis, 
               ),
-            )),
+            ),
           ],
         ),
-      ),
+      ),  
     );
   }
 }
+

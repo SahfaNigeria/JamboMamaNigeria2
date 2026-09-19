@@ -5,11 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class HealthcareProfessionalAssessmentScreen extends StatefulWidget {
   final String patientId;
   final String assessmentId;
+  final String? patientName;
 
   const HealthcareProfessionalAssessmentScreen({
     Key? key,
     required this.patientId,
     required this.assessmentId,
+    this.patientName,
   }) : super(key: key);
 
   @override
@@ -23,10 +25,22 @@ class _HealthcareProfessionalAssessmentScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text('Patient Assessment: ${widget.patientName}'),
-        backgroundColor: Colors.teal[700],
+        backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              autoI8lnGen.translate('PATIENT_ASSESSMENT'),
+            ),
+            Text(
+              ' ${widget.patientName}',
+              style:
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

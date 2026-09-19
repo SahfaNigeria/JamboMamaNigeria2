@@ -2,7 +2,6 @@ import 'package:auto_i8ln/auto_i8ln.dart';
 import 'package:flutter/material.dart';
 import 'package:jambomama_nigeria/components/home_components.dart';
 import 'package:jambomama_nigeria/views/mothers/guest_feeling_form.dart';
-import 'package:jambomama_nigeria/views/mothers/learn_question_screen.dart';
 import 'package:jambomama_nigeria/views/mothers/you.dart';
 import 'package:jambomama_nigeria/views/mothers/guest_delivery_date.dart';
 
@@ -14,40 +13,49 @@ class LearnPage extends StatefulWidget {
 }
 
 class _LearnPageState extends State<LearnPage> {
+  // Helper method to show the snackbar to avoid repeating code
+  void _showGuestLimitSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: AutoText('GUEST_LIMIT_MESSAGE'),
+        duration: Duration(seconds: 4),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Make card sizes responsive
-    final cardWidth = (screenWidth - 30) / 2;
-    final cardHeight = screenHeight * 0.22;
+    // Grid Settings
+    const double spacing = 10.0;
+    // We subtract the total horizontal padding (10 left + 10 right + 10 middle)
+    final double cardWidth = (screenWidth - (spacing * 3)) / 2;
+    final double cardHeight = screenHeight * 0.22;
+    final double aspectRatio = cardWidth / cardHeight;
 
     return Scaffold(
       appBar: AppBar(
-        title: AutoText('LEARN'),
+        title: const AutoText('LEARN'),
         centerTitle: true,
       ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           children: [
-         
+            // --- DUE DATE CALCULATOR BUTTON ---
             InkWell(
               onTap: () {
-            
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => GuestExpectedDeliveryScreen(),
+                    builder: (_) => const GuestExpectedDeliveryScreen(),
                   ),
                 );
-                
-                
-               
               },
               child: Container(
-                height: 40,
+                height: 45, // Slightly increased for better tap area
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.red.shade400, Colors.red.shade600],
@@ -63,18 +71,18 @@ class _LearnPageState extends State<LearnPage> {
                     ),
                   ],
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       color: Colors.white,
-                      size: 24,
+                      size: 20,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     AutoText(
-                      'Calculate Due Date',
-                      style: const TextStyle(
+                      'CALCULATE_DUE_DATE',
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -87,101 +95,59 @@ class _LearnPageState extends State<LearnPage> {
 
             const SizedBox(height: 15),
 
-            // First row
-            Row(
+            // --- GRID OF CARDS ---
+            // GridView.count ensures all cards remain the same size
+            // regardless of the text length in different languages.
+            GridView.count(
+              shrinkWrap: true,
+              physics:
+                  const NeverScrollableScrollPhysics(), // ListView handles scroll
+              crossAxisCount: 2,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
+              childAspectRatio: aspectRatio,
               children: [
-                Expanded(
-                  child: Container(
-                    height: cardHeight,
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: HomeComponents(
-                      text: 'FOLLOW_YOUR_PREGNANCY',
-                      icon: 'assets/svgs/logo-Jambomama_svg-com.svg',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const You()),
-                        );
-                      },
-                    ),
-                  ),
+                // Card 1: Follow Your Pregnancy
+                _buildCard(
+                  color: Colors.blueAccent,
+                  text: 'FOLLOW_YOUR_PREGNANCY',
+                  icon: 'assets/svgs/logo-Jambomama_svg-com.svg',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const You()),
+                    );
+                  },
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    height: cardHeight,
-                    decoration: BoxDecoration(
-                      color: Colors.purple,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: HomeComponents(
-                      text: 'P_Q', // Periodic Questionnaire
-                      icon: 'assets/svgs/perfusion-svgrepo-com.svg',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => GuestFeelingsForm(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
 
-            const SizedBox(height: 10),
-
-            // Second row
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: cardHeight,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: HomeComponents(
-                      text: 'VITAL_INFO_UPDATE_2',
-                      icon: 'assets/svgs/doctor-svgrepo-com.svg',
-                      onTap: () {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Create an account with us to enjoy the full app  '),
-                    duration: Duration(seconds: 4),
-                  ),
-                );
-                      },
-                    ),
-                  ),
+                // Card 2: Periodic Questionnaire
+                _buildCard(
+                  color: Colors.purple,
+                  text: 'P_Q',
+                  icon: 'assets/svgs/perfusion-svgrepo-com.svg',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const GuestFeelingsForm()),
+                    );
+                  },
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    height: cardHeight,
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade500,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: HomeComponents(
-                      text: 'SOMETHING_HAPPENED',
-                      icon: 'assets/svgs/warning-sign-svgrepo-com.svg',
-                      onTap: () {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Create an account with us to enjoy the full app'),
-                    duration: Duration(seconds: 4),
-                  ),
-                );
-                        
-                      },
-                    ),
-                  ),
+
+                // Card 3: Vital Info Update
+                _buildCard(
+                  color: Colors.green,
+                  text: 'VITAL_INFO_UPDATE_2',
+                  icon: 'assets/svgs/doctor-svgrepo-com.svg',
+                  onTap: () => _showGuestLimitSnackBar(context),
+                ),
+
+                // Card 4: Something Happened
+                _buildCard(
+                  color: Colors.red.shade500,
+                  text: 'SOMETHING_HAPPENED',
+                  icon: 'assets/svgs/warning-sign-svgrepo-com.svg',
+                  onTap: () => _showGuestLimitSnackBar(context),
                 ),
               ],
             ),
@@ -190,131 +156,24 @@ class _LearnPageState extends State<LearnPage> {
       ),
     );
   }
+
+  // Helper widget to keep the code clean and ensure consistent styling
+  Widget _buildCard({
+    required Color color,
+    required String text,
+    required String icon,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: HomeComponents(
+        text: text,
+        icon: icon,
+        onTap: onTap,
+      ),
+    );
+  }
 }
-
-
-// import 'package:auto_i8ln/auto_i8ln.dart';
-// import 'package:flutter/material.dart';
-// import 'package:jambomama_nigeria/components/home_components.dart';
-// import 'package:jambomama_nigeria/views/mothers/guest_feeling_form.dart';
-// import 'package:jambomama_nigeria/views/mothers/learn_question_screen.dart';
-// import 'package:jambomama_nigeria/views/mothers/you.dart';
-
-// class LearnPage extends StatefulWidget {
-//   const LearnPage({super.key});
-
-//   @override
-//   State<LearnPage> createState() => _LearnPageState();
-// }
-
-// class _LearnPageState extends State<LearnPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     final screenHeight = MediaQuery.of(context).size.height;
-
-//     // Make card sizes responsive
-//     final cardWidth = (screenWidth - 30) / 2;
-//     final cardHeight = screenHeight * 0.22;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: AutoText('LEARN'),
-//         centerTitle: true,
-//       ),
-//       body: SafeArea(
-//         child: ListView(
-//           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-//           children: [
-//             // First row
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: Container(
-//                     height: cardHeight,
-//                     decoration: BoxDecoration(
-//                       color: Colors.blueAccent,
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: HomeComponents(
-//                       text: 'FOLLOW_YOUR_PREGNANCY',
-//                       icon: 'assets/svgs/logo-Jambomama_svg-com.svg',
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(builder: (_) => const You()),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(width: 10),
-//                 Expanded(
-//                   child: Container(
-//                     height: cardHeight,
-//                     decoration: BoxDecoration(
-//                       color: Colors.purple,
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: HomeComponents(
-//                       text: 'P_Q', // Periodic Questionnaire
-//                       icon: 'assets/svgs/perfusion-svgrepo-com.svg',
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (_) => GuestFeelingsForm(),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-
-//             const SizedBox(height: 10),
-
-//             // Second row
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: Container(
-//                     height: cardHeight,
-//                     decoration: BoxDecoration(
-//                       color: Colors.green,
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: HomeComponents(
-//                       text: 'VITAL_INFO_UPDATE_2',
-//                       icon: 'assets/svgs/doctor-svgrepo-com.svg',
-//                       onTap: () {},
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(width: 10),
-//                 Expanded(
-//                   child: Container(
-//                     height: cardHeight,
-//                     decoration: BoxDecoration(
-//                       color: Colors.red.shade500,
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: HomeComponents(
-//                       text: 'SOMETHING_HAPPENED',
-//                       icon: 'assets/svgs/warning-sign-svgrepo-com.svg',
-//                       onTap: () {},
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-

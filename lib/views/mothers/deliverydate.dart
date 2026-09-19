@@ -22,11 +22,6 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
       lastDate: DateTime(2100),
     );
 
-    // setState(() {
-    //   _lmpController.text = _dateFormat.format(selectedDate!);
-
-    // });
-
     if (selectedDate != null) {
       setState(() {
         _lmpController.text = _dateFormat.format(selectedDate);
@@ -37,8 +32,7 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
   void _saveAndReturnEDD() {
     if (_lmpController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: AutoText('V_L_M_P')),
+        const SnackBar(content: AutoText('V_L_M_P')),
       );
       return;
     }
@@ -49,8 +43,7 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
       // Validate that LMP is not in the future
       if (lmp.isAfter(DateTime.now())) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: AutoText('LAST_MENSTRUAL_PERIOD')),
+          const SnackBar(content: AutoText('LAST_MENSTRUAL_PERIOD')),
         );
         return;
       }
@@ -93,8 +86,9 @@ class _ExpectedDeliveryScreenState extends State<ExpectedDeliveryScreen> {
               child: AbsorbPointer(
                 child: TextField(
                   controller: _lmpController,
-                  decoration:  InputDecoration(
-                    labelText: autoI8lnGen.translate('SELECT_LAST_MENSTRUAL_PERIOD_FLOW'),
+                  decoration: InputDecoration(
+                    labelText: autoI8lnGen
+                        .translate('SELECT_LAST_MENSTRUAL_PERIOD_FLOW'),
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.none,

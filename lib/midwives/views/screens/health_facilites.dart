@@ -59,12 +59,11 @@ import 'package:flutter/material.dart'
         showModalBottomSheet,
         TextAlign,
         Border,
-        showDialog, 
-        AlertDialog, 
-        TextButton, 
-        MainAxisSize, 
-        Dialog; 
-        
+        showDialog,
+        AlertDialog,
+        TextButton,
+        MainAxisSize,
+        Dialog;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -96,7 +95,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
   Future<void> _loadUserLocationAndFacilities() async {
     try {
       final user = _auth.currentUser;
-      print('DEBUG: Current user = ${user?.uid}');
+
 
       if (user != null) {
         DocumentSnapshot? userDoc;
@@ -104,30 +103,25 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
         // Check if user is a New Mother first
         DocumentSnapshot newMotherDoc =
             await _firestore.collection('New Mothers').doc(user.uid).get();
-        print('DEBUG: New Mothers doc exists = ${newMotherDoc.exists}');
 
         if (newMotherDoc.exists) {
           userDoc = newMotherDoc;
           isHealthProvider = false;
-          print('DEBUG: User is a New Mother');
         } else {
           // Check if user is a Health Professional
           DocumentSnapshot healthProfDoc = await _firestore
               .collection('Health Professionals')
               .doc(user.uid)
               .get();
-          print(
-              'DEBUG: Health Professionals doc exists = ${healthProfDoc.exists}');
+
           if (healthProfDoc.exists) {
             userDoc = healthProfDoc;
             isHealthProvider = true;
-            print('DEBUG: User is a Health Professional');
           }
         }
 
         if (userDoc != null && userDoc.exists) {
           final userData = userDoc.data() as Map<String, dynamic>?;
-          print('DEBUG: User data loaded = $userData');
 
           if (userData != null) {
             String villageTown = userData['villageTown'] ?? '';
@@ -135,23 +129,19 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
             String stateValue = userData['stateValue'] ?? '';
             String countryValue = userData['countryValue'] ?? '';
 
-            print(
-                'DEBUG: Extracted location values → villageTown=$villageTown, cityValue=$cityValue, stateValue=$stateValue, countryValue=$countryValue');
-
             setState(() {
               userLocation = cityValue;
               userFullLocation = _buildFullLocationString(
                   villageTown, cityValue, stateValue, countryValue);
             });
-            print('DEBUG: userLocation set = $userLocation');
-            print('DEBUG: userFullLocation set = $userFullLocation');
+        
+          
 
             await _loadHealthFacilities();
           }
         }
       }
     } catch (e) {
-      print('ERROR: Loading user location failed → $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: AutoText('E_L_U_S $e')),
       );
@@ -175,8 +165,6 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
 
   Future<void> _loadHealthFacilities() async {
     try {
-      print('DEBUG: Loading health facilities... userLocation=$userLocation');
-
       Query query = _firestore
           .collection('health_facilities')
           .where('status', isEqualTo: true)
@@ -184,27 +172,25 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
 
       if (userLocation.isNotEmpty) {
         query = query.where('district', isEqualTo: userLocation);
-        print('DEBUG: Filtering facilities by district=$userLocation');
       }
 
       final snapshot = await query.get();
-      print(
-          'DEBUG: Facilities query returned ${snapshot.docs.length} documents');
+
 
       setState(() {
         facilities = snapshot.docs.map((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          print('DEBUG: Facility loaded → id=${doc.id}, data=$data');
+  
           return HealthFacility.fromMap(doc.id, data);
         }).toList();
       });
 
-      print('DEBUG: facilities.length=${facilities.length}');
+ 
       for (var f in facilities) {
         f.debugCoordinates(); // Uses your helper method
       }
     } catch (e) {
-      print('ERROR: Loading facilities failed → $e');
+ 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: AutoText('E_L_F $e')),
       );
@@ -212,91 +198,91 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
   }
 
   void _showChangeLocationDialog() {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) => Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Expanded(
-                child: AutoText(
-                  'CHANGE LOCATION',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          /// ⭐ Updated explanation here:
-          const AutoText(
-            'Your location is based on the information you entered in your profile. '
-            'To change your location, please open the Edit Profile in settings and update it manually.',
-            style: TextStyle(fontSize: 14),
-          ),
-
-          const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.blue.shade200),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: AutoText(
-                        'CURRENT LOCATION',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
-                        ),
-                      ),
+                const Expanded(
+                  child: AutoText(
+                    'CHANGE_LOCATION', // Using standardized key
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  userFullLocation.isNotEmpty ? userFullLocation : 'Location not set',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
                   ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 24),
-     
-        ],
-      ),
-    ),
-  );
-}
+            const SizedBox(height: 16),
 
-  
+            /// ⭐ Updated with the single standardized key
+            const AutoText(
+              'LOCATION_EXPLANATION',
+              style: TextStyle(fontSize: 14),
+            ),
+
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.info_outline,
+                          color: Colors.blue.shade700, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: AutoText(
+                          'CURRENT_LOCATION', // Using standardized key
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    userFullLocation.isNotEmpty
+                        ? userFullLocation
+                        : autoI8lnGen.translate(
+                            'LOCATION_NOT_SET'), // Localized fallback
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
 
   Future<void> _openGoogleMaps(HealthFacility facility) async {
     final Uri directionsUrl = Uri.parse(
@@ -325,8 +311,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
         onFacilityAdded: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: AutoText(
-                  'FACILITY_SUBMITTED_APPROV'),
+              content: AutoText('FACILITY_SUBMITTED_APPROV'),
               backgroundColor: Colors.green,
             ),
           );
@@ -337,8 +322,6 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'DEBUG: Building UI. isLoading=$isLoading, facilities.length=${facilities.length}');
     return Scaffold(
       appBar: AppBar(
         title: const AutoText('HEALTH_FACILITIES'),
@@ -348,118 +331,68 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
       ),
       body: Column(
         children: [
-          // Location Header
-          // Container(
-          //   width: double.infinity,
-          //   padding: const EdgeInsets.all(16),
-          //   decoration: BoxDecoration(
-          //     color: Colors.teal.shade50,
-          //     borderRadius: const BorderRadius.only(
-          //       bottomLeft: Radius.circular(20),
-          //       bottomRight: Radius.circular(20),
-          //     ),
-          //   ),
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       Row(
-          //         children: [
-          //           Icon(Icons.location_on, color: Colors.teal, size: 20),
-          //           const SizedBox(width: 8),
-          //           AutoText(
-          //             'YL',
-          //             style: TextStyle(
-          //               fontSize: 14,
-          //               color: Colors.teal.shade700,
-          //               fontWeight: FontWeight.w500,
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       const SizedBox(height: 4),
-          //       AutoText(
-          //         userFullLocation.isNotEmpty
-          //             ? userFullLocation
-          //             : 'LNS',
-          //         style: const TextStyle(
-          //           fontSize: 18,
-          //           fontWeight: FontWeight.bold,
-          //         ),
-          //       ),
-          //       const SizedBox(height: 8),
-          //       AutoText(
-          //         '${facilities.length} FF',
-          //         style: TextStyle(
-          //           fontSize: 14,
-          //           color: Colors.grey.shade600,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-
-                    Container(
-  width: double.infinity,
-  padding: const EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: Colors.teal.shade50,
-    borderRadius: const BorderRadius.only(
-      bottomLeft: Radius.circular(20),
-      bottomRight: Radius.circular(20),
-    ),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.location_on, color: Colors.teal, size: 20),
-              const SizedBox(width: 8),
-              AutoText(
-                'YL',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.teal.shade700,
-                  fontWeight: FontWeight.w500,
-                ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.teal.shade50,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
-            ],
-          ),
-          // Add change location button
-          TextButton.icon(
-            onPressed: _showChangeLocationDialog,
-            icon: const Icon(Icons.edit_location_alt, size: 18),
-            label: const AutoText('CHANGE'),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.teal.shade700,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, color: Colors.teal, size: 20),
+                        const SizedBox(width: 8),
+                        AutoText(
+                          'YL',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.teal.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Add change location button
+                    TextButton.icon(
+                      onPressed: _showChangeLocationDialog,
+                      icon: const Icon(Icons.edit_location_alt, size: 18),
+                      label: const AutoText('CHANGE'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.teal.shade700,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                AutoText(
+                  userFullLocation.isNotEmpty ? userFullLocation : 'LNS',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                AutoText(
+                  '${facilities.length} FF',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-      const SizedBox(height: 4),
-      AutoText(
-        userFullLocation.isNotEmpty ? userFullLocation : 'LNS',
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      const SizedBox(height: 8),
-      AutoText(
-        '${facilities.length} FF',
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey.shade600,
-        ),
-      ),
-    ],
-  ),
-), 
-
 
           // Facilities List
           Expanded(
@@ -485,9 +418,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
                             ),
                             const SizedBox(height: 8),
                             AutoText(
-                              userLocation.isEmpty
-                                  ? 'PULS'
-                                  : 'B_T_F',
+                              userLocation.isEmpty ? 'PULS' : 'B_T_F',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey.shade500,
@@ -730,7 +661,8 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
     autoI8lnGen.translate("HEALTH_FACILITIES_HEALTH_CENTER"), // "Health Center"
     autoI8lnGen.translate("HEALTH_FACILITIES_DISPENSARY"), // "Dispensary"
     autoI8lnGen.translate("HEALTH_FACILITIES_CLINIC"), // "Clinic"
-    autoI8lnGen.translate("HEALTH_FACILITIES_MEDICAL_CENTER"), // "Medical Center"
+    autoI8lnGen
+        .translate("HEALTH_FACILITIES_MEDICAL_CENTER"), // "Medical Center"
   ];
 
   Future<void> _submitFacility() async {
@@ -849,7 +781,7 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _nameController,
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       labelText: autoI8lnGen.translate("F_NAME"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.local_hospital),
@@ -861,7 +793,7 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedType,
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       labelText: autoI8lnGen.translate("F_TYPE"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.category),
@@ -878,19 +810,20 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _addressController,
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       labelText: autoI8lnGen.translate("ADDRESS_2"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.location_on),
                     ),
                     maxLines: 2,
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? autoI8lnGen.translate("VALIDATION_Q_16") : null,
+                    validator: (value) => value?.isEmpty ?? true
+                        ? autoI8lnGen.translate("VALIDATION_Q_16")
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _phoneController,
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       labelText: autoI8lnGen.translate("PHONE_NUMBER"),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.phone),
@@ -1012,9 +945,5 @@ class HealthFacility {
   }
 
   // Method for debugging - shows what coordinates are loaded
-  void debugCoordinates() {
-    print('Facility: $name');
-    print('Latitude: $latitude, Longitude: $longitude');
-    print('Valid coordinates: ${hasValidCoordinates()}');
-  }
+  void debugCoordinates() {}
 }

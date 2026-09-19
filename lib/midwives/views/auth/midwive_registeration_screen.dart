@@ -23,7 +23,7 @@ class _MidwiveResgisteratioScreenState
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final MidwifeController _controller = MidwifeController();
   late String fullName;
-  late String email;
+  // late String email;
   final TextEditingController phoneNumber = TextEditingController();
   late String healthFacility;
   late String position;
@@ -59,7 +59,7 @@ class _MidwiveResgisteratioScreenState
       await _controller
           .saveMidWife(
               fullName,
-              email,
+              // email,
               phoneNumber.text,
               healthFacility,
               position,
@@ -76,9 +76,9 @@ class _MidwiveResgisteratioScreenState
       _formKey.currentState?.reset();
       image = null;
       _isImageSelected = false;
-      print('Clicked');
+    
     } else {
-      print('Not so good');
+      
       EasyLoading.dismiss();
     }
   }
@@ -170,25 +170,25 @@ class _MidwiveResgisteratioScreenState
                         label: AutoText('VALIDATION_Q_10'),
                       ),
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      onChanged: (value) {
-                        email = value;
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return autoI8lnGen.translate("VALIDATION_Q_11");
-                        } else {
-                          return null;
-                        }
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        label: AutoText('EMAIL'),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   height: 8,
+                    // ),
+                    // TextFormField(
+                    //   onChanged: (value) {
+                    //     email = value;
+                    //   },
+                    //   validator: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return autoI8lnGen.translate("VALIDATION_Q_11");
+                    //     } else {
+                    //       return null;
+                    //     }
+                    //   },
+                    //   keyboardType: TextInputType.emailAddress,
+                    //   decoration: InputDecoration(
+                    //     label: AutoText('EMAIL'),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: 16,
                     ),
@@ -292,10 +292,10 @@ class _MidwiveResgisteratioScreenState
                       padding: const EdgeInsets.all(10.0),
                       child: InternationalPhoneNumberInput(
                         onInputChanged: (PhoneNumber number) {
-                          print(number.phoneNumber);
+                     
                         },
                         onInputValidated: (bool value) {
-                          print(value);
+                         
                         },
                         selectorConfig: SelectorConfig(
                           selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
@@ -310,7 +310,7 @@ class _MidwiveResgisteratioScreenState
                             signed: true, decimal: true),
                         inputBorder: OutlineInputBorder(),
                         onSaved: (PhoneNumber number) {
-                          print('On Saved: $number');
+                        
                         },
                       ),
                     ),

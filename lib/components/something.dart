@@ -13,7 +13,7 @@ class Something extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Implementation of the Something widget
+    
     return Center(
       child: GestureDetector(
         onTap: onTap,
@@ -35,7 +35,7 @@ class Something extends StatelessWidget {
                 color: Colors.white,
               ),
             )),
-            // Add more widgets as needed
+    
           ],
         ),
       ),

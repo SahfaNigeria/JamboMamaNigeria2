@@ -28,7 +28,7 @@ class _GuestFeelingsFormBody extends StatefulWidget {
 
 class _GuestFeelingsFormBodyState extends State<_GuestFeelingsFormBody> {
   final DateTime now = DateTime.now();
-  int pregnancyWeek = 20; // fixed demo value for guests
+  // int pregnancyWeek = 20; //
 
   final List<String> responses = List.filled(12, '');
   final List<String> medicalResponses = List.filled(12, '');
@@ -254,10 +254,7 @@ class _GuestFeelingsFormBodyState extends State<_GuestFeelingsFormBody> {
                   'TODAY_2 ${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}',
                   style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
-                AutoText(
-                  'Y_A_A $pregnancyWeek W_P',
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
-                ),
+          
               ],
             ),
           ),

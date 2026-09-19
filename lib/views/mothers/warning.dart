@@ -251,8 +251,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Vaginal Bleeding
                 _buildQuestionCard(
                   title: 'BLEEDING_3',
-                  description:
-                      "BLEEDING_DESCRIPTION_1",
+                  description: "BLEEDING_DESCRIPTION_1",
                   icon: Icons.water_drop,
                   iconColor: Colors.red[800],
                   content: Column(
@@ -292,8 +291,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Vaginal Discharge
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_1',
-                  description:
-                      'VAGINA_DESCRIPTION_1',
+                  description: 'VAGINA_DESCRIPTION_1',
                   icon: Icons.warning_amber,
                   iconColor: Colors.yellow[700],
                   content: Column(
@@ -313,7 +311,10 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         _buildMultipleChoice(
                           value: dischargeDuration,
-                          options: [autoI8lnGen.translate("LESS_THAN_A_WEEK"), autoI8lnGen.translate("MORE_THAN_A_WEEK")],
+                          options: [
+                            autoI8lnGen.translate("LESS_THAN_A_WEEK"),
+                            autoI8lnGen.translate("MORE_THAN_A_WEEK")
+                          ],
                           onChanged: (value) =>
                               setState(() => dischargeDuration = value),
                         ),
@@ -325,8 +326,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Loss of fluid
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_2',
-                  description:
-                      'VAGINA_DESCRIPTION_2',
+                  description: 'VAGINA_DESCRIPTION_2',
                   icon: Icons.opacity,
                   iconColor: Colors.blue[300],
                   content: Column(
@@ -366,8 +366,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Burning urination
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_3',
-                  description:
-                      'B_S_U',
+                  description: 'B_S_U',
                   icon: Icons.local_fire_department,
                   iconColor: Colors.orange,
                   content: _buildYesNoQuestion(
@@ -380,8 +379,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Diarrhea
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_4',
-                  description:
-                      'VAGINA_DESCRIPTION_4',
+                  description: 'VAGINA_DESCRIPTION_4',
                   icon: Icons.sick,
                   iconColor: Colors.brown,
                   content: Column(
@@ -408,7 +406,8 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                               child: TextField(
                                 controller: _diarrheaDaysController,
                                 decoration: InputDecoration(
-                                  labelText: autoI8lnGen.translate("HOW_LONG_2"),
+                                  labelText:
+                                      autoI8lnGen.translate("HOW_LONG_2"),
                                   border: OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
@@ -422,7 +421,8 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                               child: TextField(
                                 controller: _diarrheaFrequencyController,
                                 decoration: InputDecoration(
-                                  labelText: autoI8lnGen.translate("TIMES_PER_DAY"),
+                                  labelText:
+                                      autoI8lnGen.translate("TIMES_PER_DAY"),
                                   border: OutlineInputBorder(),
                                 ),
                                 keyboardType: TextInputType.number,
@@ -441,8 +441,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Fever
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_1',
-                  description:
-                      'F_L_C_C',
+                  description: 'F_L_C_C',
                   icon: Icons.thermostat,
                   iconColor: Colors.red,
                   content: _buildYesNoQuestion(
@@ -454,8 +453,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Cough
                 _buildQuestionCard(
                   title: 'HEALTH_QUESTION_2',
-                  description:
-                      'VAGINA_DESCRIPTION_3',
+                  description: 'VAGINA_DESCRIPTION_3',
                   icon: Icons.coronavirus,
                   iconColor: Colors.grey[600],
                   content: Column(
@@ -506,8 +504,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Swollen legs/hands, Numbness, Headache (grouped for pre-eclampsia screening)
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_6',
-                  description:
-                      'VAGINA_DESCRIPTION_5',
+                  description: 'VAGINA_DESCRIPTION_5',
                   icon: Icons.warning,
                   iconColor: Colors.red,
                   content: Column(
@@ -560,8 +557,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Contractions
                 _buildQuestionCard(
                   title: 'D_Y_H_C',
-                  description:
-                      'L_C_C',
+                  description: 'L_C_C',
                   icon: Icons.pregnant_woman,
                   iconColor: Colors.purple,
                   content: Column(
@@ -601,8 +597,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Baby movement
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_7',
-                  description:
-                      'VAGINA_DESCRIPTION_6',
+                  description: 'VAGINA_DESCRIPTION_6',
                   icon: Icons.child_care,
                   iconColor: Colors.pink,
                   content: _buildYesNoQuestion(
@@ -619,8 +614,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                 // Other concerns
                 _buildQuestionCard(
                   title: 'VAGINA_QUESTION_8',
-                  description:
-                      'VAGINA_DESCRIPTION_7',
+                  description: 'VAGINA_DESCRIPTION_7',
                   icon: Icons.message,
                   iconColor: Colors.blue,
                   content: TextField(
@@ -658,8 +652,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: AutoText('ASSESSMENT_COMPLETE'),
-                                    content: AutoText(
-                                        'THANK_YOU_1'),
+                                    content: AutoText('THANK_YOU_1'),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
@@ -824,8 +817,6 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
           .get();
 
       final patientName = userDoc.data()?['full name'] ?? 'Unknown Patient';
-      print('✅ Patient name retrieved: $patientName');
-
       // STEP 2: Look up connected provider
       final query = await FirebaseFirestore.instance
           .collection('allowed_to_chat')
@@ -839,7 +830,6 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
       }
 
       final providerId = query.docs.first['recipientId'];
-      print('✅ Connected provider ID: $providerId');
 
       // STEP 3: Prepare assessment data with patient name included
       final assessmentData = {
@@ -886,8 +876,6 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
           .collection('emergency_assessments')
           .add(assessmentData);
 
-      print('✅ Saved to global collection: ${globalRef.id}');
-
       // STEP 5: Save under provider's emergency_cases
       await FirebaseFirestore.instance
           .collection('health_provider_data')
@@ -897,8 +885,6 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
         ...assessmentData,
         'centralDocId': globalRef.id,
       });
-
-      print('✅ Also saved to provider emergency_cases');
 
       // STEP 6: Send notification via helper method from ConnectionStateModel
       final connectionStateModel =
@@ -917,11 +903,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
         requesterName: patientName, // Using the already fetched name
         assessmentId: globalRef.id,
       );
-
-      print('📢 Notification sent successfully!');
-      print('Patient: $patientName');
     } catch (e) {
-      print('❌ Emergency save failed: $e');
       throw Exception(autoI8lnGen.translate('F_S_E_R $e'));
     }
   }

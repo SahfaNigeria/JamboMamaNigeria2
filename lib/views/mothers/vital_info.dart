@@ -63,7 +63,7 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
         }
       }
     } catch (error) {
-      print('Error loading patient vital info: $error');
+
       setState(() {
         isLoading = false;
       });

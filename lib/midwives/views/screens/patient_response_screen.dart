@@ -5,10 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class ProviderPatientResponsesScreen extends StatefulWidget {
   final String patientId;
+  final String? patientName;
 
   const ProviderPatientResponsesScreen({
     Key? key,
     required this.patientId,
+    this.patientName,
   }) : super(key: key);
 
   @override
@@ -68,10 +70,22 @@ class _ProviderPatientResponsesScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: AutoText('PATIENT_RESPONSES'),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              autoI8lnGen.translate('PATIENT_RESPONSES'),
+            ),
+            Text(
+              ' ${widget.patientName}',
+              style:
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
       ),
       backgroundColor: Colors.grey[50],
       body: Column(
@@ -79,15 +93,24 @@ class _ProviderPatientResponsesScreenState
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('health_provider_data')
-                  .doc(_providerId)
-                  .collection('patience_responses')
-                  .doc(widget.patientId)
-                  .collection('responses')
-                  .orderBy('date', descending: true)
-                  .snapshots(),
+    .collection('mother_pregnancy_data')      // ← add this
+    .doc(widget.patientId) 
+    .collection('mother_feeling_responses')
+    .where('motherId', isEqualTo: widget.patientId)
+    .where('providerIds', arrayContains: _providerId)
+    .orderBy('timestamp', descending: true)
+    .snapshots(),
+              // stream: FirebaseFirestore.instance
+              //     .collection('health_provider_data')
+              //     .doc(_providerId)
+              //     .collection('patience_responses')
+              //     .doc(widget.patientId)
+              //     .collection('responses')
+              //     .orderBy('date', descending: true)
+              //     .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
+                    // debugPrint('STREAM ERROR: ${snapshot.error}'); 
                   return Center(child: AutoText('ERROR: ${snapshot.error}'));
                 }
 

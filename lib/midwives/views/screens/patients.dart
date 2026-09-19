@@ -6,6 +6,8 @@ import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
 import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/provider_vital_info_screen.dart';
 import 'package:jambomama_nigeria/midwives/views/screens/provider_warning_screen.dart';
+import 'package:jambomama_nigeria/providers/connection_provider.dart';
+import 'package:provider/provider.dart';
 import 'provider_patient_background.dart';
 import 'patient_response_screen.dart';
 
@@ -60,11 +62,10 @@ class _PatientsState extends State<Patients> {
           return Scaffold(
             appBar:
                 AppBar(title: const AutoText('PATIENTS'), centerTitle: true),
-            body: Center(child: AutoText('ERROR_14')),
+            body: const Center(child: AutoText('ERROR_14')),
           );
         }
 
-        // Extract user data for drawer
         var userData = userSnapshot.data ?? {};
         String userName = userData['fullName'] ?? '';
         String email = userData['email'] ?? '';
@@ -224,7 +225,6 @@ class _PatientsState extends State<Patients> {
                                   (userData['full name'] ?? 'No name')
                                       .toString();
 
-                              // Apply search filter
                               if (_searchQuery.isNotEmpty &&
                                   !patientName
                                       .toLowerCase()
@@ -263,8 +263,8 @@ class _PatientsState extends State<Patients> {
     bool isWideScreen,
     bool isDesktop,
   ) {
-    final actions =
-        _buildActionButtons(context, requesterId, userId, isWideScreen);
+    final actions = _buildActionButtons(
+        context, requesterId, userId, isWideScreen, patientName);
 
     return Card(
       margin: EdgeInsets.symmetric(
@@ -320,11 +320,12 @@ class _PatientsState extends State<Patients> {
     String requesterId,
     String userId,
     bool isWideScreen,
+    String patientName,
   ) {
     return [
       _ActionButton(
         icon: Icons.person,
-        label: 'Profile',
+        label: autoI8lnGen.translate("PROFILE"),
         color: Colors.black,
         onPressed: () {
           Navigator.push(
@@ -333,6 +334,7 @@ class _PatientsState extends State<Patients> {
               builder: (context) => ProviderPatientBackgroundScreen(
                 patientId: requesterId,
                 providerId: userId,
+                patientName: patientName,
               ),
             ),
           );
@@ -340,15 +342,19 @@ class _PatientsState extends State<Patients> {
       ),
       _ActionButton(
         icon: Icons.chat,
-        label: 'Chat',
+        label: autoI8lnGen.translate("CHAT"),
         color: Colors.blue,
         onPressed: () {
-          startChat(context, requesterId);
+          startChat(
+            context,
+            requesterId,
+            patientName,
+          );
         },
       ),
       _ActionButton(
         icon: Icons.medical_services,
-        label: 'Medical',
+        label: autoI8lnGen.translate("MEDICAL"),
         color: Colors.green,
         onPressed: () {
           Navigator.push(
@@ -356,6 +362,7 @@ class _PatientsState extends State<Patients> {
             MaterialPageRoute(
               builder: (context) => ProviderPatientResponsesScreen(
                 patientId: requesterId,
+                patientName: patientName,
               ),
             ),
           );
@@ -363,7 +370,7 @@ class _PatientsState extends State<Patients> {
       ),
       _ActionButton(
         icon: Icons.medical_information,
-        label: 'Vitals',
+        label: autoI8lnGen.translate("VITALS"),
         color: Colors.orange,
         onPressed: () {
           Navigator.push(
@@ -372,6 +379,7 @@ class _PatientsState extends State<Patients> {
               builder: (context) => PatientVitalDisplayScreen(
                 providerId: userId,
                 patientId: requesterId,
+                patientName: patientName,
               ),
             ),
           );
@@ -379,7 +387,7 @@ class _PatientsState extends State<Patients> {
       ),
       _ActionButton(
         icon: Icons.emergency,
-        label: 'Emergency',
+        label: autoI8lnGen.translate("EMERGENCY_BUTTON"),
         color: Colors.red,
         onPressed: () async {
           final latestAssessment = await FirebaseFirestore.instance
@@ -398,21 +406,31 @@ class _PatientsState extends State<Patients> {
                 builder: (context) => HealthcareProfessionalAssessmentScreen(
                   patientId: requesterId,
                   assessmentId: assessmentId,
+                  patientName: patientName,
                 ),
               ),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('No emergency assessment found'),
+              SnackBar(
+                content: AutoText("NO_EMERGENCY_FOUND"),
               ),
             );
           }
         },
       ),
+      _ActionButton(
+        icon: Icons.person_remove,
+        label: autoI8lnGen.translate("DISCONNECT"),
+        color: Colors.grey.shade700,
+        onPressed: () {
+          _confirmDeletion(context, userId, requesterId, patientName);
+        },
+      ),
     ];
   }
 
+  // Action Bar UI Layouts
   Widget _buildDesktopActions(List<_ActionButton> actions) {
     return Row(
       children: actions.map((action) {
@@ -474,6 +492,51 @@ class _PatientsState extends State<Patients> {
       }).toList(),
     );
   }
+
+  void _confirmDeletion(BuildContext context, String currentUserId,
+      String otherUserId, String name) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const AutoText('CONFIRM_DISCONNECT_TITLE'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("${autoI8lnGen.translate("CONFIRM_DISCONNECT_MSG")} $name?"),
+            const SizedBox(height: 8),
+            const AutoText('DISCONNECT_NOTICE',
+                style: TextStyle(fontSize: 13, color: Colors.grey)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const AutoText('CANCEL'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () async {
+              await Provider.of<ConnectionStateModel>(context, listen: false)
+                  .endConnection(
+                      currentUserId: currentUserId, otherUserId: otherUserId);
+
+              if (context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text(
+                          "${autoI8lnGen.translate("DISCONNECTED_FROM")} $name")),
+                );
+              }
+            },
+            child: const AutoText('DISCONNECT',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ActionButton {
@@ -489,274 +552,3 @@ class _ActionButton {
     required this.onPressed,
   });
 }
-
-
-// import 'package:auto_i8ln/auto_i8ln.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:jambomama_nigeria/controllers/chat_service_health.dart';
-// import 'package:jambomama_nigeria/midwives/views/components/healthprovider%20drawer.dart';
-// import 'package:jambomama_nigeria/midwives/views/screens/provider_vital_info_screen.dart';
-// import 'package:jambomama_nigeria/midwives/views/screens/provider_warning_screen.dart';
-// import 'provider_patient_background.dart';
-
-// import 'patient_response_screen.dart';
-
-// class Patients extends StatefulWidget {
-//   const Patients({super.key});
-
-//   @override
-//   State<Patients> createState() => _PatientsState();
-// }
-
-// class _PatientsState extends State<Patients> {
-//   String _searchQuery = "";
-//   final TextEditingController _searchController = TextEditingController();
-
-//   Future<Map<String, dynamic>> getUserDetails() async {
-//     User? user = FirebaseAuth.instance.currentUser;
-
-//     if (user != null) {
-//       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-//           .collection('Health Professionals')
-//           .doc(user.uid)
-//           .get();
-
-//       return userDoc.data() as Map<String, dynamic>;
-//     } else {
-//       throw Exception('No user logged in');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final userId = FirebaseAuth.instance.currentUser!.uid;
-
-//     return FutureBuilder<Map<String, dynamic>>(
-//       future: getUserDetails(),
-//       builder: (context, userSnapshot) {
-//         if (userSnapshot.connectionState == ConnectionState.waiting) {
-//           return Scaffold(
-//             appBar: AppBar(title: AutoText('PATIENTS'), centerTitle: true),
-//             body: const Center(child: CircularProgressIndicator()),
-//           );
-//         }
-
-//         if (userSnapshot.hasError) {
-//           return Scaffold(
-//             appBar:
-//                 AppBar(title: const AutoText('PATIENTS'), centerTitle: true),
-//             body: Center(child: AutoText('ERROR_14')),
-//           );
-//         }
-
-//         // Extract user data for drawer
-//         var userData = userSnapshot.data ?? {};
-//         String userName = userData['fullName'] ?? '';
-//         String email = userData['email'] ?? '';
-//         String address = userData['address'] ?? '';
-//         String cityValue = userData['city'] ?? '';
-//         String stateValue = userData['state'] ?? '';
-//         String villageTown = userData['villageTown'] ?? '';
-//         String hospital = userData['hospital'] ?? '';
-
-//         return Scaffold(
-//           appBar: AppBar(
-//             title: const AutoText('PATIENTS'),
-//             centerTitle: true,
-//             bottom: PreferredSize(
-//               preferredSize: const Size.fromHeight(60.0),
-//               child: Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: TextField(
-//                   controller: _searchController,
-//                   decoration: InputDecoration(
-//                     hintText: autoI8lnGen.translate("SEARCH_PATIENTS"),
-//                     suffixIcon: const Icon(Icons.search),
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(30.0),
-//                       borderSide: BorderSide.none,
-//                     ),
-//                     filled: true,
-//                     fillColor: Colors.white,
-//                     contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
-//                   ),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       _searchQuery = value.toLowerCase().trim();
-//                     });
-//                   },
-//                 ),
-//               ),
-//             ),
-//           ),
-//           drawer: HealthProviderHomeDrawer(
-//             userName: userName,
-//             email: email,
-//             address: address,
-//             cityValue: cityValue,
-//             stateValue: stateValue,
-//             villageTown: villageTown,
-//             hospital: hospital,
-//           ),
-//           body: StreamBuilder<QuerySnapshot>(
-//             stream: FirebaseFirestore.instance
-//                 .collection('allowed_to_chat')
-//                 .where('recipientId', isEqualTo: userId)
-//                 .snapshots(),
-//             builder: (context, snapshot) {
-//               if (snapshot.connectionState == ConnectionState.waiting) {
-//                 return const Center(child: CircularProgressIndicator());
-//               }
-
-//               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-//                 return Center(child: AutoText('ERROR_15'));
-//               }
-
-//               final allowedChats = snapshot.data!.docs;
-
-//               return ListView.builder(
-//                 itemCount: allowedChats.length,
-//                 itemBuilder: (context, index) {
-//                   final chatData =
-//                       allowedChats[index].data() as Map<String, dynamic>;
-//                   final requesterId = chatData['requesterId'];
-
-//                   return FutureBuilder<DocumentSnapshot>(
-//                     future: FirebaseFirestore.instance
-//                         .collection('New Mothers')
-//                         .doc(requesterId)
-//                         .get(),
-//                     builder: (context, userSnapshot) {
-//                       if (userSnapshot.connectionState ==
-//                           ConnectionState.waiting) {
-//                         return const ListTile(title: AutoText('LOADING_TEXT'));
-//                       }
-
-//                       if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-//                         return const ListTile(
-//                             title: AutoText('USER_NOT_FOUND'));
-//                       }
-
-//                       final userData =
-//                           userSnapshot.data!.data() as Map<String, dynamic>;
-//                       final patientName =
-//                           (userData['full name'] ?? autoI8lnGen.translate("NO_NAME")).toString();
-
-//                       // 🔎 Apply search filter
-//                       if (_searchQuery.isNotEmpty &&
-//                           !patientName.toLowerCase().contains(_searchQuery)) {
-//                         return const SizedBox.shrink(); // Hide non-matching
-//                       }
-
-//                       return ListTile(
-//                         title: Text(
-//                           patientName,
-//                           style: const TextStyle(fontWeight: FontWeight.bold),
-//                         ),
-//                         trailing: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             IconButton(
-//                               icon:
-//                                   const Icon(Icons.person, color: Colors.black),
-//                               onPressed: () {
-//                                 Navigator.push(
-//                                   context,
-//                                   MaterialPageRoute(
-//                                     builder: (context) =>
-//                                         ProviderPatientBackgroundScreen(
-//                                       patientId: requesterId,
-//                                       providerId: userId,
-//                                     ),
-//                                   ),
-//                                 );
-//                               },
-//                             ),
-//                             IconButton(
-//                               icon: const Icon(Icons.chat, color: Colors.blue),
-//                               onPressed: () {
-//                                 startChat(context, requesterId);
-//                               },
-//                             ),
-//                             IconButton(
-//                               icon: const Icon(Icons.medical_services,
-//                                   color: Colors.green),
-//                               onPressed: () {
-//                                 Navigator.push(
-//                                   context,
-//                                   MaterialPageRoute(
-//                                       builder: (context) =>
-//                                           ProviderPatientResponsesScreen(
-//                                             patientId: requesterId,
-//                                           )),
-//                                 );
-//                               },
-//                             ),
-//                             IconButton(
-//                               icon: const Icon(Icons.medical_information,
-//                                   color: Colors.yellow),
-//                               onPressed: () {
-//                                 Navigator.push(
-//                                   context,
-//                                   MaterialPageRoute(
-//                                     builder: (context) =>
-//                                         PatientVitalDisplayScreen(
-//                                       providerId: userId,
-//                                       patientId: requesterId,
-//                                     ),
-//                                   ),
-//                                 );
-//                               },
-//                             ),
-//                             IconButton(
-//                               icon: const Icon(Icons.emergency,
-//                                   color: Colors.red),
-//                               onPressed: () async {
-//                                 final latestAssessment = await FirebaseFirestore
-//                                     .instance
-//                                     .collection('emergency_assessments')
-//                                     .where('userId', isEqualTo: requesterId)
-//                                     .orderBy('timestamp', descending: true)
-//                                     .limit(1)
-//                                     .get();
-
-//                                 if (latestAssessment.docs.isNotEmpty) {
-//                                   final assessmentId =
-//                                       latestAssessment.docs.first.id;
-
-//                                   Navigator.push(
-//                                     context,
-//                                     MaterialPageRoute(
-//                                       builder: (context) =>
-//                                           HealthcareProfessionalAssessmentScreen(
-//                                         patientId: requesterId,
-//                                         assessmentId: assessmentId,
-//                                       ),
-//                                     ),
-//                                   );
-//                                 } else {
-//                                   ScaffoldMessenger.of(context).showSnackBar(
-//                                     const SnackBar(
-//                                         content: AutoText(
-//                                             'N_E_F')),
-//                                   );
-//                                 }
-//                               },
-//                             ),
-//                           ],
-//                         ),
-//                       );
-//                     },
-//                   );
-//                 },
-//               );
-//             },
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-

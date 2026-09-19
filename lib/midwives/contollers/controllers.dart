@@ -19,9 +19,7 @@ class MidwifeController {
     XFile? _file = await _imagePicker.pickImage(source: source);
     if (_file != null) {
       return await _file.readAsBytes();
-    } else {
-      print(' You did not select any image');
-    }
+    } else {}
   }
 
   //Function that picks images from device ends
@@ -44,7 +42,7 @@ class MidwifeController {
 
   Future<String> saveMidWife(
       String fullName,
-      String email,
+      // String email,
       String phoneNumber,
       String healthFacility,
       String position,
@@ -67,7 +65,7 @@ class MidwifeController {
           .doc(_auth.currentUser!.uid)
           .set({
         'fullName': fullName,
-        'email': email,
+        // 'email': email,
         'phoneNumber': phoneNumber,
         'healthFacility': healthFacility,
         'position': position,

@@ -40,11 +40,12 @@ class _ProviderPatientBackgroundScreenState
         _errorMessage = null;
       });
 
+      // Read from the patient's own record — same data, no provider scoping needed
       final doc = await _firestore
-          .collection('health_provider_data')
-          .doc(widget.providerId)
-          .collection('patient_backgrounds')
+          .collection('patients')
           .doc(widget.patientId)
+          .collection('background')
+          .doc('patient_background')
           .get();
 
       if (doc.exists) {
@@ -66,12 +67,69 @@ class _ProviderPatientBackgroundScreenState
     }
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Minor check: age ≤ 16
+  // ─────────────────────────────────────────────────────────────────────────
+
+  bool get _isMinor {
+    final age = _patientData?['age'];
+    if (age == null) return false;
+    final ageInt = age is int ? age : int.tryParse(age.toString());
+    return ageInt != null && ageInt <= 16;
+  }
+
+  /// Returns the patient name with asterisk wrapping if she is a minor,
+  /// e.g.  "** Amara Osei **"
+  String get _displayName {
+    final name = widget.patientName ?? '';
+    if (_isMinor) return '** $name **';
+    return name;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(autoI8lnGen.translate('PATIENT_BACKGROUND')),
+            Row(
+              children: [
+                Text(
+                  _displayName,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: _isMinor ? FontWeight.bold : FontWeight.normal,
+                    color: _isMinor ? Colors.yellow[200] : Colors.white70,
+                  ),
+                ),
+                if (_isMinor) ...[
+                  const SizedBox(width: 6),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.red[700],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'MINOR',
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -94,11 +152,7 @@ class _ProviderPatientBackgroundScreenState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[300],
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
           const SizedBox(height: 16),
           Text(
             _errorMessage!,
@@ -120,21 +174,11 @@ class _ProviderPatientBackgroundScreenState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.assignment_outlined,
-            size: 64,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.assignment_outlined, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
-          const AutoText(
-            'N_B_D_A_2',
-            style: TextStyle(fontSize: 16),
-          ),
+          const AutoText('N_B_D_A_2', style: TextStyle(fontSize: 16)),
           const SizedBox(height: 8),
-          AutoText(
-            'P_H_B_F',
-            style: TextStyle(color: Colors.grey[600]),
-          ),
+          AutoText('P_H_B_F', style: TextStyle(color: Colors.grey[600])),
         ],
       ),
     );
@@ -146,6 +190,9 @@ class _ProviderPatientBackgroundScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Minor banner (shown prominently at top of data view)
+          if (_isMinor) _buildMinorBanner(),
+
           // Alerts Section (if any)
           if (_patientData!['alerts'] != null &&
               (_patientData!['alerts'] as List).isNotEmpty)
@@ -172,6 +219,39 @@ class _ProviderPatientBackgroundScreenState
 
           // Last Updated
           _buildLastUpdatedSection(),
+        ],
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Minor banner — shown at the very top of the data view
+  // ─────────────────────────────────────────────────────────────────────────
+
+  Widget _buildMinorBanner() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.red[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.red[300]!),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.child_care, color: Colors.red[700], size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              '${_displayName} is a minor (age ${_patientData!['age']}). '
+              'Ensure appropriate safeguarding protocols are followed.',
+              style: TextStyle(
+                color: Colors.red[800],
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -254,6 +334,7 @@ class _ProviderPatientBackgroundScreenState
           _buildInfoRow('AGE', _patientData!['age']?.toString(), 'years'),
           _buildInfoRow(
               'SCHOOLING', _patientData!['schooling']?.toString(), 'years'),
+          _buildInfoRow('EDU_LEVEL', _patientData!['education_level'], ''),
           _buildInfoRow('H', _patientData!['height']?.toString(), 'cm'),
           _buildInfoRow('W', _patientData!['weight']?.toString(), 'kg'),
         ]),
@@ -262,7 +343,67 @@ class _ProviderPatientBackgroundScreenState
           _buildInfoRow('BMI_2', _patientData!['bmi']?.toStringAsFixed(1), ''),
           _buildInfoRow('STATUS', _patientData!['bmi_message'], ''),
         ]),
+        const SizedBox(height: 16),
+        // ── Genotype & Blood Group ─────────────────────────────────────
+        _buildInfoCard('BLOOD_GENOTYPE', [
+          _buildInfoRow('BLOOD_GROUP', _patientData!['blood_group'], ''),
+          _buildInfoRow('GENOTYPE', _patientData!['genotype'], ''),
+          _buildGenotypeRiskRow(_patientData!['genotype']),
+          _buildInfoRow('ANC_REG',
+              _getBooleanText(_patientData!['registered_for_anc']), ''),
+        ]),
       ],
+    );
+  }
+
+  /// Displays a coloured risk badge for the genotype value.
+  Widget _buildGenotypeRiskRow(dynamic genotype) {
+    if (genotype == null) return const SizedBox.shrink();
+    final g = genotype.toString();
+    final isHighRisk = g == 'SS' || g == 'SC';
+    final isMediumRisk = g == 'AS' || g == 'AC';
+    final color = isHighRisk
+        ? Colors.red[700]!
+        : isMediumRisk
+            ? Colors.orange[700]!
+            : Colors.green[700]!;
+    final label = isHighRisk
+        ? 'High risk — refer to specialist'
+        : isMediumRisk
+            ? 'Carrier — partner testing advised'
+            : 'Low risk';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: AutoText(
+              'GENOTYPE_RISK',
+              style: const TextStyle(
+                  fontWeight: FontWeight.w500, color: Colors.grey),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: color.withOpacity(0.4)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(isHighRisk ? Icons.warning : Icons.info_outline,
+                    color: color, size: 14),
+                const SizedBox(width: 4),
+                Text(label, style: TextStyle(fontSize: 11, color: color)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -284,8 +425,10 @@ class _ProviderPatientBackgroundScreenState
     return Column(
       children: [
         _buildInfoCard('B_T_E', [
-          _buildInfoRow(
-              'HEAMOGOBLIN_T', _patientData!['haemoglobin']?.toString(), 'g/dL'),
+          _buildInfoRow('PCV_SHORT', _patientData!['pcv']?.toString(), '%'),
+          _buildInfoRow('STATUS', _patientData!['pcv_message'], ''),
+          _buildInfoRow('HEAMOGOBLIN_T',
+              _patientData!['haemoglobin']?.toString(), 'g/dL'),
           _buildInfoRow('STATUS', _patientData!['haemoglobin_message'], ''),
           _buildInfoRow(
               'ALBUMIN', _patientData!['albumin']?.toString(), 'g/dL'),
@@ -306,8 +449,8 @@ class _ProviderPatientBackgroundScreenState
     return Column(
       children: [
         _buildInfoCard('T_USE', [
-          _buildInfoRow('S_T',
-              _getBooleanText(_patientData!['smokes_tobacco']), ''),
+          _buildInfoRow(
+              'S_T', _getBooleanText(_patientData!['smokes_tobacco']), ''),
           if (_isTrue(_patientData!['smokes_tobacco'])) ...[
             _buildInfoRow('DETAILS', _patientData!['smoking_details'], ''),
             _buildInfoRow('FREQ', _patientData!['smoking_frequency'], ''),
@@ -315,8 +458,8 @@ class _ProviderPatientBackgroundScreenState
         ]),
         const SizedBox(height: 16),
         _buildInfoCard('AL_USE', [
-          _buildInfoRow('D_A',
-              _getBooleanText(_patientData!['drinks_alcohol']), ''),
+          _buildInfoRow(
+              'D_A', _getBooleanText(_patientData!['drinks_alcohol']), ''),
           if (_isTrue(_patientData!['drinks_alcohol'])) ...[
             _buildInfoRow('TYPE_2', _patientData!['alcohol_type'], ''),
             _buildInfoRow('FREQ', _patientData!['alcohol_frequency'], ''),
@@ -344,34 +487,65 @@ class _ProviderPatientBackgroundScreenState
     return Column(
       children: [
         _buildInfoCard('HIV_S', [
-          _buildInfoRow(
-              'S_TE', _patientData!['hiv_test_self'], ''),
+          _buildInfoRow('S_TE', _patientData!['hiv_test_self'], ''),
           _buildInfoRow('P_TE', _patientData!['hiv_test_partner'], ''),
           _buildInfoRow('O_A', _getBooleanText(_patientData!['on_art']), ''),
           if (_isTrue(_patientData!['on_art']))
-            _buildInfoRow(
-                'A_S_D', _patientData!['art_start_date'], ''),
-          _buildInfoRow(
-              'P_A_S', _patientData!['partner_art_status'], ''),
+            _buildInfoRow('A_S_D', _patientData!['art_start_date'], ''),
+          _buildInfoRow('P_A_S', _patientData!['partner_art_status'], ''),
         ]),
         const SizedBox(height: 16),
         _buildInfoCard('O_T_E', [
           _buildInfoRow('S_T_E', _patientData!['syphilis_test'], ''),
-          _buildInfoRow(
-              'S_TRE', _patientData!['syphilis_treatment'], ''),
+          _buildInfoRow('S_TRE', _patientData!['syphilis_treatment'], ''),
+
+          // ── TB (expanded) ────────────────────────────────────────────
           _buildInfoRow('TB_TEST', _patientData!['tb_test'], ''),
-          _buildInfoRow('TB_VA',
-              _getBooleanText(_patientData!['tb_vaccination']), ''),
+          _buildInfoRow(
+              'TB_VA', _getBooleanText(_patientData!['tb_vaccination']), ''),
+          _buildInfoRow(
+              'TB_VAC_YEAR', _patientData!['tb_vaccination_year'], ''),
+          _buildInfoRow('ON_TB_TREATMENT',
+              _getBooleanText(_patientData!['on_tb_treatment']), ''),
+          if (_isTrue(_patientData!['on_tb_treatment'])) ...[
+            _buildInfoRow(
+                'TB_TX_START', _patientData!['tb_treatment_start'], ''),
+            _buildInfoRow('TB_TX_STOP', _patientData!['tb_treatment_stop'], ''),
+          ],
+          _buildInfoRow('CURRENTLY_ON_TB',
+              _getBooleanText(_patientData!['currently_on_tb_treatment']), ''),
+
+          // ── Malaria (expanded) ───────────────────────────────────────
           _buildInfoRow('M_T_E', _patientData!['malaria_test'], ''),
+          _buildInfoRow('M_TEST_DATE', _patientData!['malaria_test_date'], ''),
+          _buildInfoRow('ON_ANTIMALARIALS',
+              _getBooleanText(_patientData!['on_antimalarials']), ''),
+          if (_isTrue(_patientData!['on_antimalarials']))
+            _buildInfoRow(
+                'ANTIMALARIAL_TX', _patientData!['antimalarial_treatment'], ''),
+          _buildInfoRow(
+              'ANTIMALARIAL_RECENT', _patientData!['antimalarial_recent'], ''),
+
+          // ── Worms ────────────────────────────────────────────────────
           _buildInfoRow('W_T_E', _patientData!['worm_test'], ''),
+          _buildInfoRow(
+              'WORM_MED_RECENT', _patientData!['worm_medicine_recent'], ''),
         ]),
         const SizedBox(height: 16),
         _buildInfoCard('VACC', [
-          _buildInfoRow('T_V_A',
-              _patientData!['tetanus_vaccinations']?.toString(), ''),
-          _buildInfoRow('R_T_E',
-              _getBooleanText(_patientData!['tetanus_recent']), ''),
+          _buildInfoRow(
+              'T_V_A', _patientData!['tetanus_vaccinations']?.toString(), ''),
+          _buildInfoRow(
+              'R_T_E', _getBooleanText(_patientData!['tetanus_recent']), ''),
         ]),
+        const SizedBox(height: 16),
+        // ── Other issues ──────────────────────────────────────────────
+        if (_isTrue(_patientData!['has_other_issues']))
+          _buildInfoCard('OHIS', [
+            _buildInfoRow('H_O_I',
+                _getBooleanText(_patientData!['has_other_issues']), ''),
+            _buildInfoRow('DETAILS', _patientData!['disability_details'], ''),
+          ]),
       ],
     );
   }
@@ -380,8 +554,7 @@ class _ProviderPatientBackgroundScreenState
     return Column(
       children: [
         _buildInfoCard('C_PE', [
-          _buildInfoRow('L_M_P',
-              _patientData!['last_menstrual_period'], ''),
+          _buildInfoRow('L_M_P', _patientData!['last_menstrual_period'], ''),
           _buildInfoRow('E_D_E',
               _formatDate(_patientData!['expected_delivery_date']), ''),
           _buildInfoRow('F_P_E',
@@ -391,17 +564,16 @@ class _ProviderPatientBackgroundScreenState
         _buildInfoCard('P_H_I', [
           _buildInfoRow('Previous Pregnancies',
               _patientData!['previous_pregnancies']?.toString(), ''),
-          _buildInfoRow(
-              'L_BI', _patientData!['live_births']?.toString(), ''),
+          _buildInfoRow('L_BI', _patientData!['live_births']?.toString(), ''),
           _buildInfoRow(
               'MISCARRIAGES', _patientData!['miscarriages']?.toString(), ''),
+          _buildInfoRow('S_B', _patientData!['stillborn']?.toString(), ''),
           _buildInfoRow(
-              'S_B', _patientData!['stillborn']?.toString(), ''),
-          _buildInfoRow('H_CE',
-              _getBooleanText(_patientData!['had_cesarean']), ''),
+              'H_CE', _getBooleanText(_patientData!['had_cesarean']), ''),
           if (_isTrue(_patientData!['had_cesarean']))
-            _buildInfoRow('CEC',
-                _patientData!['cesarean_count']?.toString(), ''),
+            _buildInfoRow(
+                'CEC', _patientData!['cesarean_count']?.toString(), ''),
+          _buildInfoRow('L_P_T', _patientData!['last_pregnancy_timing'], ''),
         ]),
         const SizedBox(height: 16),
         _buildInfoCard('D_HI', [
@@ -411,8 +583,18 @@ class _ProviderPatientBackgroundScreenState
               _getBooleanText(_patientData!['had_heavy_bleeding']), ''),
           _buildInfoRow(
               'H_T_E', _getBooleanText(_patientData!['had_tears']), ''),
-          _buildInfoRow(
-              'D_RE', _patientData!['delivery_remarks'], ''),
+          // ── Tear sub-questions (previously missing) ──────────────────
+          if (_patientData!['had_tears'] != null &&
+              _patientData!['had_tears'].toString().toLowerCase() ==
+                  autoI8lnGen.translate('YES_MESSAGE').toLowerCase()) ...[
+            _buildInfoRow(
+                'TEARS_STITCHING', _patientData!['tears_need_stitching'], ''),
+            _buildInfoRow(
+                'TEARS_HEALED', _patientData!['tears_healed_naturally'], ''),
+            _buildInfoRow(
+                'TEARS_BOTHERING', _patientData!['tears_still_bothering'], ''),
+          ],
+          _buildInfoRow('D_RE', _patientData!['delivery_remarks'], ''),
         ]),
       ],
     );
@@ -515,22 +697,23 @@ class _ProviderPatientBackgroundScreenState
   String _getBooleanText(dynamic value) {
     if (value == null) return autoI8lnGen.translate("NOT_SPECIFIED");
 
-    // Handle boolean values
     if (value is bool) {
-      return value ? autoI8lnGen.translate("YES_MESSAGE") : autoI8lnGen.translate("NO_2");
+      return value
+          ? autoI8lnGen.translate("YES_MESSAGE")
+          : autoI8lnGen.translate("NO_2");
     }
 
-    // Handle string values that might represent booleans
     if (value is String) {
       final lowerValue = value.toLowerCase().trim();
-      if (lowerValue == autoI8lnGen.translate("TRUE") || lowerValue == autoI8lnGen.translate("YES_MESSAGE") || lowerValue == '1') {
+      if (lowerValue == autoI8lnGen.translate("TRUE") ||
+          lowerValue == autoI8lnGen.translate("YES_MESSAGE") ||
+          lowerValue == '1') {
         return autoI8lnGen.translate("YES_MESSAGE");
       } else if (lowerValue == autoI8lnGen.translate("FALSE") ||
           lowerValue == autoI8lnGen.translate("NO_2").toLowerCase() ||
           lowerValue == '0') {
         return autoI8lnGen.translate("NO_2");
       }
-      // If it's a descriptive string, return as-is
       return value;
     }
 
@@ -538,7 +721,8 @@ class _ProviderPatientBackgroundScreenState
   }
 
   String _formatDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return autoI8lnGen.translate("NOT_SPECIFIED");
+    if (dateString == null || dateString.isEmpty)
+      return autoI8lnGen.translate("NOT_SPECIFIED");
     try {
       final date = DateTime.parse(dateString);
       return DateFormat('MMM dd, yyyy').format(date);
@@ -547,17 +731,15 @@ class _ProviderPatientBackgroundScreenState
     }
   }
 
-  // Helper method to check if a value represents "true"
   bool _isTrue(dynamic value) {
     if (value == null) return false;
-
     if (value is bool) return value;
-
     if (value is String) {
       final lowerValue = value.toLowerCase().trim();
-      return lowerValue == autoI8lnGen.translate("TRUE") || lowerValue == autoI8lnGen.translate("YES_MESSAGE") || lowerValue == '1';
+      return lowerValue == autoI8lnGen.translate("TRUE") ||
+          lowerValue == autoI8lnGen.translate("YES_MESSAGE") ||
+          lowerValue == '1';
     }
-
     return false;
   }
 }

@@ -32,7 +32,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         showSnackMessage(
             context, 'RESET_SENT');
       } on FirebaseAuthException catch (e) {
-        print(e);
+    
         setLoading(false);
         showSnackMessage(context, e.message ?? 'ERROR_16');
       }

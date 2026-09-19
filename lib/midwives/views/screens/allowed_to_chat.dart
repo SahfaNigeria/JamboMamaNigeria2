@@ -59,9 +59,11 @@ class AllowedToChatScreen extends StatelessWidget {
 
                   return ListTile(
                     title: AutoText(userName),
+
                     onTap: () {
-                      startChat(context, requesterId); // Pass the context here
+                      startChat(context, requesterId, userName);
                     },
+                    //
                   );
                 },
               );

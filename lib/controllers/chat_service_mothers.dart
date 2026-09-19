@@ -7,8 +7,6 @@ Future<void> startChat(BuildContext context, String recipientId) async {
   try {
     // Create or fetch chat document
     String chatId = await _getOrCreateChatId(recipientId);
-    // Navigate to chat screen
-    print('Navigating to chat with ID: $chatId'); // Debugging line
 
     Navigator.push(
       context,
@@ -23,7 +21,6 @@ Future<void> startChat(BuildContext context, String recipientId) async {
       ),
     );
   } catch (e) {
-    print('Error starting chat: $e');
     // Handle error appropriately
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Error starting chat')),
@@ -62,7 +59,7 @@ Future<String> _getOrCreateChatId(String recipientId) async {
       return chatDoc.id;
     }
   } catch (e) {
-    print('Error fetching or creating chat: $e');
+
     throw e; // Re-throw to handle it in the calling function
   }
 }

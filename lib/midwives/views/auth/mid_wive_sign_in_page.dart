@@ -44,7 +44,7 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
         _emailController.text.trim(),
         _passwordController.text,
         context,
-            (bool isLoading) {
+        (bool isLoading) {
           if (mounted) {
             setState(() {
               _isLoading = isLoading;
@@ -82,7 +82,6 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

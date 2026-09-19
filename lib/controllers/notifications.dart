@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'auth_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -30,41 +31,32 @@ class NotificationService {
 
   Future<void> init() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await requestPermisson();
+    await requestPermission();
+    await setupFlutterNotifications();
     await setupMessageHandlers();
 
-    //get the token
+    // Get and store the current token
     final token = await _messaging.getToken();
     fcmToken = token ?? "";
-    print('fcm token: $token');
+    debugPrint('[FCM] Current token: $fcmToken');
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((String token) async {
-      print('FCM token refreshed: $token');
-      final SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      bool isNotificationDisabled =
-          sharedPreferences.getBool("disabled_notification_key") ?? true;
-      if (isNotificationDisabled == false) {
-        AuthController().saveFcmToken();
-      }
-// Save the new token
-    });
+    // NOTE: onTokenRefresh is intentionally NOT duplicated here.
+    // Token refresh handling is owned by AuthController.initTokenRefreshListener()
+    // which is called from main.dart via authStateChanges().
   }
 
-  // Method to trigger notification via API endpoint
+  // --- API TRIGGER ---
+
   Future<Map<String, dynamic>> triggerNotificationViaApi({
     required String userId,
     required String title,
     required String message,
+    required String
+        senderId, // NEW: Divine's server uses this to look up and attach senderName
   }) async {
     final url = Uri.parse('$baseUrl$notificationEndpoint');
 
     try {
-      print('🔔 Triggering notification via API');
-      print('👤 User ID: $userId');
-      print('📝 Title: $title');
-      print('📝 Message: $message');
-
       final response = await http.post(
         url,
         headers: {
@@ -74,24 +66,24 @@ class NotificationService {
           'userId': userId,
           'title': title,
           'message': message,
+          'senderId': senderId, // NEW
         }),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final responseData = jsonDecode(response.body);
-        print('✅ API notification triggered successfully: $responseData');
-        return responseData;
+        return jsonDecode(response.body);
       } else {
-        print(
-            '❌ Failed to trigger API notification: ${response.statusCode}, ${response.body}');
+        debugPrint('[API] Failed: ${response.statusCode} ${response.body}');
         throw Exception(
             'Failed to trigger notification: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
-      print('❌ Error triggering API notification: $e');
+      debugPrint('[API] Error: $e');
       throw Exception('Error triggering notification: $e');
     }
   }
+
+  // --- LOCAL NOTIFICATION DISPLAY ---
 
   Future<void> sendNotification({
     required String title,
@@ -100,21 +92,19 @@ class NotificationService {
     required String token,
   }) async {
     if (token.isEmpty) {
-      print('❌ Cannot send notification: Token is empty');
+      debugPrint('[FCM] sendNotification called with empty token — skipped');
       return;
     }
+
+    // NEW: prefer senderName from data if present, same rule as showNotification below
+    final String displayTitle = (data['senderName'] as String?) ?? title;
 
     final int notificationId = Random().nextInt(2147483647);
 
     try {
-      print('🔔 Sending notification to token: $token');
-      print('📝 Title: $title');
-      print('📝 Body: $body');
-      print('📝 Data: $data');
-
       await _localNotifications.show(
         notificationId,
-        title,
+        displayTitle,
         body,
         NotificationDetails(
           android: AndroidNotificationDetails(
@@ -136,17 +126,17 @@ class NotificationService {
             presentSound: true,
           ),
         ),
+        // FIX 5: Use jsonEncode so payload is valid JSON, not .toString()
         payload: jsonEncode(data),
       );
-
-      print('✅ Notification sent successfully');
     } catch (e) {
-      print('❌ Error showing notification: $e');
-      print(e.toString()); // Log the full error
+      debugPrint('[FCM] sendNotification display error: $e');
     }
   }
 
-  Future<void> requestPermisson() async {
+  // --- PERMISSIONS ---
+
+  Future<void> requestPermission() async {
     final settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
@@ -156,16 +146,14 @@ class NotificationService {
       carPlay: false,
       criticalAlert: false,
     );
-
-    print('Permission status: ${settings.authorizationStatus}');
+    debugPrint('[FCM] Permission status: ${settings.authorizationStatus}');
   }
 
-  Future<void> setupFlutterNotifications() async {
-    if (_isFlutterLocalNotificationsInitialized) {
-      return;
-    }
+  // --- FLUTTER LOCAL NOTIFICATIONS SETUP ---
 
-    //android setup
+  Future<void> setupFlutterNotifications() async {
+    if (_isFlutterLocalNotificationsInitialized) return;
+
     const channel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
@@ -178,56 +166,77 @@ class NotificationService {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    //android
-    final AndroidInitializationSettings initializationSettingsAndroid =
+    const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/uc_launcher');
-    //ios
-    final initializationSettingsDarwin = DarwinInitializationSettings(
-        // onDidReceiveLocalNotification: (id, title, body, payload) async {
-        //   print("Notification received on iOS: $title");
-        // },
-        );
 
-    final initializationSettings = InitializationSettings(
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
     );
 
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveBackgroundNotificationResponse: (details) {
-        final payload = details.payload;
-        if (payload != null) {
-          final data = jsonDecode(payload);
-          final targetScreen = data['screen'];
-          final senderId = data['senderId'];
-
-          if (targetScreen == 'ChatScreen' && senderId != null) {
-            navigatorKey.currentState?.pushNamed('/chat', arguments: senderId);
-          }
-        }
+      onDidReceiveNotificationResponse: (details) {
+        _handleNotificationTap(details.payload);
       },
+      onDidReceiveBackgroundNotificationResponse: _onBackgroundNotificationTap,
     );
 
-    // await _localNotifications.initialize(
-    //   initializationSettings,
-    //   onDidReceiveBackgroundNotificationResponse: (details) {},
-    // );
     _isFlutterLocalNotificationsInitialized = true;
   }
+
+  // Must be top-level or static for background isolate
+  static void _onBackgroundNotificationTap(NotificationResponse details) {
+    _routeFromPayload(details.payload);
+  }
+
+  void _handleNotificationTap(String? payload) {
+    _routeFromPayload(payload);
+  }
+
+  // FIX 4: Actually handle routing when notification is tapped
+  static void _routeFromPayload(String? payload) {
+    if (payload == null || payload.isEmpty) return;
+
+    try {
+      final data = jsonDecode(payload) as Map<String, dynamic>;
+      final targetScreen = data['screen'];
+      final senderId = data['senderId'];
+      final chatId = data['chatId'];
+
+      if (targetScreen == 'ChatScreen' && chatId != null) {
+        navigatorKey.currentState?.pushNamed(
+          '/ChatScreen',
+          arguments: {
+            'chatId': chatId,
+            'senderId': senderId,
+          },
+        );
+      }
+      // Add more screen routes here as needed
+    } catch (e) {
+      debugPrint('[FCM] Payload routing error: $e');
+    }
+  }
+
+  // --- SHOW NOTIFICATION ---
 
   Future<void> showNotification(RemoteMessage message) async {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
-    print('Attempting to show notification:');
-    print('Notification: $notification');
-    print('Android: $android');
-
     if (notification != null && android != null) {
+      // NEW: prefer sender's name from data payload; fall back to whatever title FCM sent
+      final String displayTitle =
+          (message.data['senderName'] as String?) ?? notification.title ?? '';
+
       await _localNotifications.show(
         notification.hashCode,
-        notification.title,
+        displayTitle,
         notification.body,
         NotificationDetails(
           android: AndroidNotificationDetails(
@@ -246,315 +255,55 @@ class NotificationService {
             presentSound: true,
           ),
         ),
-        payload: message.data.toString(),
+        // FIX 5: jsonEncode instead of .toString()
+        payload: jsonEncode(message.data),
       );
     } else {
-      print('Unable to show notification: notification or android is null');
+      debugPrint('[FCM] showNotification: notification or android was null');
     }
   }
 
+  // --- MESSAGE HANDLERS ---
+
   Future<void> setupMessageHandlers() async {
-    //foreground
+    // Foreground
     FirebaseMessaging.onMessage.listen((message) async {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-      print('Message notification: ${message.notification?.toMap()}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-
+      debugPrint('[FCM] Foreground message: ${message.messageId}');
       await showNotification(message);
     });
 
-    //background
+    // Background → app opened via notification tap
     FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
 
-    //opened app
+    // App launched from terminated state via notification tap
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
+      debugPrint('[FCM] App launched from notification');
       _handleBackgroundMessage(initialMessage);
-      // print('Handling a message that caused the application to open');
     }
   }
 
+  // FIX 4: Route user to correct screen when tapping background notification
   void _handleBackgroundMessage(RemoteMessage message) {
-    print('Handling a background message ${message.messageId}');
+    debugPrint('[FCM] Background message opened: ${message.messageId}');
+
+    final targetScreen = message.data['screen'];
+    final chatId = message.data['chatId'];
+    final senderId = message.data['senderId'];
+
+    if (targetScreen == 'ChatScreen' && chatId != null) {
+      navigatorKey.currentState?.pushNamed(
+        '/ChatScreen',
+        arguments: {
+          'chatId': chatId,
+          'senderId': senderId,
+          'senderCollection': message.data['senderCollection'],
+          'senderNameField': message.data['senderNameField'],
+          'receiverCollection': message.data['receiverCollection'],
+          'receiverNameField': message.data['receiverNameField'],
+        },
+      );
+    }
+    // Add more screen routes here as needed
   }
 }
-
-
-
-
-// import 'dart:convert';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:jambomama_nigeria/main.dart';
-// // import 'package:shared_preferences/shared_preferences.dart';
-// import 'dart:math';
-// import 'auth_controller.dart';
-// import 'package:http/http.dart' as http;
-
-// @pragma('vm:entry-point')
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await NotificationService.instance.setupFlutterNotifications();
-//   await NotificationService.instance.showNotification(message);
-// }
-
-// class NotificationService {
-//   NotificationService._();
-//   static final NotificationService instance = NotificationService._();
-
-//   final _messaging = FirebaseMessaging.instance;
-//   final _localNotifications = FlutterLocalNotificationsPlugin();
-//   bool _isFlutterLocalNotificationsInitialized = false;
-
-//   // API endpoint constants
-//   static const String baseUrl = "https://jumbo-mama-notify.onrender.com";
-//   static const String notificationEndpoint = "/api/notifications/push";
-//   Future<void> init() async {
-//     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-//     await requestPermisson();
-//     await setupMessageHandlers();
-
-//     //get the token
-//     final token = await _messaging.getToken();
-//     print('fcm token: $token');
-//     FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
-//       print('FCM token refreshed: $token');
-//       AuthController().saveFcmToken(); // Save the new token
-//     });
-//   }
-
-//   // Method to trigger notification via API endpoint
-//   Future<Map<String, dynamic>> triggerNotificationViaApi({
-//     required String userId,
-//     required String title,
-//     required String message,
-//   }) async {
-//     final url = Uri.parse('$baseUrl$notificationEndpoint');
-
-//     try {
-//       print('🔔 Triggering notification via API');
-//       print('👤 User ID: $userId');
-//       print('📝 Title: $title');
-//       print('📝 Message: $message');
-
-//       final response = await http.post(
-//         url,
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: jsonEncode({
-//           'userId': userId,
-//           'title': title,
-//           'message': message,
-//         }),
-//       );
-
-//       if (response.statusCode == 200 || response.statusCode == 201) {
-//         final responseData = jsonDecode(response.body);
-//         print('✅ API notification triggered successfully: $responseData');
-//         return responseData;
-//       } else {
-//         print(
-//             '❌ Failed to trigger API notification: ${response.statusCode}, ${response.body}');
-//         throw Exception(
-//             'Failed to trigger notification: ${response.statusCode}, ${response.body}');
-//       }
-//     } catch (e) {
-//       print('❌ Error triggering API notification: $e');
-//       throw Exception('Error triggering notification: $e');
-//     }
-//   }
-
-//   Future<void> sendNotification({
-//     required String title,
-//     required String body,
-//     required Map<String, dynamic> data,
-//     required String token,
-//   }) async {
-//     if (token.isEmpty) {
-//       print('❌ Cannot send notification: Token is empty');
-//       return;
-//     }
-
-//     final int notificationId = Random().nextInt(2147483647);
-
-//     try {
-//       print('🔔 Sending notification to token: $token');
-//       print('📝 Title: $title');
-//       print('📝 Body: $body');
-//       print('📝 Data: $data');
-
-//       await _localNotifications.show(
-//         notificationId,
-//         title,
-//         body,
-//         NotificationDetails(
-//           android: AndroidNotificationDetails(
-//             'high_importance_channel',
-//             'High Importance Notifications',
-//             channelDescription:
-//                 'This channel is used for important notifications.',
-//             importance: Importance.high,
-//             priority: Priority.high,
-//             ticker: 'ticker',
-//             icon: '@mipmap/uc_launcher',
-//             enableLights: true,
-//             enableVibration: true,
-//             playSound: true,
-//           ),
-//           iOS: const DarwinNotificationDetails(
-//             presentAlert: true,
-//             presentBadge: true,
-//             presentSound: true,
-//           ),
-//         ),
-//         payload: jsonEncode(data),
-//       );
-
-//       print('✅ Notification sent successfully');
-//     } catch (e) {
-//       print('❌ Error showing notification: $e');
-//       print(e.toString()); // Log the full error
-//     }
-//   }
-
-//   Future<void> requestPermisson() async {
-//     final settings = await _messaging.requestPermission(
-//       alert: true,
-//       badge: true,
-//       sound: true,
-//       provisional: false,
-//       announcement: false,
-//       carPlay: false,
-//       criticalAlert: false,
-//     );
-
-//     print('Permission status: ${settings.authorizationStatus}');
-//   }
-
-//   Future<void> setupFlutterNotifications() async {
-//     if (_isFlutterLocalNotificationsInitialized) {
-//       return;
-//     }
-
-//     //android setup
-//     const channel = AndroidNotificationChannel(
-//       'high_importance_channel',
-//       'High Importance Notifications',
-//       description: 'This channel is used for important notifications.',
-//       importance: Importance.high,
-//     );
-
-//     await _localNotifications
-//         .resolvePlatformSpecificImplementation<
-//             AndroidFlutterLocalNotificationsPlugin>()
-//         ?.createNotificationChannel(channel);
-
-//     //android
-//     final AndroidInitializationSettings initializationSettingsAndroid =
-//         AndroidInitializationSettings('@mipmap/uc_launcher');
-//     //ios
-//     final initializationSettingsDarwin = DarwinInitializationSettings(
-//         // onDidReceiveLocalNotification: (id, title, body, payload) async {
-//         //   print("Notification received on iOS: $title");
-//         // },
-//         );
-
-//     final initializationSettings = InitializationSettings(
-//       android: initializationSettingsAndroid,
-//       iOS: initializationSettingsDarwin,
-//     );
-
-//     await _localNotifications.initialize(
-//       initializationSettings,
-//       onDidReceiveBackgroundNotificationResponse: (details) {
-//         final payload = details.payload;
-//         if (payload != null) {
-//           final data = jsonDecode(payload);
-//           final targetScreen = data['screen'];
-//           final senderId = data['senderId'];
-
-//           if (targetScreen == 'ChatScreen' && senderId != null) {
-//             navigatorKey.currentState?.pushNamed('/chat', arguments: senderId);
-//           }
-//         }
-//       },
-//     );
-
-//     // await _localNotifications.initialize(
-//     //   initializationSettings,
-//     //   onDidReceiveBackgroundNotificationResponse: (details) {},
-//     // );
-//     _isFlutterLocalNotificationsInitialized = true;
-//   }
-
-//   Future<void> showNotification(RemoteMessage message) async {
-//     RemoteNotification? notification = message.notification;
-//     AndroidNotification? android = message.notification?.android;
-
-//     print('Attempting to show notification:');
-//     print('Notification: $notification');
-//     print('Android: $android');
-
-//     if (notification != null && android != null) {
-//       await _localNotifications.show(
-//         notification.hashCode,
-//         notification.title,
-//         notification.body,
-//         NotificationDetails(
-//           android: AndroidNotificationDetails(
-//             'high_importance_channel',
-//             'High Importance Notifications',
-//             channelDescription:
-//                 'This channel is used for important notifications.',
-//             importance: Importance.high,
-//             priority: Priority.high,
-//             ticker: 'ticker',
-//             icon: '@mipmap/uc_launcher',
-//           ),
-//           iOS: const DarwinNotificationDetails(
-//             presentAlert: true,
-//             presentBadge: true,
-//             presentSound: true,
-//           ),
-//         ),
-//         payload: message.data.toString(),
-//       );
-//     } else {
-//       print('Unable to show notification: notification or android is null');
-//     }
-//   }
-
-//   Future<void> setupMessageHandlers() async {
-//     //foreground
-//     FirebaseMessaging.onMessage.listen((message) async {
-//       print('Got a message whilst in the foreground!');
-//       print('Message data: ${message.data}');
-//       print('Message notification: ${message.notification?.toMap()}');
-
-//       if (message.notification != null) {
-//         print('Message also contained a notification: ${message.notification}');
-//       }
-
-//       await showNotification(message);
-//     });
-
-//     //background
-//     FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
-
-//     //opened app
-//     final initialMessage = await _messaging.getInitialMessage();
-//     if (initialMessage != null) {
-//       _handleBackgroundMessage(initialMessage);
-//       // print('Handling a message that caused the application to open');
-//     }
-//   }
-
-//   void _handleBackgroundMessage(RemoteMessage message) {
-//     print('Handling a background message ${message.messageId}');
-//   }
-// }
-

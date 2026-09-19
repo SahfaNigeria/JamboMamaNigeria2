@@ -59,7 +59,8 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
             children: [
               TextFormField(
                 controller: _userIdController,
-                decoration: InputDecoration(labelText: autoI8lnGen.translate("USER_ID")),
+                decoration: InputDecoration(
+                    labelText: autoI8lnGen.translate("USER_ID")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return autoI8lnGen.translate("VALIDATION_Q_17");
@@ -69,7 +70,8 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
               ),
               TextFormField(
                 controller: _userNameController,
-                decoration: InputDecoration(labelText: autoI8lnGen.translate("USER_NAME")),
+                decoration: InputDecoration(
+                    labelText: autoI8lnGen.translate("USER_NAME")),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return autoI8lnGen.translate("ENTER_NAME");
@@ -79,23 +81,33 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
               ),
               DropdownButtonFormField<String>(
                 value: _userRole,
-                decoration: InputDecoration(labelText: autoI8lnGen.translate('USER_ROLE')),
-                items: [autoI8lnGen.translate("PATIENT"), autoI8lnGen.translate('autoI8lnGen.translate')].map((role) {
+                decoration: InputDecoration(
+                    labelText: autoI8lnGen.translate('USER_ROLE')),
+                items: [
+                  autoI8lnGen.translate("PATIENT"),
+                  autoI8lnGen.translate('autoI8lnGen.translate')
+                ].map((role) {
                   return DropdownMenuItem(value: role, child: Text(role));
                 }).toList(),
                 onChanged: (value) => setState(() => _userRole = value),
               ),
               DropdownButtonFormField<String>(
                 value: _feedbackType,
-                decoration: InputDecoration(labelText: autoI8lnGen.translate("FEED_BACK_TYPE")),
-                items: [autoI8lnGen.translate("SUGGESTION"), autoI8lnGen.translate("BUG_REPORT"), autoI8lnGen.translate("GENERAL")].map((type) {
+                decoration: InputDecoration(
+                    labelText: autoI8lnGen.translate("FEED_BACK_TYPE")),
+                items: [
+                  autoI8lnGen.translate("SUGGESTION"),
+                  autoI8lnGen.translate("BUG_REPORT"),
+                  autoI8lnGen.translate("GENERAL")
+                ].map((type) {
                   return DropdownMenuItem(value: type, child: Text(type));
                 }).toList(),
                 onChanged: (value) => setState(() => _feedbackType = value),
               ),
               TextFormField(
                 controller: _feedbackContentController,
-                decoration: InputDecoration(labelText: autoI8lnGen.translate("FEEDBACK_CONTENT")),
+                decoration: InputDecoration(
+                    labelText: autoI8lnGen.translate("FEEDBACK_CONTENT")),
                 maxLines: 5,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

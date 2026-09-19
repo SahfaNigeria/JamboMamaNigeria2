@@ -27,12 +27,8 @@ class _MidwiveAuthScreenState extends State<MidwiveAuthScreen> {
       bool isApproved = healthProfessionalDoc.get('approved') ?? false;
       if (isApproved) {
         Navigator.pushReplacementNamed(context, '/MidWifeHomePage');
-      } else {
-        print("Health Professional not approved");
-        // Handle unapproved health professionals (e.g., show a message or redirect)
-      }
+      } else {}
     } else {
-      print("User not found in either collection");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

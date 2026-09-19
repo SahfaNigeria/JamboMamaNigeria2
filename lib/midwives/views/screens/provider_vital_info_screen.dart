@@ -6,11 +6,13 @@ import 'package:intl/intl.dart';
 class PatientVitalDisplayScreen extends StatefulWidget {
   final String providerId;
   final String patientId;
+  final String? patientName;
 
   const PatientVitalDisplayScreen({
     Key? key,
     required this.providerId,
     required this.patientId,
+    this.patientName,
   }) : super(key: key);
 
   @override
@@ -46,20 +48,38 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoText(patientData?['name'] ?? 'PATIENT_VITAL_INFORMATION'),
         backgroundColor: Colors.blue[700],
         foregroundColor: Colors.white,
         elevation: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              autoI8lnGen.translate('PATIENT_VITAL_INFORMATION'),
+            ),
+            Text(
+              ' ${widget.patientName}',
+              style:
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore
-            .collection('health_provider_data')
-            .doc(widget.providerId)
-            .collection('vital_info_from_patients')
+            .collection('vital_info')
             .doc(widget.patientId)
             .collection('records')
+            .where('providerIds', arrayContains: widget.providerId)
             .orderBy('timestamp', descending: true)
             .snapshots(),
+        // .collection('health_provider_data')
+        // .doc(widget.providerId)
+        // .collection('vital_info_from_patients')
+        // .doc(widget.patientId)
+        // .collection('records')
+        // .orderBy('timestamp', descending: true)
+        // .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -86,7 +106,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                   Icon(Icons.medical_information_outlined,
                       size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                   AutoText(
+                  AutoText(
                     'NO_VITAL_INFORMATION',
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
@@ -221,11 +241,8 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                   _buildVitalRow('PULSE_RATE', '${data['pulseRate']} bpm',
                       Icons.favorite_border, Colors.pink),
                 if (data['babyHeartbeat'] != null)
-                  _buildVitalRow(
-                      'BABY_HEART',
-                      '${data['babyHeartbeat']} bpm',
-                      Icons.child_care,
-                      Colors.orange),
+                  _buildVitalRow('BABY_HEART', '${data['babyHeartbeat']} bpm',
+                      Icons.child_care, Colors.orange),
               ]),
 
               _buildVitalSection('LABORATORY_RESULTS', [
