@@ -1155,6 +1155,7 @@
   "BMI_3": "BMI :",
   "WEEK_10": "(Sabata",
 
+<<<<<<< HEAD
   "ACCEPTED_AND_CHAT": "wavomereza pempho lanu. Mutha kucheza nawo tsopano!",
   "UNABLE_TO_ACCEPT": "walephera kuvomereza pempho lanu lolumikizana.",
   "NEEDS_ASSESSMENT": "akufunika kuunika bwinobwino!",
@@ -1346,4 +1347,32 @@
   "HELP_GENOTYPE_WHO": "Yemwe amadzaza: Moyenerera utsimikizidwe ndi kuyeza magazi. Mutha kudziwa zotsatira zanu kuchokera pamayeso akale.",
   "PCT_T": "Haemoglobin",
   "G_Q_8_LABEL": "Kuthamanga kwa Magazi"
+=======
+  "PLEASE_CREATE_ACCOUNT": "Chonde pangani akaunti",
+  "PLEASE_CREATE_ACCOUNT_2": "Pangani akaunti kuti muwone masika anu",
+  "CREATE_ENJOY_APP": "Pangani akaunti nafe kuti mumve zokoma za pulogalamuyi",
+  "EXPECTED_DELIVERY_DATE": "Tsiku loyembekezera kubereka",
+  "C_D_D": "Werengani tsiku lobadwa",
+  "CARETAKER": "Woyang'anira:",
+  "HEALTH_PROVIDER_TYPE": "Mtundu wa wodzaza:",
+  "PROVIDER_NAME": "Dzina la wodzaza:",
+  "FACILITY_TYPE": "Mtundu wa malo:",
+  "FACILITY_NAME": "Dzina la malo:",
+  "TRANSPORT_TO_FACILITY": "Mayendedwe kumalo:",
+  "TRIP_DURATION": "Nthawi yaulendo:",
+  "BLOOD_DONOR": "Wobereka magazi:",
+  "BLOOD_GROUP": "Gulu lamagazi:",
+  "ACCOMPANYING_PERSON": "Ndani amene adzakupatsani chithandizo:",
+  "WILL_STAY_AFTER_BIRTH": "Ndani adzakhalabe pambuyo pakubereka:",
+  "RETURN_TRANSPORT": "Mayendedwe obwerera:",
+  "VISIT_PLAN": "Dongosolo la malo obwerera",
+  "WHO_TAKES_HOME": "Ndani amene adzakubwezerani kunyumba:",
+  "ABOUT_BIRTH_PLAN": "Za ndondomeko yakubereka",
+  "NO_ITEMS_SELECTED": "Palibe chomwe wasankha",
+  "NOTIFICATION_SETTINGS_UPDATED": "Zokonda za mauthenga zasinthidwa",
+  "FAILED_UPDATE_NOTIFICATION": "Kusintha mauthenga sikunathe",
+  "PROFILE_UPDATED": "Mbiri yanu yasinthidwa",
+  "ERROR_UPDATING_PROFILE": "Vuto pakusintha mbiri yanu",
+  "PLEASE_SELECT_LAST_MENSTRUAL_PERIOD": "Chonde sankhani tsiku lomaliza la pamene munali pamwedzi"
+>>>>>>> 7c75b4fe485e98feaff852c3db9cb8d85bd2d975
 }

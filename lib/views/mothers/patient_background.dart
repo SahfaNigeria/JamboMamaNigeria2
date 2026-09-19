@@ -1082,6 +1082,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                     Row(
                       children: [
                         Icon(Icons.info_outline, color: Colors.orange[600]),
+<<<<<<< HEAD
                         const SizedBox(width: 8),
                         Expanded(
                           child: AutoText(
@@ -1090,6 +1091,12 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),
+=======
+                        SizedBox(width: 8),
+                        AutoText(
+                          'STN (${missingFields.length}) ITEMS:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+>>>>>>> 7c75b4fe485e98feaff852c3db9cb8d85bd2d975
                         ),
                       ],
                     ),

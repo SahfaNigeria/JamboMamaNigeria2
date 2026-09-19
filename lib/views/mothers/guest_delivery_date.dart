@@ -35,7 +35,7 @@ class _GuestExpectedDeliveryScreenState
   void _calculateEDD() {
     if (_lmpController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText('PLEASE_SELECT_LAST_MENSTRUAL_PERIOD_DATE')),
+        SnackBar(content: AutoText('SELECT_LAST_MENSTRUAL_PERIOD_FLOW')),
       );
       return;
     }
@@ -61,7 +61,7 @@ class _GuestExpectedDeliveryScreenState
       // Show info message about creating account
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: AutoText("CREATE_ACCOUNT_TO_MONITOR_PREGNANCY_PROPERLY"),
+          content: AutoText("PLEASE_CREATE_ACCOUNT_2"),
           backgroundColor: Colors.red[600],
         ),
       );
