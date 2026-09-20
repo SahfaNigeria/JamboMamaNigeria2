@@ -279,7 +279,7 @@ class ConnectionStateModel with ChangeNotifier {
 
       // Localized Push Notification
       await NotificationService.instance.triggerNotificationViaApi(
-        title: autoI8lnGen.translate('🚨 E_WARN'),
+        title: '🚨 ${autoI8lnGen.translate('E_WARN')}',
         message: '$requesterName ${autoI8lnGen.translate('SAEW')}',
         userId: providerId,
         senderId: requesterId,

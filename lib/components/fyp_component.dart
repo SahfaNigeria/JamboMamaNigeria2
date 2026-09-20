@@ -155,7 +155,7 @@ class Fypcomponent extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: onClick,
                         icon: const Icon(Icons.favorite, size: 18),
-                        label: Text(you),
+                        label: Text(autoI8lnGen.translate(you)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink.shade400,
                           foregroundColor: Colors.white,
@@ -169,7 +169,7 @@ class Fypcomponent extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: onTap,
                         icon: const Icon(Icons.child_friendly, size: 18),
-                        label: Text(baby),
+                        label: Text(autoI8lnGen.translate(baby)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink.shade400,
                           foregroundColor: Colors.white,

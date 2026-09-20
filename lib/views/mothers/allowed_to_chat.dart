@@ -219,12 +219,12 @@ class AllowedToChatScreen extends StatelessWidget {
             : Colors.orange.shade100,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: AutoText(
+      child: Text(
         isCurrentlyAvailable
-            ? 'AVAILABLE_NOW'
+            ? autoI8lnGen.translate('AVAILABLE_NOW')
             : nextAvailability != null
-                ? 'NEXT $nextAvailability'
-                : 'S_N_A',
+                ? '${autoI8lnGen.translate('NEXT')} $nextAvailability'
+                : autoI8lnGen.translate('S_N_A'),
         style: TextStyle(
           color: isCurrentlyAvailable
               ? Colors.green.shade700
@@ -510,13 +510,13 @@ class AllowedToChatScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Disconnect'),
+        title: const AutoText('CONFIRM_DISCONNECT_TITLE'),
         content: Text(
-            'Are you sure you want to end the chat connection with $name?'),
+            '${autoI8lnGen.translate('CONFIRM_DISCONNECT_MSG')} $name?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const AutoText('CANCEL'),
           ),
           TextButton(
             onPressed: () async {
@@ -528,7 +528,7 @@ class AllowedToChatScreen extends StatelessWidget {
               if (context.mounted) Navigator.pop(context);
             },
             child:
-                const Text('Disconnect', style: TextStyle(color: Colors.red)),
+                const AutoText('DISCONNECT', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

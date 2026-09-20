@@ -23,7 +23,7 @@ Future<void> startChat(BuildContext context, String recipientId) async {
   } catch (e) {
     // Handle error appropriately
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error starting chat')),
+      SnackBar(content: AutoText('ERROR_STARTING_CHAT')),
     );
   }
 }

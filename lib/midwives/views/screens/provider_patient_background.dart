@@ -61,7 +61,7 @@ class _ProviderPatientBackgroundScreenState
       }
     } catch (e) {
       setState(() {
-        _errorMessage = autoI8lnGen.translate("'E_L_P_D $e'");
+        _errorMessage = '${autoI8lnGen.translate('E_L_P_D')}: $e';
         _isLoading = false;
       });
     }
@@ -645,7 +645,7 @@ class _ProviderPatientBackgroundScreenState
             ),
           ),
           Expanded(
-            child: AutoText(
+            child: Text(
               '$value${unit.isNotEmpty ? ' $unit' : ''}',
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
@@ -674,8 +674,8 @@ class _ProviderPatientBackgroundScreenState
           children: [
             Icon(Icons.update, color: Colors.grey[600]),
             const SizedBox(width: 8),
-            AutoText(
-              'L_U_D $lastUpdatedText',
+            Text(
+              '${autoI8lnGen.translate('L_U_D')}: $lastUpdatedText',
               style: TextStyle(
                 color: Colors.grey[600],
                 fontStyle: FontStyle.italic,

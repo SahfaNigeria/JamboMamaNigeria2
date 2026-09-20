@@ -24,7 +24,7 @@ class ConnectionScreen extends StatelessWidget {
 
           if (snapshot.hasError) {
             return Center(
-              child: AutoText('ERROR: ${snapshot.error}'),
+              child: Text('${autoI8lnGen.translate('ERROR')}: ${snapshot.error}'),
             );
           }
 

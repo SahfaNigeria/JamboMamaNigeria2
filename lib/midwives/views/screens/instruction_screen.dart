@@ -123,7 +123,7 @@ class _PractitionerContentScreenState extends State<PractitionerContentScreen> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _loadHealthProviderContent,
-                        child: const Text('Retry'),
+                        child: const AutoText('RETRY'),
                       ),
                     ],
                   ),

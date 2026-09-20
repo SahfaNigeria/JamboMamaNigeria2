@@ -85,7 +85,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     AutoText(
-                      "WELCOME !",
+                      "WELCOME",
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                     ),

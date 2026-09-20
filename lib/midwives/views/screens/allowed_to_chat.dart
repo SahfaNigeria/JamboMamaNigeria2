@@ -58,7 +58,7 @@ class AllowedToChatScreen extends StatelessWidget {
                       'NO_NAME'; // Ensure field name matches
 
                   return ListTile(
-                    title: AutoText(userName),
+                    title: Text(userName),
 
                     onTap: () {
                       startChat(context, requesterId, userName);

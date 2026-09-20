@@ -92,7 +92,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                 children: [
                   Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                   const SizedBox(height: 16),
-                  AutoText('ERROR_LOADING_VITAL_INFORMATION ${snapshot.error}'),
+                  Text('${autoI8lnGen.translate('ERROR_LOADING_VITAL_INFORMATION')}: ${snapshot.error}'),
                 ],
               ),
             );
@@ -168,7 +168,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AutoText(
+                        Text(
                           dateStr,
                           style: TextStyle(
                             fontSize: 16,
@@ -205,8 +205,8 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                       color: Colors.green[100],
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: AutoText(
-                      'WEEK_2 ${data['currentWeek'] ?? 'N/A'}',
+                    child: Text(
+                      '${autoI8lnGen.translate('WEEK_2')} ${data['currentWeek'] ?? 'N/A'}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.green[800],
@@ -359,7 +359,7 @@ class _PatientVitalDisplayScreenState extends State<PatientVitalDisplayScreen> {
                   ),
                 ),
                 const SizedBox(height: 2),
-                AutoText(
+                Text(
                   value,
                   style: TextStyle(
                     fontSize: 18,

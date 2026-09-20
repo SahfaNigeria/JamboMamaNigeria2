@@ -117,7 +117,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
     } catch (e) {
       print('Error loading existing data: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading data: $e')),
+        SnackBar(content: Text('${autoI8lnGen.translate('ERROR_LOADING_DATA')}: $e')),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -202,7 +202,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
       providerId = connectionQuery.docs.first['recipientId'];
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Connection error: $e')),
+        SnackBar(content: Text('${autoI8lnGen.translate('CONNECTION_ERROR_MSG')}: $e')),
       );
       return;
     }
@@ -276,7 +276,7 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error saving: $e'),
+          content: Text('${autoI8lnGen.translate('ERROR_SAVING')}: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -319,8 +319,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                   ),
                 ),
                 SizedBox(width: 12),
-                AutoText(
-                  '$completionPercentage% COMPLETE',
+                Text(
+                  '$completionPercentage% ${autoI8lnGen.translate('COMPLETE')}',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -341,8 +341,8 @@ class _BirthPlanScreenState extends State<BirthPlanScreen> {
                       children: [
                         Icon(Icons.info_outline, color: Colors.orange[600]),
                         SizedBox(width: 8),
-                        AutoText(
-                          'STN (${missingFields.length} ITEMS):',
+                        Text(
+                          '${autoI8lnGen.translate('STN')} (${missingFields.length} ${autoI8lnGen.translate('ITEMS')}):',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],

@@ -574,20 +574,20 @@ class _FeelingsFormState extends State<FeelingsForm> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AutoText(
-                      'TODAY_2 ${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}',
+                    Text(
+                      '${autoI8lnGen.translate('TODAY_2')} ${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}',
                       style:
                           const TextStyle(color: Colors.white70, fontSize: 11),
                     ),
-                    AutoText(
-                      'DUEDATE ${widget.expectedDeliveryDate}',
+                    Text(
+                      '${autoI8lnGen.translate('DUEDATE')} ${widget.expectedDeliveryDate}',
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.w500),
                     ),
-                    AutoText(
-                      isPastDue ? 'W_PAST_DUE' : 'Y_A_A ${pregnancyWeek!} W_P',
+                    Text(
+                      isPastDue ? autoI8lnGen.translate('W_PAST_DUE') : '${autoI8lnGen.translate('Y_A_A')} ${pregnancyWeek!} ${autoI8lnGen.translate('W_P')}',
                       style:
                           const TextStyle(color: Colors.white70, fontSize: 11),
                     ),
@@ -1132,13 +1132,13 @@ class _FeelingsFormState extends State<FeelingsForm> {
             : autoI8lnGen.translate("ASK_CHW");
       case 7:
         return answer == autoI8lnGen.translate("YES_MESSAGE")
-            ? autoI8lnGen.translate("👍 THAT_GOOD_SIGN")
+            ? '👍 ${autoI8lnGen.translate("THAT_GOOD_SIGN")}'
             : answer == autoI8lnGen.translate("NO_MESSAGE")
                 ? autoI8lnGen.translate("C_H_P")
                 : autoI8lnGen.translate("T_A_C");
       case 8:
         return answer == autoI8lnGen.translate("YES_MESSAGE")
-            ? autoI8lnGen.translate("👍 G_K_P")
+            ? '👍 ${autoI8lnGen.translate("G_K_P")}'
             : autoI8lnGen.translate("START_N_B_P_S");
       case 9:
         return answer == autoI8lnGen.translate("YES_MESSAGE")
@@ -1353,7 +1353,7 @@ class _FeelingsFormState extends State<FeelingsForm> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: AutoText('F_T_S: $e'),
+          content: Text('${autoI8lnGen.translate('F_T_S')}: $e'),
           backgroundColor: Colors.red[600],
         ),
       );

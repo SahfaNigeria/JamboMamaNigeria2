@@ -62,10 +62,10 @@ class AlternativeProviderPatientResponsesScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AutoText('DATE $date',
+                      Text('${autoI8lnGen.translate('DATE')}: $date',
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      AutoText('P_W $pregnancyWeek'),
+                      Text('${autoI8lnGen.translate('P_W')}: $pregnancyWeek'),
                       const Divider(),
                       ListView.builder(
                         shrinkWrap: true,
@@ -100,7 +100,7 @@ class AlternativeProviderPatientResponsesScreen extends StatelessWidget {
                       ),
                       if (otherWorries.isNotEmpty) ...[
                         const Divider(),
-                        AutoText('OTHER_WORRIES $otherWorries',
+                        Text('${autoI8lnGen.translate('OTHER_WORRIES')}: $otherWorries',
                             style: const TextStyle(color: Colors.red)),
                       ],
                     ],

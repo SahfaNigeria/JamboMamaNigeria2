@@ -326,7 +326,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: AutoText('P_V $_verifiedProviderName'),
+              content: Text('${autoI8lnGen.translate('P_V')}: $_verifiedProviderName'),
               backgroundColor: Colors.green,
             ),
           );
@@ -582,8 +582,8 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                                 Icon(Icons.verified_user, color: Colors.blue),
                                 SizedBox(width: 8),
                                 Expanded(
-                                  child: AutoText(
-                                    'THIS_INFORMATION_WAS_VERIFIED_BY ${_vitalInfoData!['verifiedProviderName']}',
+                                  child: Text(
+                                    '${autoI8lnGen.translate('THIS_INFORMATION_WAS_VERIFIED_BY')} ${_vitalInfoData!['verifiedProviderName']}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.blue[800],
@@ -670,8 +670,8 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                                       color: Colors.green[800],
                                     ),
                                   ),
-                                  AutoText(
-                                    'PROVIDER_2 $_verifiedProviderName',
+                                  Text(
+                                    '${autoI8lnGen.translate('PROVIDER_2')} $_verifiedProviderName',
                                     style: TextStyle(
                                       color: Colors.grey[700],
                                     ),
@@ -745,7 +745,7 @@ class _PregnantWomanFormState extends State<PregnantWomanForm> {
                           TextFormField(
                             controller: _dateOfBirthController,
                             decoration: InputDecoration(
-                                labelText: 'E_DOB'),
+                                labelText: autoI8lnGen.translate('E_DOB')),
                             enabled: _hasVerifiedProvider,
                             validator: (value) {
                               if (value == null || value.isEmpty) {

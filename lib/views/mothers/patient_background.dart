@@ -873,7 +873,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
             .toList();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AutoText('CONNECTION_REQUIRED $e')),
+          SnackBar(content: Text('${autoI8lnGen.translate('CONNECTION_REQUIRED')}: $e')),
         );
         return;
       }
@@ -979,7 +979,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Patient background saved successfully')),
+              content: AutoText('PATIENT_BACKGROUND_SAVED')),
         );
 
         setState(() => _isEditMode = false);
@@ -987,7 +987,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
         if (_alerts.isNotEmpty) _showAlertsDialog();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AutoText('ERROR_S_D $e')),
+          SnackBar(content: Text('${autoI8lnGen.translate('ERROR_S_D')}: $e')),
         );
       }
     }
@@ -1061,8 +1061,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                AutoText(
-                  '$completionPercentage% COMPLETE',
+                Text(
+                  '$completionPercentage% ${autoI8lnGen.translate('COMPLETE')}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -1084,8 +1084,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                         Icon(Icons.info_outline, color: Colors.orange[600]),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: AutoText(
-                            'STN (${missingFields.length} ITEMS):',
+                          child: Text(
+                            '${autoI8lnGen.translate('STN')} (${missingFields.length} ${autoI8lnGen.translate('ITEMS')}):',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -1133,8 +1133,8 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
                         Icon(Icons.warning, color: Colors.red[600]),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: AutoText(
-                            'H_AL (${_alerts.length}):',
+                          child: Text(
+                            '${autoI8lnGen.translate('H_AL')} (${_alerts.length}):',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red[700]),
@@ -1684,7 +1684,7 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AutoText('$title $value',
+                Text('${autoI8lnGen.translate(title)} $value',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
                 if (message.isNotEmpty)
                   AutoText(message,

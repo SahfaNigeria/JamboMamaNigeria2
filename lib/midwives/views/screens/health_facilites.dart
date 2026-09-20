@@ -143,7 +143,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText('E_L_U_S $e')),
+        SnackBar(content: Text('${autoI8lnGen.translate('E_L_U_S')}: $e')),
       );
     }
     setState(() {
@@ -192,7 +192,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
     } catch (e) {
  
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText('E_L_F $e')),
+        SnackBar(content: Text('${autoI8lnGen.translate('E_L_F')}: $e')),
       );
     }
   }
@@ -296,7 +296,7 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText('E_O_G_P $e')),
+        SnackBar(content: Text('${autoI8lnGen.translate('E_O_G_P')}: $e')),
       );
     }
   }
@@ -383,8 +383,8 @@ class _HealthFacilitiesScreenState extends State<HealthFacilitiesScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                AutoText(
-                  '${facilities.length} FF',
+                Text(
+                  '${facilities.length} ${autoI8lnGen.translate('FF')}',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -694,7 +694,7 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText('E_S_F $e')),
+        SnackBar(content: Text('${autoI8lnGen.translate('E_S_F')}: $e')),
       );
     }
 
@@ -743,9 +743,8 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  AutoText(
-                    'H_O_H_F '
-                    'Y_R_V',
+                  Text(
+                    '${autoI8lnGen.translate('H_O_H_F')} ${autoI8lnGen.translate('Y_R_V')}',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 14,
@@ -766,8 +765,8 @@ class _AddFacilityFormState extends State<AddFacilityForm> {
                               color: Colors.blue.shade700, size: 20),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: AutoText(
-                              'S_F_F ${widget.userFullLocation}',
+                            child: Text(
+                              '${autoI8lnGen.translate('S_F_F')}: ${widget.userFullLocation}',
                               style: TextStyle(
                                 color: Colors.blue.shade700,
                                 fontSize: 12,

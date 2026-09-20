@@ -22,7 +22,7 @@ Future<void> startChat(
     );
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error starting chat')),
+      SnackBar(content: AutoText('ERROR_STARTING_CHAT')),
     );
   }
 }

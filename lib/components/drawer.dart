@@ -165,7 +165,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               if (userId.isEmpty) {
                 // Show error if user is not logged in
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please log in to access Birth Plan')),
+                  SnackBar(content: AutoText('PLEASE_LOGIN_BIRTH_PLAN')),
                 );
                 return;
               }

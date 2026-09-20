@@ -88,12 +88,13 @@ class _MidWiveSignUpPageState extends State<MidWiveSignUpPage> {
                   Row(
                     children: [
                       AutoText(
-                        "AHAC ",
+                        "AHAC",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],
                         ),
                       ),
+                      const SizedBox(width: 4),
                       GestureDetector(
                         onTap: () => Navigator.pushNamed(
                             context, '/mid_wife_sign_in_screen'),

@@ -111,7 +111,7 @@ class _ProviderPatientResponsesScreenState
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                     // debugPrint('STREAM ERROR: ${snapshot.error}'); 
-                  return Center(child: AutoText('ERROR: ${snapshot.error}'));
+                  return Center(child: Text('${autoI8lnGen.translate('ERROR')}: ${snapshot.error}'));
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -181,8 +181,8 @@ class _ProviderPatientResponsesScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AutoText(
-                        'SUBMISSION_DATE $date',
+                      Text(
+                        '${autoI8lnGen.translate('SUBMISSION_DATE')}: $date',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.teal[700],
@@ -190,9 +190,9 @@ class _ProviderPatientResponsesScreenState
                         ),
                       ),
                       SizedBox(height: 4),
-                      AutoText('P_W $pregnancyWeek'),
+                      Text('${autoI8lnGen.translate('P_W')}: $pregnancyWeek'),
                       if (expectedDeliveryDate.isNotEmpty)
-                        AutoText('E_D $expectedDeliveryDate'),
+                        Text('${autoI8lnGen.translate('E_D')}: $expectedDeliveryDate'),
                     ],
                   ),
                 ),
@@ -202,8 +202,8 @@ class _ProviderPatientResponsesScreenState
                     color: Colors.teal[100],
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: AutoText(
-                    'WEEK_2 $pregnancyWeek',
+                  child: Text(
+                    '${autoI8lnGen.translate('WEEK_2')} $pregnancyWeek',
                     style: TextStyle(
                       color: Colors.teal[700],
                       fontWeight: FontWeight.bold,

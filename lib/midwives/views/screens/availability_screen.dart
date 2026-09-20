@@ -81,7 +81,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
     } catch (e) {
       setState(() => _isLoadingPatients = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText("E_P_A $e")),
+        SnackBar(content: Text("${autoI8lnGen.translate('E_P_A')}: $e")),
       );
     }
   }
@@ -151,7 +151,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
         _isLoadingAvailability = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: AutoText("E_L_A $e")),
+        SnackBar(content: Text("${autoI8lnGen.translate('E_L_A')}: $e")),
       );
     }
   }
@@ -230,8 +230,8 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: AutoText('CLR $dayLabel SCH'),
-        content: AutoText('AYSF $dayLabel?'),
+        title: Text('${autoI8lnGen.translate('CLR')} $dayLabel ${autoI8lnGen.translate('SCH')}'),
+        content: Text('${autoI8lnGen.translate('AYSF')} $dayLabel?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -272,7 +272,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: AutoText('COPY_TO_DAYS ${_dayLabel(sourceDayKey)}'),
+              title: Text('${autoI8lnGen.translate('COPY_TO_DAYS')} ${_dayLabel(sourceDayKey)}'),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -337,7 +337,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: AutoText('SCHEDULE_COPIED ${targetDays.length}'),
+          content: Text('${autoI8lnGen.translate('SCHEDULE_COPIED')} ${targetDays.length}'),
           backgroundColor: Colors.green,
         ),
       );
@@ -469,7 +469,7 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: AutoText("E_S_A $e"),
+          content: Text("${autoI8lnGen.translate('E_S_A')}: $e"),
           backgroundColor: Colors.red,
         ),
       );
@@ -685,8 +685,8 @@ class _AvailabilitySchedulePageState extends State<AvailabilitySchedulePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      AutoText(
-                                        "CONNECTED_PATIENTS $_connectedPatients",
+                                      Text(
+                                        "${autoI8lnGen.translate("CONNECTED_PATIENTS")} $_connectedPatients",
                                         style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),

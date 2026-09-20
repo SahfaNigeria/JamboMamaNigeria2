@@ -238,7 +238,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: AutoText('E_S_V_I ${e.toString()}'),
+          content: Text('${autoI8lnGen.translate('E_S_V_I')}: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -442,13 +442,13 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
                     spacing: 8,
                     runSpacing: 4,
                     children: [
-                      _buildInfoChip(autoI8lnGen.translate('🩺 R_W_G_24')),
-                      _buildInfoChip(autoI8lnGen.translate('💓 R_W_G_25')),
-                      _buildInfoChip(autoI8lnGen.translate('⚖️ WEIGHT')),
-                      _buildInfoChip(autoI8lnGen.translate('💧 URINE')),
-                      _buildInfoChip(autoI8lnGen.translate('🩸 HAEMOGLO')),
-                      _buildInfoChip(autoI8lnGen.translate('🤰 B_H')),
-                      _buildInfoChip(autoI8lnGen.translate('👶 B_H_B')),
+                      _buildInfoChip('🩺 ${autoI8lnGen.translate('R_W_G_24')}'),
+                      _buildInfoChip('💓 ${autoI8lnGen.translate('R_W_G_25')}'),
+                      _buildInfoChip('⚖️ ${autoI8lnGen.translate('WEIGHT')}'),
+                      _buildInfoChip('💧 ${autoI8lnGen.translate('URINE')}'),
+                      _buildInfoChip('🩸 ${autoI8lnGen.translate('HAEMOGLO')}'),
+                      _buildInfoChip('🤰 ${autoI8lnGen.translate('B_H')}'),
+                      _buildInfoChip('👶 ${autoI8lnGen.translate('B_H_B')}'),
                     ],
                   ),
                 ],
@@ -493,7 +493,7 @@ class _VitalInfoUpdateScreenState extends State<VitalInfoUpdateScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.red[200]!),
       ),
-      child: AutoText(
+      child: Text(
         text,
         style: TextStyle(
           fontSize: 12,

@@ -130,7 +130,7 @@ class _YouState extends State<You> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: _loadPregnancyJourneyContent,
-                        child: const Text('Retry'),
+                        child: const AutoText('RETRY'),
                       ),
                     ],
                   ),

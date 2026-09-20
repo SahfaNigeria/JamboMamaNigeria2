@@ -207,7 +207,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: AutoText('JamboMama! EMERGENCY_ASSESSMENT'),
+        title: Text('JamboMama! ${autoI8lnGen.translate('EMERGENCY_ASSESSMENT')}'),
         backgroundColor: Colors.red[800],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -904,7 +904,7 @@ class _JamboMamaEmergencyScreenState extends State<JamboMamaEmergencyScreen> {
         assessmentId: globalRef.id,
       );
     } catch (e) {
-      throw Exception(autoI8lnGen.translate('F_S_E_R $e'));
+      throw Exception('${autoI8lnGen.translate('F_S_E_R')}: $e');
     }
   }
 

@@ -56,7 +56,7 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
       if (res == 'success') {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AutoText('Login successful')),
+          SnackBar(content: AutoText('LOGIN_SUCCESSFUL')),
         );
 
         // Navigate to home page or wherever
@@ -109,12 +109,13 @@ class _MidWiveSignInPageState extends State<MidWiveSignInPage> {
                   Row(
                     children: [
                       AutoText(
-                        "DAHC ",
+                        "DAHC",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey[600],
                         ),
                       ),
+                      const SizedBox(width: 4),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: AutoText(

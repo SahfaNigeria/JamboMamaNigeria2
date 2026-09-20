@@ -68,7 +68,7 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: AutoText('ERROR: ${snapshot.error}'));
+            return Center(child: Text('${autoI8lnGen.translate('ERROR')}: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: AutoText('ERROR_3'));
           } else {
@@ -318,7 +318,7 @@ class _ProfessionalsListState extends State<ProfessionalsList> {
 //           if (snapshot.connectionState == ConnectionState.waiting) {
 //             return Center(child: CircularProgressIndicator());
 //           } else if (snapshot.hasError) {
-//             return Center(child: AutoText('ERROR: ${snapshot.error}'));
+//             return Center(child: Text('${autoI8lnGen.translate('ERROR')}: ${snapshot.error}'));
 //           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
 //             return Center(child: AutoText('ERROR_3'));
 //           } else {

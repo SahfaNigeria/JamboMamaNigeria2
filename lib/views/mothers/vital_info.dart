@@ -163,13 +163,13 @@ class _VitalInfoScreenState extends State<VitalInfoScreen> {
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(height: 8),
-                              AutoText(
-                                'DOB: ${patientVitalInfo!['dateOfBirth'] ?? 'ERROR_8'}',
-                                style: TextStyle(fontSize: 16),
+                              Text(
+                                '${autoI8lnGen.translate('DOB')}: ${patientVitalInfo!['dateOfBirth'] ?? autoI8lnGen.translate('ERROR_8')}',
+                                style: const TextStyle(fontSize: 16),
                               ),
-                              SizedBox(height: 4),
-                              AutoText(
-                                'B_T: ${patientVitalInfo!['bloodType'] ?? 'ERROR_8'}',
+                              const SizedBox(height: 4),
+                              Text(
+                                '${autoI8lnGen.translate('B_T')}: ${patientVitalInfo!['bloodType'] ?? autoI8lnGen.translate('ERROR_8')}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

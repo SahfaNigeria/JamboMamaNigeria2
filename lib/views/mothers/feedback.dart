@@ -13,8 +13,8 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _feedbackContentController =
       TextEditingController();
-  String? _userRole = autoI8lnGen.translate("PATIENT");
-  String? _feedbackType = autoI8lnGen.translate("SUGGESTION");
+  String? _userRole = "PATIENT";
+  String? _feedbackType = "SUGGESTION";
 
   Future<void> _submitFeedback() async {
     if (_formKey.currentState!.validate()) {
@@ -40,8 +40,10 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
 
       // Clear the form
       _formKey.currentState!.reset();
-      _userRole = autoI8lnGen.translate("PATIENT");
-      _feedbackType = autoI8lnGen.translate("SUGGESTION");
+      setState(() {
+        _userRole = "PATIENT";
+        _feedbackType = "SUGGESTION";
+      });
     }
   }
 
@@ -84,10 +86,10 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
                 decoration: InputDecoration(
                     labelText: autoI8lnGen.translate('USER_ROLE')),
                 items: [
-                  autoI8lnGen.translate("PATIENT"),
-                  autoI8lnGen.translate('autoI8lnGen.translate')
+                  "PATIENT",
+                  "HEALTH_PROVIDER"
                 ].map((role) {
-                  return DropdownMenuItem(value: role, child: Text(role));
+                  return DropdownMenuItem(value: role, child: Text(autoI8lnGen.translate(role)));
                 }).toList(),
                 onChanged: (value) => setState(() => _userRole = value),
               ),
@@ -96,11 +98,11 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
                 decoration: InputDecoration(
                     labelText: autoI8lnGen.translate("FEED_BACK_TYPE")),
                 items: [
-                  autoI8lnGen.translate("SUGGESTION"),
-                  autoI8lnGen.translate("BUG_REPORT"),
-                  autoI8lnGen.translate("GENERAL")
+                  "SUGGESTION",
+                  "BUG_REPORT",
+                  "GENERAL"
                 ].map((type) {
-                  return DropdownMenuItem(value: type, child: Text(type));
+                  return DropdownMenuItem(value: type, child: Text(autoI8lnGen.translate(type)));
                 }).toList(),
                 onChanged: (value) => setState(() => _feedbackType = value),
               ),

@@ -483,8 +483,8 @@ class _HomePageState extends State<HomePage> {
                       // ── Replaced hardcoded week text with smart badge ──
                       _buildWeekBadge(),
                       if (currentWeek != null)
-                        AutoText(
-                          'WEEK_2 $currentWeek',
+                        Text(
+                          '${autoI8lnGen.translate('WEEK_2')} $currentWeek',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.w500,
@@ -681,7 +681,7 @@ class _HomePageState extends State<HomePage> {
                           }
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: AutoText('ERROR: $e')),
+                            SnackBar(content: Text('${autoI8lnGen.translate('ERROR')}: $e')),
                           );
                         }
                       },
@@ -774,7 +774,7 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: const AutoText('⚠️ EMUO'),
+                                title: Text('⚠️ ${autoI8lnGen.translate('EMUO')}'),
                                 content: const AutoText('E_S_0'),
                                 actions: [
                                   TextButton(
@@ -1552,7 +1552,7 @@ class _HomePageState extends State<HomePage> {
 //                             context: context,
 //                             builder: (BuildContext context) {
 //                               return AlertDialog(
-//                                 title: const AutoText('⚠️ EMUO'),
+//                                 title: Text('⚠️ ${autoI8lnGen.translate('EMUO')}'),
 //                                 content: const AutoText('E_S_0'),
 //                                 actions: [
 //                                   TextButton(
@@ -2192,7 +2192,7 @@ class _HomePageState extends State<HomePage> {
 // //                             context: context,
 // //                             builder: (BuildContext context) {
 // //                               return AlertDialog(
-// //                                 title: const AutoText('⚠️ EMUO'),
+// //                                 title: Text('⚠️ ${autoI8lnGen.translate('EMUO')}'),
 // //                                 content: const AutoText('E_S_0'),
 // //                                 actions: [
 // //                                   TextButton(

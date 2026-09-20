@@ -86,7 +86,7 @@ class _BabyState extends State<Baby> {
       });
     } catch (e) {
       setState(() {
-        errorMessage = autoI8lnGen.translate('FAILED_L_C ${e.toString()}');
+        errorMessage = '${autoI8lnGen.translate('FAILED_L_C')}: ${e.toString()}';
         isLoading = false;
       });
     }

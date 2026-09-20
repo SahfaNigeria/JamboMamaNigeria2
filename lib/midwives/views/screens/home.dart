@@ -63,7 +63,7 @@ class MidWifeHomePage extends StatelessWidget {
               title: AutoText('HOME_2'),
               centerTitle: true,
             ),
-            body: Center(child: AutoText('ERROR: ${snapshot.error}')),
+            body: Center(child: Text('${autoI8lnGen.translate('ERROR')}: ${snapshot.error}')),
           );
         } else if (!snapshot.hasData || snapshot.data == null) {
           return Scaffold(

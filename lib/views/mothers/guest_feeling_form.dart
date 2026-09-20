@@ -109,11 +109,9 @@ class _GuestFeelingsFormBodyState extends State<_GuestFeelingsFormBody> {
         Color chipColor;
         Color textColor = Colors.white;
 
-        if (option.toLowerCase().contains(autoI8lnGen.translate("YES_2")) ||
-            option.toLowerCase().contains(autoI8lnGen.translate("NOT_WELL"))) {
+        if (option == "YES_MESSAGE" || option == "YES_2" || option == "NOT_WELL") {
           chipColor = Colors.red[600]!;
-        } else if (option.toLowerCase().contains(autoI8lnGen.translate("NO")) ||
-            option.toLowerCase().contains(autoI8lnGen.translate("FINE"))) {
+        } else if (option == "NO_MESSAGE" || option == "NO" || option == "FINE") {
           chipColor = Colors.green[600]!;
         } else {
           chipColor = Colors.blue[600]!;
@@ -250,8 +248,8 @@ class _GuestFeelingsFormBodyState extends State<_GuestFeelingsFormBody> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                AutoText(
-                  'TODAY_2 ${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}',
+                Text(
+                  '${autoI8lnGen.translate('TODAY_2')}: ${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}',
                   style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
           
@@ -274,9 +272,9 @@ class _GuestFeelingsFormBodyState extends State<_GuestFeelingsFormBody> {
                     isAnswered: isAnswered[i],
                     content: _buildChoiceChips(
                       options: [
-                        autoI8lnGen.translate("YES_MESSAGE"),
-                        autoI8lnGen.translate("NO_MESSAGE"),
-                        autoI8lnGen.translate("SAB"),
+                        "YES_MESSAGE",
+                        "NO_MESSAGE",
+                        "SAB",
                       ],
                       selectedValue: responses[i],
                       onSelected: (value) {

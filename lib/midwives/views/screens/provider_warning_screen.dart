@@ -54,7 +54,7 @@ class _HealthcareProfessionalAssessmentScreenState
 
           if (snapshot.hasError) {
             return Center(
-              child: AutoText('ERROR: ${snapshot.error}'),
+              child: Text('${autoI8lnGen.translate('ERROR')}: ${snapshot.error}'),
             );
           }
 
@@ -136,8 +136,8 @@ class _HealthcareProfessionalAssessmentScreenState
                     color: Colors.teal[700],
                   ),
                 ),
-                AutoText(
-                  'SUBMITTED $formattedDate',
+                Text(
+                  '${autoI8lnGen.translate('SUBMITTED')}: $formattedDate',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[600],
@@ -231,41 +231,41 @@ class _HealthcareProfessionalAssessmentScreenState
         _buildSection('BLEEDING_DISCHARGE', [
           _buildSymptomRow('V_BLEEDING', data['hasVaginalBleeding'],
               details: data['hasVaginalBleeding'] == true
-                  ? 'AMNT ${data['bleedingAmount'] ?? 'NOT_SPECIFIED'}'
+                  ? '${autoI8lnGen.translate('AMNT')} ${autoI8lnGen.translate(data['bleedingAmount'] ?? 'NOT_SPECIFIED')}'
                   : null),
           _buildSymptomRow('V_DISCHARGE', data['hasVaginalDischarge'],
               details: data['hasVaginalDischarge'] == true
-                  ? 'DURATION ${data['dischargeDuration'] ?? 'NOT_SPECIFIED'}'
+                  ? '${autoI8lnGen.translate('DURATION')} ${autoI8lnGen.translate(data['dischargeDuration'] ?? 'NOT_SPECIFIED')}'
                   : null),
           _buildSymptomRow('FLUID_LOSS', data['hasFluidLoss'],
               details: data['hasFluidLoss'] == true
-                  ? 'AMNT ${data['fluidAmount'] ?? 'NOT_SPECIFIED'}'
+                  ? '${autoI8lnGen.translate('AMNT')} ${autoI8lnGen.translate(data['fluidAmount'] ?? 'NOT_SPECIFIED')}'
                   : null),
         ]),
         _buildSection('U_D', [
           _buildSymptomRow('B_U', data['hasBurningUrination']),
           _buildSymptomRow('DIARRHEA', data['hasDiarrhea'],
               details: data['hasDiarrhea'] == true
-                  ? 'DURATION ${data['diarrheadays'] ?? 'NOT_SPECIFIED'} DAYS, FREQUENCY ${data['diarrheaFrequency'] ?? 'NOT_SPECIFIED'}'
+                  ? '${autoI8lnGen.translate('DURATION')} ${autoI8lnGen.translate(data['diarrheadays'] ?? 'NOT_SPECIFIED')} ${autoI8lnGen.translate('DAYS')}, ${autoI8lnGen.translate('FREQUENCY')} ${autoI8lnGen.translate(data['diarrheaFrequency'] ?? 'NOT_SPECIFIED')}'
                   : null),
         ]),
         _buildSection('GENERAL_S', [
           _buildSymptomRow('FEVER', data['hasFever']),
           _buildSymptomRow('COUGH', data['hasCough'],
               details: data['hasCough'] == true
-                  ? 'TIMING ${data['coughTiming'] ?? 'NOT_SPECIFIED'}, DURATION ${data['coughDays'] ?? 'NOT_SPECIFIED'} DAYS'
+                  ? '${autoI8lnGen.translate('TIMING')} ${autoI8lnGen.translate(data['coughTiming'] ?? 'NOT_SPECIFIED')}, ${autoI8lnGen.translate('DURATION')} ${autoI8lnGen.translate(data['coughDays'] ?? 'NOT_SPECIFIED')} ${autoI8lnGen.translate('DAYS')}'
                   : null),
           _buildSymptomRow('S_L', data['hasSwollenLegs']),
           _buildSymptomRow('N_B', data['hasNumbness']),
           _buildSymptomRow('H_D', data['hasHeadache'],
               details: data['hasHeadache'] == true
-                  ? 'SEVERITY ${data['headacheSeverity'] ?? 'NOT_SPECIFIED'}'
+                  ? '${autoI8lnGen.translate('SEVERITY')} ${autoI8lnGen.translate(data['headacheSeverity'] ?? 'NOT_SPECIFIED')}'
                   : null),
         ]),
         _buildSection('PREGNANCY_SPECIFIC', [
           _buildSymptomRow('CONTRACTIONS', data['hasContractions'],
               details: data['hasContractions'] == true
-                  ? 'TYPE ${data['contractionType'] ?? 'NOT_SPECIFIED'}'
+                  ? '${autoI8lnGen.translate('TYPE')} ${autoI8lnGen.translate(data['contractionType'] ?? 'NOT_SPECIFIED')}'
                   : null),
           _buildSymptomRow('BABY_STOPPED_MOVING', data['babyStoppedMoving']),
         ]),
@@ -280,7 +280,7 @@ class _HealthcareProfessionalAssessmentScreenState
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.blue[200]!),
               ),
-              child: AutoText(
+              child: Text(
                 data['otherConcerns'].toString(),
                 style: const TextStyle(fontSize: 14),
               ),
@@ -360,7 +360,7 @@ class _HealthcareProfessionalAssessmentScreenState
           if (details != null && isPresent)
             Padding(
               padding: const EdgeInsets.only(left: 28, top: 4),
-              child: AutoText(
+              child: Text(
                 details,
                 style: TextStyle(
                   fontSize: 12,

@@ -49,7 +49,7 @@ class _ProfessionalChatScreenState extends State<ProfessionalChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: AutoText('CHAT_WITH ${widget.recipientName}')),
+      appBar: AppBar(title: Text('${autoI8lnGen.translate('CHAT_WITH')} ${widget.recipientName}')),
       body: Column(
         children: [
           Expanded(
