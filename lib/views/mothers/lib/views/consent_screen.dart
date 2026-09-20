@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:auto_i8ln/auto_i8ln.dart';
 
 /// ConsentScreen
 /// -------------
@@ -102,8 +103,8 @@ class _ConsentScreenState extends State<ConsentScreen>
         backgroundColor: Colors.white,
         elevation: 0,
         leading: const BackButton(color: Color(0xFFB5174B)),
-        title: const Text(
-          'SafeMama! Nigeria',
+        title: const AutoText(
+          'CONSENT_TITLE',
           style: TextStyle(
             color: Color(0xFFB5174B),
             fontWeight: FontWeight.w700,
@@ -126,37 +127,36 @@ class _ConsentScreenState extends State<ConsentScreen>
               // ── Info sections ────────────────────────────────────────────
               _InfoSection(
                 emoji: '📋',
-                title: 'What we collect',
+                title: 'CONSENT_COLLECT_TITLE',
                 bullets: const [
-                  'Your name and phone number',
-                  'Your pregnancy details and health info',
-                  'Your location (to find nearby care)',
+                  'CONSENT_COLLECT_1',
+                  'CONSENT_COLLECT_2',
+                  'CONSENT_COLLECT_3',
                 ],
               ),
               _InfoSection(
                 emoji: '🔒',
-                title: 'How we protect it',
+                title: 'CONSENT_PROTECT_TITLE',
                 bullets: const [
-                  'Your data is encrypted and secure',
-                  'Only you can access your personal info',
-                  'We never sell your data to anyone',
+                  'CONSENT_PROTECT_1',
+                  'CONSENT_PROTECT_2',
+                  'CONSENT_PROTECT_3',
                 ],
               ),
               _InfoSection(
                 emoji: '🌍',
-                title: 'Where it is stored',
+                title: 'CONSENT_STORE_TITLE',
                 bullets: const [
-                  'Data is stored securely via Google Firebase, '
-                      'which may be outside Nigeria',
+                  'CONSENT_STORE_1',
                 ],
               ),
               _InfoSection(
                 emoji: '⚖️',
-                title: 'Your rights (NDPA 2023)',
+                title: 'CONSENT_RIGHTS_TITLE',
                 bullets: const [
-                  'You can request your data anytime',
-                  'You can delete your account anytime',
-                  'Email us: safemama@sahfanigeria.com',
+                  'CONSENT_RIGHTS_1',
+                  'CONSENT_RIGHTS_2',
+                  'CONSENT_RIGHTS_3',
                 ],
               ),
 
@@ -170,12 +170,12 @@ class _ConsentScreenState extends State<ConsentScreen>
                 onChanged: (v) => setState(() => _agreePrivacy = v ?? false),
                 richLabel: TextSpan(
                   children: [
-                    const TextSpan(
-                      text: 'I have read and agree to the ',
-                      style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
+                    TextSpan(
+                      text: autoI8lnGen.translate('CONSENT_AGREE_PRIVACY_1'),
+                      style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                     ),
                     TextSpan(
-                      text: 'Privacy Policy',
+                      text: autoI8lnGen.translate('CONSENT_PRIVACY_POLICY'),
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFFB5174B),
@@ -185,9 +185,9 @@ class _ConsentScreenState extends State<ConsentScreen>
                       recognizer: TapGestureRecognizer()
                         ..onTap = _openPrivacyPolicy,
                     ),
-                    const TextSpan(
-                      text: ' and Terms of Use',
-                      style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
+                    TextSpan(
+                      text: autoI8lnGen.translate('CONSENT_AGREE_PRIVACY_2'),
+                      style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                     ),
                   ],
                 ),
@@ -200,10 +200,9 @@ class _ConsentScreenState extends State<ConsentScreen>
                 value: _agreeCrossBorder,
                 onChanged: (v) =>
                     setState(() => _agreeCrossBorder = v ?? false),
-                richLabel: const TextSpan(
-                  text: 'I agree that my data may be stored outside Nigeria by '
-                      'Google Firebase',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF333333)),
+                richLabel: TextSpan(
+                  text: autoI8lnGen.translate('CONSENT_AGREE_CROSS_BORDER'),
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                 ),
               ),
 
@@ -230,8 +229,8 @@ class _ConsentScreenState extends State<ConsentScreen>
                       borderRadius: BorderRadius.circular(14),
                       onTap: _canProceed ? _proceed : null,
                       child: Center(
-                        child: Text(
-                          'CREATE MY ACCOUNT',
+                        child: AutoText(
+                          'CONSENT_CREATE_ACCOUNT',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
@@ -250,8 +249,8 @@ class _ConsentScreenState extends State<ConsentScreen>
 
               // ── Subtle note ──────────────────────────────────────────────
               Center(
-                child: Text(
-                  'Compliant with the Nigeria Data Protection Act 2023',
+                child: AutoText(
+                  'CONSENT_COMPLIANCE_FOOTER',
                   style: TextStyle(
                     fontSize: 11,
                     color: Colors.grey[500],
@@ -287,11 +286,10 @@ class _HeaderCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Flower emoji as logo stand-in
           const Text('🌸', style: TextStyle(fontSize: 48)),
           const SizedBox(height: 10),
-          const Text(
-            'Welcome to SafeMama!',
+          const AutoText(
+            'CONSENT_WELCOME_TITLE',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 22,
@@ -301,13 +299,12 @@ class _HeaderCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Before you create your account, please read and agree to '
-            'how we use your data.',
+          const AutoText(
+            'CONSENT_WELCOME_SUB',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13.5,
-              color: Colors.grey[700],
+              color: Color(0xFF616161),
               height: 1.5,
             ),
           ),
@@ -351,7 +348,7 @@ class _InfoSection extends StatelessWidget {
             children: [
               Text(emoji, style: const TextStyle(fontSize: 18)),
               const SizedBox(width: 8),
-              Text(
+              AutoText(
                 title,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
@@ -373,7 +370,7 @@ class _InfoSection extends StatelessWidget {
                           color: Color(0xFFB5174B),
                           fontWeight: FontWeight.bold)),
                   Expanded(
-                    child: Text(
+                    child: AutoText(
                       b,
                       style: TextStyle(
                         fontSize: 13.5,

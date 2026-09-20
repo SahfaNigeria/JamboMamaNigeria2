@@ -361,7 +361,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(height: 20),
           _buildPrivacySecuritySection(),
           SizedBox(height: 20),
-          Center(child: Text('${autoI8lnGen.translate('VERSION')} 1.0.0')),
+          Center(child: Text('${autoI8lnGen.translate('VERSION')} 1.0.1+4')),
         ],
       ),
     );
