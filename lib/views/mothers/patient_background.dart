@@ -863,19 +863,11 @@ class _PatientBackgroundScreenState extends State<PatientBackgroundScreen> {
             .where('requesterId', isEqualTo: widget.patientId)
             .get();
 
-        if (connectionQuery.docs.isEmpty) {
-          throw Exception(
-              'This patient is not connected to a health provider.');
-        }
-
         providerIds = connectionQuery.docs
             .map((doc) => doc['recipientId'] as String)
             .toList();
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: AutoText('CONNECTION_REQUIRED $e')),
-        );
-        return;
+        print('Error fetching provider connections: $e');
       }
 
       Map<String, dynamic> data = {

@@ -9,7 +9,7 @@
     
     <application
 
-        android:label="Jambomama_Nigeria"
+        android:label="SafeMama Nigeria"
         android:name="${applicationName}"
         android:icon="@mipmap/uc_launcher">
         <activity
