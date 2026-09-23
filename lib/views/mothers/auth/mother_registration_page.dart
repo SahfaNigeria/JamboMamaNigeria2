@@ -10,7 +10,6 @@ import 'package:jambomama_nigeria/components/button.dart';
 import 'package:jambomama_nigeria/controllers/auth_controller.dart';
 import 'package:jambomama_nigeria/utils/showsnackbar.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:jambomama_nigeria/views/mothers/auth/login.dart';
 import 'package:jambomama_nigeria/providers/connection_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -668,10 +667,7 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
         showSnackMessage(context, 'ACCOUNT_CREATED');
         _formKey.currentState!.reset();
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage(onTap: () {})),
-        );
+        Navigator.pushReplacementNamed(context, '/HomePage');
       } else {
         showSnackMessage(context, result);
       }
