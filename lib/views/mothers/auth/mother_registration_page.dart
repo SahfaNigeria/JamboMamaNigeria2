@@ -664,7 +664,6 @@ class _MotherRegisterPageState extends State<MotherRegisterPage> {
           await _sendDeferredConnectionRequests(userId, fullName);
         }
 
-        showSnackMessage(context, 'ACCOUNT_CREATED');
         _formKey.currentState!.reset();
 
         Navigator.pushReplacementNamed(context, '/HomePage');
