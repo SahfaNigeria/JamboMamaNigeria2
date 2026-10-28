@@ -1,4 +1,4 @@
-package com.sahfa.jambomama.nigeria
+package com.safemama.nigeria
 
 import io.flutter.embedding.android.FlutterActivity
 
